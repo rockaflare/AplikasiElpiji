@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Siapel.Domain", "Siapel.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Siapel.EF", "Siapel.EF\Siapel.EF.csproj", "{E04367CF-0F93-4923-9755-079B804DB95A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siapel.UI", "Siapel.UI\Siapel.UI.csproj", "{CB018532-7FAF-49C5-B5DE-F8004D51CD91}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{E04367CF-0F93-4923-9755-079B804DB95A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E04367CF-0F93-4923-9755-079B804DB95A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E04367CF-0F93-4923-9755-079B804DB95A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CB018532-7FAF-49C5-B5DE-F8004D51CD91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CB018532-7FAF-49C5-B5DE-F8004D51CD91}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CB018532-7FAF-49C5-B5DE-F8004D51CD91}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CB018532-7FAF-49C5-B5DE-F8004D51CD91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

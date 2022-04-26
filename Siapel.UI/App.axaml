@@ -6,7 +6,12 @@
         <local:ViewLocator/>
     </Application.DataTemplates>
 
-    <Application.Styles>
-        <FluentTheme Mode="Light"/>
-    </Application.Styles>
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="pack://application:,,,/WPFUI;component/Styles/Theme/Light.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/WPFUI;component/Styles/WPFUI.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Application.Resources>
 </Application>
