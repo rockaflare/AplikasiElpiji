@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+             x:Class="Siapel.UI.Views.MainMenuView">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<ui:NavigationView Grid.Row="1" PaneDisplayMode="Left" OpenPaneLength="230">
+			<ui:NavigationView.MenuItems>
+				<ui:NavigationViewItem Content="Home" Icon="Home" Tag="Home"/>
+				<ui:NavigationViewItem Content="Master" Icon="Permissions" Tag="Master">
+					<ui:NavigationViewItem.MenuItems>
+						<ui:NavigationViewItem Content="Item" Icon="List" Tag="Item"/>
+						<ui:NavigationViewItem Content="Pangkalan" Icon="Contact" Tag="Pangkalan"/>
+						<ui:NavigationViewItem Content="Tipe Pembayaran" Icon="Calculator" Tag="TipePembayaran"/>
+					</ui:NavigationViewItem.MenuItems>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Content="Pembelian" Icon="Tag" Tag="Pembelian"/>
+				<ui:NavigationViewItem Content="Penjualan" Icon="Shop" Tag="Penjualan"/>
+				<ui:NavigationViewItem Content="Stok Gudang" Icon="Clipboard" Tag="StokGudang"/>
+				<ui:NavigationViewItem Content="Stok" Icon="ClipboardCode" Tag="Stok"/>
+				<ui:NavigationViewItem Content="Tabung Bocor" Icon="New" Tag="TabungBocor"/>
+				<ui:NavigationViewItem Content="Titip Tabung" Icon="Orientation" Tag="TitipTabung">
+					
+				</ui:NavigationViewItem>
+			</ui:NavigationView.MenuItems>
+		</ui:NavigationView>
+	</Grid>
+</UserControl>
