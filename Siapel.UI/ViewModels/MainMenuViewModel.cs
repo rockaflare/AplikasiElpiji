@@ -1,4 +1,6 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Controls.Templates;
+using Avalonia.Metadata;
 using Avalonia.ReactiveUI;
 using FluentAvalonia.UI.Controls;
 using ReactiveUI;
@@ -17,17 +19,10 @@ namespace Siapel.UI.ViewModels
     {
         public MainMenuViewModel()
         {
-            Categories = new List<CategoryBase>();
 
-            Categories.Add(new Category { Name = "Home", Icon = Symbol.Home });
-            Categories.Add(new Category { Name = "Item", Icon = Symbol.List });
-
-            SelectedCategory = Categories[0];
         }
 
-        public List<CategoryBase> Categories { get; }
-
-        public object SelectedCategory
+        public object SelectedPage
         {
             get => _selectedCategory;
             set
@@ -39,10 +34,9 @@ namespace Siapel.UI.ViewModels
 
         private void SetCurrentPage()
         {
-            if (SelectedCategory is Category cat)
+            if (SelectedPage is NavigationViewItem nvi)
             {
-                var index = Categories.IndexOf(cat) + 1;
-                var menuPage = $"Siapel.UI.Views.Pages.{cat.Name}View";
+                var menuPage = $"Siapel.UI.Views.Pages.{nvi.Content}View";
                 if (Type.GetType(menuPage) != null)
                 {
                     var pg = Activator.CreateInstance(Type.GetType(menuPage));
@@ -64,10 +58,4 @@ namespace Siapel.UI.ViewModels
         
     }
 
-    public abstract class CategoryBase { }
-    public class Category : CategoryBase
-    {
-        public string Name { get; set; }
-        public Symbol Icon { get; set; }
-    }
 }
