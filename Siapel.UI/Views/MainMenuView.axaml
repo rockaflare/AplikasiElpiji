@@ -12,12 +12,12 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		<ui:NavigationView Grid.Row="1" PaneDisplayMode="Left" OpenPaneLength="230">
+		<ui:NavigationView x:Name="MainMenuNav" Grid.Row="1" PaneDisplayMode="Left" OpenPaneLength="230">
 			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem Content="Home" Icon="Home" Tag="Home"/>
+				<ui:NavigationViewItem Content="Home" Icon="Home" Tag="HomeView"/>
 				<ui:NavigationViewItem Content="Master" Icon="Permissions" Tag="Master">
 					<ui:NavigationViewItem.MenuItems>
-						<ui:NavigationViewItem Content="Item" Icon="List" Tag="Item"/>
+						<ui:NavigationViewItem Content="Item" Icon="List" Tag="ItemView"/>
 						<ui:NavigationViewItem Content="Pangkalan" Icon="Contact" Tag="Pangkalan"/>
 						<ui:NavigationViewItem Content="Tipe Pembayaran" Icon="Calculator" Tag="TipePembayaran"/>
 					</ui:NavigationViewItem.MenuItems>
