@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Siapel.Domain", "Siapel.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Siapel.EF", "Siapel.EF\Siapel.EF.csproj", "{E04367CF-0F93-4923-9755-079B804DB95A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Siapel.UI", "Siapel.UI\Siapel.UI.csproj", "{49FBBAFC-8BCC-4C10-808D-EFFA2CB85538}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Siapel.UI", "Siapel.UI\Siapel.UI.csproj", "{49FBBAFC-8BCC-4C10-808D-EFFA2CB85538}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

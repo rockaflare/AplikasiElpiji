@@ -2,7 +2,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
              x:Class="Siapel.UI.Views.Pages.ItemView">
-	<Label Margin="100" Content="Ini Item"/>
+	<Grid Margin="50">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="50"/>
+			<RowDefinition Height="50"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<TextBlock Grid.Row="0" Text="Tes Tabel"/>
+		<Button Grid.Row="1" Content="Tambah"/>
+		<DataGrid Grid.Row="2" x:Name="ItemTabel" AutoGenerateColumns="False">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Id"/>
+				<DataGridTextColumn Header="Nama Item"/>
+				<DataGridTextColumn Header="Harga"/>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
 </UserControl>
