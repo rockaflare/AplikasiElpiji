@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+             x:Class="Siapel.UI.Views.Pages.HargaView">
+	<Grid Margin="12" RowDefinitions="50,30,*">
+		<Label Grid.Row="0" FontSize="16" FontWeight="Medium" Content="Harga Tabung"/>
+		<StackPanel Grid.Row="1" Orientation="Horizontal">
+			<Button>
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Add"/>
+					<TextBlock Text="Tambah" Margin="5 0 0 0"/>
+				</StackPanel>
+			</Button>
+		</StackPanel>
+		<DataGrid Name="HargaDG" Grid.Row="2" AutoGenerateColumns="False" Margin="0 10 0 0">
+			<DataGrid.Columns>				
+				<DataGridTextColumn Header="Pangkalan"/>
+				<DataGridTextColumn Header="50 KG"/>
+				<DataGridTextColumn Header="12 KG"/>
+				<DataGridTextColumn Header="5,5 KG"/>
+				<DataGridTextColumn Header="Tanggal Ubah"/>
+				<DataGridTemplateColumn Header="Edit">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Button><ui:SymbolIcon Symbol="Edit"/></Button>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Hapus">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Button>
+								<ui:SymbolIcon Symbol="Delete"/>
+							</Button>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>

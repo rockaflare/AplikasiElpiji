@@ -5,6 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
 			 xmlns:vm="using:Siapel.UI.ViewModels"
              x:Class="Siapel.UI.Views.MainMenuView">
 
@@ -13,14 +14,13 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		<ui:NavigationView x:Name="MainMenuNav" Grid.Row="1" PaneDisplayMode="Left" OpenPaneLength="230" Content="{Binding CurrentPage}" SelectedItem="{Binding SelectedPage}">			
+		<ui:NavigationView x:Name="MainMenuNav" Grid.Row="1" PaneDisplayMode="Left" OpenPaneLength="210" Content="{Binding Content}" SelectedItem="{Binding SelectedPage}">			
 			<ui:NavigationView.MenuItems>
 				<ui:NavigationViewItem Content="Home" Icon="Home" Tag="HomeView"/>
 				<ui:NavigationViewItem Content="Master" Icon="Permissions" Tag="Master">
 					<ui:NavigationViewItem.MenuItems>
-						<ui:NavigationViewItem Content="Item" Icon="List" Tag="ItemView"/>
 						<ui:NavigationViewItem Content="Pangkalan" Icon="Contact" Tag="Pangkalan"/>
-						<ui:NavigationViewItem Content="Tipe Pembayaran" Icon="Calculator" Tag="TipePembayaran"/>
+						<ui:NavigationViewItem Content="Harga" Icon="PhoneBook" Tag="Harga"/>						
 					</ui:NavigationViewItem.MenuItems>
 				</ui:NavigationViewItem>
 				<ui:NavigationViewItem Content="Pembelian" Icon="Tag" Tag="Pembelian"/>
@@ -28,10 +28,12 @@
 				<ui:NavigationViewItem Content="Stok Gudang" Icon="Clipboard" Tag="StokGudang"/>
 				<ui:NavigationViewItem Content="Stok" Icon="ClipboardCode" Tag="Stok"/>
 				<ui:NavigationViewItem Content="Tabung Bocor" Icon="New" Tag="TabungBocor"/>
-				<ui:NavigationViewItem Content="Titip Tabung" Icon="Orientation" Tag="TitipTabung">
-					
-				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Content="Titip Tabung" Icon="Orientation" Tag="TitipTabung"/>
+				<ui:NavigationViewItem Content="Laporan" Icon="Calculator" Tag="Laporan"/>
 			</ui:NavigationView.MenuItems>
+			<ui:NavigationView.Content>
+				<rxui:RoutedViewHost/>
+			</ui:NavigationView.Content>
 		</ui:NavigationView>
 	</Grid>
 </UserControl>

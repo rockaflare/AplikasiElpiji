@@ -4,5 +4,5 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
              x:Class="Siapel.UI.Views.Pages.HomeView">
-  <Label Margin="100" Content="Ini home"/>
+  <Label Margin="100" Content="{Binding Lah}"/>
 </UserControl>

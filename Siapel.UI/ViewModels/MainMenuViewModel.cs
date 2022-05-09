@@ -17,9 +17,15 @@ namespace Siapel.UI.ViewModels
 {
     public class MainMenuViewModel : ViewModelBase
     {
+        ViewModelBase content;
         public MainMenuViewModel()
         {
-
+            Content = new HomeViewModel();
+        }
+        public ViewModelBase Content
+        {
+            get => content;
+            private set => this.RaiseAndSetIfChanged(ref content, value);
         }
 
         public object SelectedPage
@@ -36,12 +42,20 @@ namespace Siapel.UI.ViewModels
         {
             if (SelectedPage is NavigationViewItem nvi)
             {
-                var menuPage = $"Siapel.UI.Views.Pages.{nvi.Content}View";
-                if (Type.GetType(menuPage) != null)
+                switch (nvi.Tag)
                 {
-                    var pg = Activator.CreateInstance(Type.GetType(menuPage));
-                    CurrentPage = (IControl)pg;
+                    case "Harga":
+                        Content = new HargaViewModel();
+                        break;
+                    default:
+                        break;
                 }
+                //var menuPage = $"Siapel.UI.Views.Pages.{nvi.Tag}View";
+                //if (Type.GetType(menuPage) != null)
+                //{
+                //    var pg = Activator.CreateInstance(Type.GetType(menuPage));
+                //    CurrentPage = (IControl)pg;
+                //}
             }
         }
 

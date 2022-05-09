@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Siapel.UI.Views.Pages
 {
-    public partial class ItemView : UserControl
+    public partial class HargaView : UserControl
     {
-        public ItemView()
+        public HargaView()
         {
             InitializeComponent();
         }
