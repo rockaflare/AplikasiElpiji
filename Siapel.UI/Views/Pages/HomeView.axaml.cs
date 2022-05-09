@@ -3,17 +3,15 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
+using Siapel.UI.ViewModels;
 
 namespace Siapel.UI.Views.Pages
 {
-    public partial class HomeView : UserControl
+    public partial class HomeView : ReactiveUserControl<HomeViewModel>
     {
         public HomeView()
         {
-            this.InitializeComponent();
-        }
-        private void InitializeComponent()
-        {
+            this.WhenActivated(disposables => { });
             AvaloniaXamlLoader.Load(this);
         }
     }

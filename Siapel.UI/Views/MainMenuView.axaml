@@ -14,7 +14,7 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		<ui:NavigationView x:Name="MainMenuNav" Grid.Row="1" PaneDisplayMode="Left" OpenPaneLength="210" Content="{Binding Content}" SelectedItem="{Binding SelectedPage}">			
+		<ui:NavigationView x:Name="MainMenuNav" Grid.Row="1" PaneDisplayMode="Left" OpenPaneLength="210" SelectedItem="{Binding SelectedPage}">			
 			<ui:NavigationView.MenuItems>
 				<ui:NavigationViewItem Content="Home" Icon="Home" Tag="HomeView"/>
 				<ui:NavigationViewItem Content="Master" Icon="Permissions" Tag="Master">
@@ -32,7 +32,7 @@
 				<ui:NavigationViewItem Content="Laporan" Icon="Calculator" Tag="Laporan"/>
 			</ui:NavigationView.MenuItems>
 			<ui:NavigationView.Content>
-				<rxui:RoutedViewHost/>
+				<rxui:RoutedViewHost Router="{Binding Router}"/>
 			</ui:NavigationView.Content>
 		</ui:NavigationView>
 	</Grid>

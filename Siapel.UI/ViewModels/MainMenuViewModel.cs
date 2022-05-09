@@ -15,17 +15,15 @@ using System.Threading.Tasks;
 
 namespace Siapel.UI.ViewModels
 {
-    public class MainMenuViewModel : ViewModelBase
+    public class MainMenuViewModel : ReactiveObject, IScreen
     {
-        ViewModelBase content;
+        public RoutingState Router { get; } = new RoutingState();
+
+        public ReactiveCommand<Unit, IRoutableViewModel> SelectPage { get; }
+
         public MainMenuViewModel()
         {
-            Content = new HomeViewModel();
-        }
-        public ViewModelBase Content
-        {
-            get => content;
-            private set => this.RaiseAndSetIfChanged(ref content, value);
+
         }
 
         public object SelectedPage
@@ -37,6 +35,7 @@ namespace Siapel.UI.ViewModels
                 SetCurrentPage();
             }
         }
+        private object _selectedCategory;
 
         private void SetCurrentPage()
         {
@@ -44,32 +43,23 @@ namespace Siapel.UI.ViewModels
             {
                 switch (nvi.Tag)
                 {
-                    case "Harga":
-                        Content = new HargaViewModel();
+                    case "Home":
+                        ShowHome();
                         break;
                     default:
                         break;
                 }
-                //var menuPage = $"Siapel.UI.Views.Pages.{nvi.Tag}View";
-                //if (Type.GetType(menuPage) != null)
-                //{
-                //    var pg = Activator.CreateInstance(Type.GetType(menuPage));
-                //    CurrentPage = (IControl)pg;
-                //}
             }
         }
 
-        public IControl CurrentPage
+        private void ShowHome()
         {
-            get => _currentPage;
-            set => this.RaiseAndSetIfChanged(ref _currentPage, value);
+            Router.Navigate.Execute(new HomeViewModel(this));
         }
-
-        
-
-        private object _selectedCategory;
-        private IControl _currentPage = new HomeView();
-        
+        private void ShowHarga()
+        {
+            
+        }
     }
 
 }

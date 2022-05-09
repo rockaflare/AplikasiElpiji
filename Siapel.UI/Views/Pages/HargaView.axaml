@@ -6,8 +6,8 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
              x:Class="Siapel.UI.Views.Pages.HargaView">
-	<Grid Margin="12" RowDefinitions="50,30,*">
-		<Label Grid.Row="0" FontSize="16" FontWeight="Medium" Content="Harga Tabung"/>
+	<Grid Margin="15" RowDefinitions="50,30,*">
+		<Label Grid.Row="0" FontSize="16" FontWeight="Medium" Content="{Binding UrlPathSegment}"/>
 		<StackPanel Grid.Row="1" Orientation="Horizontal">
 			<Button>
 				<StackPanel Orientation="Horizontal">

@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 
 namespace Siapel.UI.ViewModels
 {
-    public class HomeViewModel : ReactiveObject, IRoutableViewModel
+    public class PangkalanViewModel : ReactiveObject, IRoutableViewModel
     {
-        string Lah = "Home View";
-
+        string Lah = "Pangkalan";
         public string? UrlPathSegment => Lah;
 
         public IScreen HostScreen { get; }
 
-        public HomeViewModel(IScreen screen) => HostScreen = screen;
+        public PangkalanViewModel(IScreen screen) => HostScreen = screen;
     }
 }

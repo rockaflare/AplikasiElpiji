@@ -4,5 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Siapel.UI.Views.Pages.PangkalanView">
-  Welcome to Avalonia!
+	<Grid RowDefinitions="50,30,*">
+		<Label Grid.Row="0" FontSize="16" Margin="15" Content="{Binding UrlPathSegment}"/>
+		<StackPanel Orientation="Horizontal">
+			
+		</StackPanel>
+	</Grid>
 </UserControl>
