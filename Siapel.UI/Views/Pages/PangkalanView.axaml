@@ -3,11 +3,50 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
              x:Class="Siapel.UI.Views.Pages.PangkalanView">
-	<Grid RowDefinitions="50,30,*">
-		<Label Grid.Row="0" FontSize="16" Margin="15" Content="{Binding UrlPathSegment}"/>
-		<StackPanel Orientation="Horizontal">
-			
+	<Grid Margin="15" RowDefinitions="50,40,30,*">
+		<Label Grid.Row="0" FontSize="16" Content="{Binding UrlPathSegment}"/>
+		<TextBox Grid.Row="1" VerticalAlignment="Center" Width="200" Watermark="Cari pangkalan . . ." HorizontalAlignment="Left"/>
+		<StackPanel Grid.Row="2" Orientation="Horizontal">
+			<Button>
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Add"/>
+					<TextBlock Text="Tambah" Margin="5 0 0 0"/>
+				</StackPanel>
+			</Button>
+			<Button Margin="5 0 0 0">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Delete"/>
+					<TextBlock Text="Hapus" Margin="5 0 0 0"/>
+				</StackPanel>
+			</Button>
 		</StackPanel>
+		<DataGrid Grid.Row="3" Margin="0 10 0 0" ColumnWidth="*" HorizontalAlignment="Left" x:Name="PangkalanDG" SelectionMode="Extended" Items="{Binding Pangkalans}" AutoGenerateColumns="False">			
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
+				<DataGridTextColumn Header="Nama" Binding="{Binding Nama}"/>
+				<DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+				<DataGridTemplateColumn Header="Edit">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Button>
+								<ui:SymbolIcon Symbol="Edit"/>
+							</Button>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Hapus">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Button>
+								<ui:SymbolIcon Symbol="Delete"/>
+							</Button>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
 	</Grid>
 </UserControl>

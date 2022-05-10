@@ -2,11 +2,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Siapel.UI.Views.Pages
+namespace Siapel.UI.Views
 {
-    public partial class PembayaranView : UserControl
+    public partial class TransaksiView : UserControl
     {
-        public PembayaranView()
+        public TransaksiView()
         {
             InitializeComponent();
         }

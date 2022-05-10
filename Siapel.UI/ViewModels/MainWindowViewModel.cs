@@ -13,7 +13,7 @@ namespace Siapel.UI.ViewModels
 
         public MainWindowViewModel()
         {
-
+            //ShowHome();
         }
 
 
@@ -27,7 +27,7 @@ namespace Siapel.UI.ViewModels
             }
         }
         private object _selectedCategory;
-
+        
         private void SetCurrentPage()
         {
             if (SelectedPage is NavigationViewItem nvi)

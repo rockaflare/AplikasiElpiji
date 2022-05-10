@@ -10,7 +10,7 @@
 			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
 			 xmlns:rxui="clr-namespace:Avalonia.ReactiveUI;assembly=Avalonia.ReactiveUI"
         Icon="/Assets/avalonia-logo.ico"
-		Width="1000" Height="700"
+		Width="1100" Height="800"
 		WindowStartupLocation="CenterScreen"
         Title="Siapel.UI">
 
@@ -21,15 +21,14 @@
 		</Grid.RowDefinitions>
 		<ui:NavigationView x:Name="MainMenuNav" Grid.Row="1" PaneDisplayMode="Left" OpenPaneLength="210" SelectedItem="{Binding SelectedPage}">
 			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem Content="Home" Icon="Home" Tag="Home"/>
+				<ui:NavigationViewItem Content="Home" Icon="Home" Tag="Home" IsSelected="True"/>
 				<ui:NavigationViewItem Content="Master" Icon="Permissions" Tag="Master">
 					<ui:NavigationViewItem.MenuItems>
 						<ui:NavigationViewItem Content="Pangkalan" Icon="Contact" Tag="Pangkalan"/>
 						<ui:NavigationViewItem Content="Harga" Icon="PhoneBook" Tag="Harga"/>
 					</ui:NavigationViewItem.MenuItems>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem Content="Pembelian" Icon="Tag" Tag="Pembelian"/>
-				<ui:NavigationViewItem Content="Penjualan" Icon="Shop" Tag="Penjualan"/>
+				<ui:NavigationViewItem Content="Transaksi" Icon="Tag" Tag="Transaksi"/>
 				<ui:NavigationViewItem Content="Stok Gudang" Icon="Clipboard" Tag="StokGudang"/>
 				<ui:NavigationViewItem Content="Stok" Icon="ClipboardCode" Tag="Stok"/>
 				<ui:NavigationViewItem Content="Tabung Bocor" Icon="New" Tag="TabungBocor"/>
@@ -37,7 +36,7 @@
 				<ui:NavigationViewItem Content="Laporan" Icon="Calculator" Tag="Laporan"/>
 			</ui:NavigationView.MenuItems>
 			<ui:NavigationView.Content>
-				<rxui:RoutedViewHost Router="{Binding Router}"/>
+				<rxui:RoutedViewHost Router="{Binding Router}" PageTransition="{x:Null}"/>
 			</ui:NavigationView.Content>
 		</ui:NavigationView>
 
