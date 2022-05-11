@@ -18,8 +18,4 @@
     <ProjectReference Include="..\Siapel.Domain\Siapel.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DataServices\" />
-  </ItemGroup>
-
 </Project>

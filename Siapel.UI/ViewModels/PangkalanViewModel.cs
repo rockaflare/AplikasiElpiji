@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using Siapel.Domain.Models;
+using Siapel.EF.DataServices.Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,21 +13,17 @@ namespace Siapel.UI.ViewModels
     public class PangkalanViewModel : ReactiveObject, IRoutableViewModel
     {
         string Lah = "Pangkalan";
+        private readonly ObservableCollection<Pangkalan> _pangkalan;
         public string? UrlPathSegment => Lah;
-
         public IScreen HostScreen { get; }
 
-        public PangkalanViewModel(IScreen screen) 
+        public IEnumerable<Pangkalan> Pangkalans => _pangkalan;
+        
+
+        public PangkalanViewModel(IScreen screen)
         {
             HostScreen = screen;
-            Pangkalans = new ObservableCollection<Pangkalan>(GetPangkalan());
+            _pangkalan = new ObservableCollection<Pangkalan>();
         }
-        public ObservableCollection<Pangkalan> Pangkalans { get; }
-        private IEnumerable<Pangkalan> GetPangkalan() => new[]
-        {
-            new Pangkalan { Id = 1, Nama = "UMUM", Status = "Aktif", Perma = true },
-            new Pangkalan { Id = 2, Nama = "WIJAYA", Status = "Aktif", Perma = false },
-            new Pangkalan { Id = 3, Nama = "NIHAYAH", Status = "Aktif", Perma = false },
-        };
     }
 }
