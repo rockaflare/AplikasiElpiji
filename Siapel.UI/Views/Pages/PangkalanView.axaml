@@ -10,7 +10,7 @@
 		<Label Grid.Row="0" FontSize="16" Content="{Binding UrlPathSegment}"/>
 		<TextBox Grid.Row="1" VerticalAlignment="Center" Width="200" Watermark="Cari pangkalan . . ." HorizontalAlignment="Left"/>
 		<StackPanel Grid.Row="2" Orientation="Horizontal">
-			<Button>
+			<Button Command="{Binding AddCommand}">
 				<StackPanel Orientation="Horizontal">
 					<ui:SymbolIcon Symbol="Add"/>
 					<TextBlock Text="Tambah" Margin="5 0 0 0"/>
@@ -23,7 +23,7 @@
 				</StackPanel>
 			</Button>
 		</StackPanel>
-		<DataGrid Grid.Row="3" Margin="0 10 0 0" ColumnWidth="*" HorizontalAlignment="Left" x:Name="PangkalanDG" SelectionMode="Extended" Items="{Binding PangkalanList}" AutoGenerateColumns="False">			
+		<DataGrid Grid.Row="3" Margin="0 10 0 0" ColumnWidth="*" HorizontalAlignment="Left" x:Name="PangkalanDG" SelectionMode="Extended" Items="{Binding Pangkalans}" AutoGenerateColumns="False">			
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
 				<DataGridTextColumn Header="Nama" Binding="{Binding Nama}"/>
@@ -31,7 +31,7 @@
 				<DataGridTemplateColumn Header="Edit">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<Button>
+							<Button IsVisible="{Binding Perma}">
 								<ui:SymbolIcon Symbol="Edit"/>
 							</Button>
 						</DataTemplate>
@@ -40,7 +40,7 @@
 				<DataGridTemplateColumn Header="Hapus">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<Button>
+							<Button IsVisible="{Binding Perma}">
 								<ui:SymbolIcon Symbol="Delete"/>
 							</Button>
 						</DataTemplate>

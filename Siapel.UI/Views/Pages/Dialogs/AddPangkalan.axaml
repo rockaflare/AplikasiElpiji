@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+             x:Class="Siapel.UI.Views.Pages.Dialogs.AddPangkalan">
+	<Grid RowDefinitions="10,40,40,40">
+		<TextBox Grid.Row="1" Width="200" Watermark="Nama pangkalan" Text="{Binding NamaPangkalan}"/>
+		<ui:ComboBox Grid.Row="2" Width="200" Margin="0 10 0 0" HorizontalAlignment="Center" SelectedItem="{Binding Status}">
+			<ui:ComboBoxItem Content="Aktif"/>
+			<ui:ComboBoxItem Content="Non"/>
+		</ui:ComboBox>
+	</Grid>
+</UserControl>

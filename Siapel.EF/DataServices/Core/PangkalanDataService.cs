@@ -29,9 +29,13 @@ namespace Siapel.EF.DataServices.Core
             throw new NotImplementedException();
         }
 
-        public Task<Pangkalan> Get(int id)
+        public async Task<Pangkalan> Get(int id)
         {
-            throw new NotImplementedException();
+            using (SiapelDbContext context = _contextFactory.CreateDbContext())
+            {
+                Pangkalan entity = await context.Pangkalan.FindAsync(id);
+                return entity;
+            }
         }
 
         public async Task<IEnumerable<Pangkalan>> GetAll()

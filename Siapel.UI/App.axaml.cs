@@ -1,6 +1,9 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Siapel.Domain.Models;
+using Siapel.Domain.Services;
+using Siapel.EF.DataServices.Core;
 using Siapel.UI.ViewModels;
 using Siapel.UI.Views;
 
