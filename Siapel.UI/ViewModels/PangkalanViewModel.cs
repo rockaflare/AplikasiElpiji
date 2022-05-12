@@ -30,7 +30,7 @@ namespace Siapel.UI.ViewModels
         public PangkalanViewModel(IScreen screen)
         {
             HostScreen = screen;
-            dataService = new PangkalanDataService(new EF.SiapelDbContextFactory());
+            dataService = new GenericDataService<Pangkalan>(new EF.SiapelDbContextFactory());
             JalaninAjaDulu();
         }
 
@@ -46,11 +46,22 @@ namespace Siapel.UI.ViewModels
             {
                 Title = "Tambah Pangkalan",
                 PrimaryButtonText = "Simpan",
-                IsSecondaryButtonEnabled = false,
                 CloseButtonText = "Batal"
             };
 
             var vm = new AddPangkalanViewModel(dialog);
+
+            Observable.Merge(
+                vm.Save,
+                vm.Cancel.Select(_ => (Pangkalan)null))
+                .Take(1)
+                .Subscribe(async model =>
+                {
+                    if (model != null)
+                    {
+                        await dataService.Create(model);
+                    }
+                });
 
             dialog.Content = new AddPangkalan()
             {
@@ -60,22 +71,7 @@ namespace Siapel.UI.ViewModels
 
             _ = await dialog.ShowAsync();
 
-            Observable.Merge(
-                vm.Save,
-                vm.Cancel.Select(_ => (Pangkalan)null))
-                .Take(1)
-                .Subscribe(model =>
-                {
-                    if (model != null)
-                    {
-                        throw new Exception("Bisa");
-                        //await dataService.Create(model);
-                    }
-                    else
-                    {
-                        throw new Exception("Gagal");
-                    }
-                });
+            
         }
     }
 }

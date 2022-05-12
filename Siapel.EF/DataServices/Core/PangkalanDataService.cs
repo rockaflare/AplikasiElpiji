@@ -19,9 +19,9 @@ namespace Siapel.EF.DataServices.Core
             _contextFactory = contextFactory;
             _nonQueryDataService = new NonQueryDataService<Pangkalan>(_contextFactory);
         }
-        public Task<Pangkalan> Create(Pangkalan entity)
+        public async Task<Pangkalan> Create(Pangkalan entity)
         {
-            throw new NotImplementedException();
+            return await _nonQueryDataService.Create(entity);
         }
 
         public Task<bool> Delete(Pangkalan entity)

@@ -25,6 +25,8 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             Save = ReactiveCommand.Create(
                 () => new Pangkalan { Nama = NamaPangkalan, Status = Status, Perma = true }, okEnabled);
             Cancel = ReactiveCommand.Create(() => { });
+            dialog.PrimaryButtonCommand = Save;
+            dialog.CloseButtonCommand = Cancel;
             dialog.Closed += DialogOnClosed;
         }
 
@@ -35,10 +37,8 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             switch (args.Result)
             {
                 case ContentDialogResult.None:
-                    Cancel.Execute();
                     break;
                 case ContentDialogResult.Primary:
-                    Save.Execute();
                     break;
                 case ContentDialogResult.Secondary:
                     break;
