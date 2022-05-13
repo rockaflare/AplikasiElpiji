@@ -3,13 +3,13 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
-using Siapel.UI.ViewModels.DialogViewModels;
+using Siapel.UI.ViewModels;
 
-namespace Siapel.UI.Views.Pages.Dialogs
+namespace Siapel.UI.Views.Pages
 {
-    public partial class AddPangkalan : ReactiveUserControl<AddPangkalanViewModel>
+    public partial class TransaksiView : ReactiveUserControl<TransaksiViewModel>
     {
-        public AddPangkalan()
+        public TransaksiView()
         {
             this.WhenActivated(disposables => { });
             AvaloniaXamlLoader.Load(this);

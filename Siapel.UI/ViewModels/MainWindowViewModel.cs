@@ -13,7 +13,7 @@ namespace Siapel.UI.ViewModels
 
         public MainWindowViewModel()
         {
-            //ShowHome();
+            
         }
 
 
@@ -43,6 +43,9 @@ namespace Siapel.UI.ViewModels
                     case "Pangkalan":
                         ShowPangkalan();
                         break;
+                    case "Transaksi":
+                        ShowTransaksi();
+                        break;
                     default:
                         break;
                 }
@@ -60,6 +63,11 @@ namespace Siapel.UI.ViewModels
         private void ShowPangkalan()
         {
             Router.Navigate.Execute(new PangkalanViewModel(this));
+        }
+
+        private void ShowTransaksi()
+        {
+            Router.Navigate.Execute(new TransaksiViewModel(this));
         }
     }
 }

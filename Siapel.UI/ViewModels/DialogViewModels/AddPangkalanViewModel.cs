@@ -1,5 +1,4 @@
-﻿using FluentAvalonia.UI.Controls;
-using Siapel.Domain.Models;
+﻿using Siapel.Domain.Models;
 using Siapel.Domain.Services;
 using Siapel.EF.DataServices.Core;
 using ReactiveUI;
@@ -12,39 +11,20 @@ using System.Reactive;
 
 namespace Siapel.UI.ViewModels.DialogViewModels
 {
-    public class AddPangkalanViewModel : ViewModelBase
+    public class AddPangkalanViewModel : ReactiveObject, IRoutableViewModel
     {
-        private readonly ContentDialog _dialog;
+        public string? UrlPathSegment => "Tambah Pangkalan";
+        public IScreen HostScreen { get; }
         private readonly IDataService<Pangkalan> _dataService;
 
-        public AddPangkalanViewModel(ContentDialog dialog)
+        public AddPangkalanViewModel(IScreen screen)
         {
-            _dialog = dialog;
+            HostScreen = screen;
             _dataService = new PangkalanDataService(new EF.SiapelDbContextFactory());
             var okEnabled = this.WhenAnyValue(x => x.NamaPangkalan, x => !string.IsNullOrWhiteSpace(x));
             Save = ReactiveCommand.Create(
                 () => new Pangkalan { Nama = NamaPangkalan, Status = Status, Perma = true }, okEnabled);
             Cancel = ReactiveCommand.Create(() => { });
-            dialog.PrimaryButtonCommand = Save;
-            dialog.CloseButtonCommand = Cancel;
-            dialog.Closed += DialogOnClosed;
-        }
-
-        private void DialogOnClosed(ContentDialog sender, ContentDialogClosedEventArgs args)
-        {
-            _dialog.Closed -= DialogOnClosed;
-
-            switch (args.Result)
-            {
-                case ContentDialogResult.None:
-                    break;
-                case ContentDialogResult.Primary:
-                    break;
-                case ContentDialogResult.Secondary:
-                    break;
-                default:
-                    break;
-            }
         }
 
         private string _namaPangkalan;
@@ -62,7 +42,7 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             set => this.RaiseAndSetIfChanged(ref _status, value);
         }
 
-        public ReactiveCommand<Unit, Pangkalan> Save { get; set; }
-        public ReactiveCommand<Unit, Unit> Cancel { get; set; }
+        public ReactiveCommand<Unit, Pangkalan> Save { get; }
+        public ReactiveCommand<Unit, Unit> Cancel { get; }
     }
 }

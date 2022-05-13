@@ -3,8 +3,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
 using Siapel.UI.ViewModels;
+using Siapel.UI.ViewModels.DialogViewModels;
 using Siapel.UI.Views;
 using Siapel.UI.Views.Pages;
+using Siapel.UI.Views.Pages.Dialogs;
 using Splat;
 using System;
 
@@ -24,6 +26,9 @@ namespace Siapel.UI
             Locator.CurrentMutable.Register(() => new HomeView(), typeof(IViewFor<HomeViewModel>));
             Locator.CurrentMutable.Register(() => new HargaView(), typeof(IViewFor<HargaViewModel>));
             Locator.CurrentMutable.Register(() => new PangkalanView(), typeof(IViewFor<PangkalanViewModel>));
+            Locator.CurrentMutable.Register(() => new TransaksiView(), typeof(IViewFor<TransaksiViewModel>));
+            Locator.CurrentMutable.Register(() => new AddPangkalan(), typeof(IViewFor<AddPangkalanViewModel>));
+
             return AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .LogToTrace()

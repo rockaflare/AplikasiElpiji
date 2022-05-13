@@ -2,13 +2,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1300" d:DesignHeight="600"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
-             x:Class="Siapel.UI.Views.Pages.PangkalanView">
-	<Grid Margin="15" RowDefinitions="50,40,30,*">
-		<Label Grid.Row="0" FontSize="16" Content="{Binding UrlPathSegment}"/>
-		<TextBox Grid.Row="1" VerticalAlignment="Center" Width="200" Watermark="Cari pangkalan . . ." HorizontalAlignment="Left"/>
+             x:Class="Siapel.UI.Views.Pages.TransaksiView">
+	<Grid Margin="15" RowDefinitions="50,55,40,*">
+		<Label Grid.Row="0" Content="{Binding UrlPathSegment}"/>
+		<StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+			<Label Content="Filter" FontSize="16" FontWeight="Bold"/>
+			<ComboBox Margin="5 0 0 0" Width="200" PlaceholderText="Tuan / Toko"/>
+			<Label Content="Tanggal awal" Margin="10 0 0 0"/>
+			<DatePicker Margin="5 0 0 0"/>
+			<Label Content="Tanggal akhir" Margin="10 0 0 0"/>
+			<DatePicker Margin="5 0 0 0"/>
+			<ComboBox Margin="5 0 0 0" Width="200" PlaceholderText="Jenis Pembayaran"/>
+		</StackPanel>
 		<StackPanel Grid.Row="2" Orientation="Horizontal">
 			<Button Command="{Binding AddCommand}">
 				<StackPanel Orientation="Horizontal">
@@ -16,22 +24,25 @@
 					<TextBlock Text="Tambah" Margin="5 0 0 0"/>
 				</StackPanel>
 			</Button>
-			<Button Margin="5 0 0 0" Command="{Binding DeleteItem}">
+			<Button Margin="5 0 0 0">
 				<StackPanel Orientation="Horizontal">
 					<ui:SymbolIcon Symbol="Delete"/>
 					<TextBlock Text="Hapus" Margin="5 0 0 0"/>
 				</StackPanel>
 			</Button>
 		</StackPanel>
-		<DataGrid Grid.Row="3" Margin="0 10 0 0" ColumnWidth="*" HorizontalAlignment="Left" x:Name="PangkalanDG" SelectionMode="Single" SelectedItem="{Binding SelectedPangkalan}" Items="{Binding Pangkalans}" AutoGenerateColumns="False">			
+		<DataGrid Grid.Row="3" AutoGenerateColumns="False">
 			<DataGrid.Columns>
-				<DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
-				<DataGridTextColumn Header="Nama" Binding="{Binding Nama}"/>
-				<DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+				<DataGridTextColumn Header="Tanggal Buat"/>
+				<DataGridTextColumn Header="Tuan / Toko"/>
+				<DataGridTextColumn Header="Jenis Tabung"/>
+				<DataGridTextColumn Header="Harga"/>
+				<DataGridTextColumn Header="Jenis Pembayaran"/>
+				<DataGridTextColumn Header="Total"/>
 				<DataGridTemplateColumn Header="Edit">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<Button IsVisible="{Binding Perma}">
+							<Button>
 								<ui:SymbolIcon Symbol="Edit"/>
 							</Button>
 						</DataTemplate>
@@ -40,7 +51,7 @@
 				<DataGridTemplateColumn Header="Hapus">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
-							<Button IsVisible="{Binding Perma}">
+							<Button>
 								<ui:SymbolIcon Symbol="Delete"/>
 							</Button>
 						</DataTemplate>

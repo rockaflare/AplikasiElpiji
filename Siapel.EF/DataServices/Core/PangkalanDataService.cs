@@ -24,9 +24,9 @@ namespace Siapel.EF.DataServices.Core
             return await _nonQueryDataService.Create(entity);
         }
 
-        public Task<bool> Delete(Pangkalan entity)
+        public async Task<bool> Delete(Pangkalan entity)
         {
-            throw new NotImplementedException();
+            return await _nonQueryDataService.Delete(entity);
         }
 
         public async Task<Pangkalan> Get(int id)

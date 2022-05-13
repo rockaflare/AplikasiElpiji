@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace Siapel.UI.ViewModels
             HostScreen = screen;
             dataService = new GenericDataService<Pangkalan>(new EF.SiapelDbContextFactory());
             JalaninAjaDulu();
+            DeleteItem = ReactiveCommand.CreateFromTask(DeleteItemAsync);
         }
 
         private async Task JalaninAjaDulu()
@@ -40,16 +42,24 @@ namespace Siapel.UI.ViewModels
             _pangkalan = new ObservableCollection<Pangkalan>(dataList);
         }
 
+        private Pangkalan _selectedPangkalan = new Pangkalan();
+
+        public Pangkalan SelectedPangkalan
+        {
+            get => _selectedPangkalan;
+            private set => this.RaiseAndSetIfChanged(ref _selectedPangkalan, value);
+        }
+
+        public ReactiveCommand<Unit, Unit> DeleteItem { get; }
+
+        private async Task DeleteItemAsync()
+        {
+            await dataService.Delete(SelectedPangkalan);
+        }
+
         public async void AddCommand()
         {
-            var dialog = new ContentDialog()
-            {
-                Title = "Tambah Pangkalan",
-                PrimaryButtonText = "Simpan",
-                CloseButtonText = "Batal"
-            };
-
-            var vm = new AddPangkalanViewModel(dialog);
+            var vm = new AddPangkalanViewModel(this.HostScreen);
 
             Observable.Merge(
                 vm.Save,
@@ -61,17 +71,11 @@ namespace Siapel.UI.ViewModels
                     {
                         await dataService.Create(model);
                     }
+
+                    await HostScreen.Router.NavigateAndReset.Execute(new PangkalanViewModel(this.HostScreen));
                 });
 
-            dialog.Content = new AddPangkalan()
-            {
-                DataContext = vm
-            };
-            
-
-            _ = await dialog.ShowAsync();
-
-            
+            await HostScreen.Router.Navigate.Execute(vm);
         }
     }
 }
