@@ -1,5 +1,8 @@
 using FluentAvalonia.UI.Controls;
 using ReactiveUI;
+using Splat;
+using Siapel.Domain.Models;
+using Siapel.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Reactive;
@@ -10,6 +13,7 @@ namespace Siapel.UI.ViewModels
     public class MainWindowViewModel : ReactiveObject, IScreen
     {
         public RoutingState Router { get; } = new RoutingState();
+        private readonly IDataService<Pangkalan> _dataService;
 
         public MainWindowViewModel()
         {
@@ -62,7 +66,7 @@ namespace Siapel.UI.ViewModels
         }
         private void ShowPangkalan()
         {
-            Router.Navigate.Execute(new PangkalanViewModel(this));
+            Router.Navigate.Execute(new PangkalanViewModel(this, _dataService));
         }
 
         private void ShowTransaksi()

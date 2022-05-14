@@ -21,24 +21,24 @@ namespace Siapel.UI.ViewModels
     {
         string Lah = "Pangkalan";
         private ObservableCollection<Pangkalan> _pangkalan;
-        private readonly IDataService<Pangkalan> dataService;
+        private readonly IDataService<Pangkalan> _dataService;
         public string? UrlPathSegment => Lah;
         public IScreen HostScreen { get; }
 
         public IEnumerable<Pangkalan> Pangkalans => _pangkalan;
         
 
-        public PangkalanViewModel(IScreen screen)
+        public PangkalanViewModel(IScreen screen, IDataService<Pangkalan> dataService)
         {
             HostScreen = screen;
-            dataService = new GenericDataService<Pangkalan>(new EF.SiapelDbContextFactory());
+            _dataService = dataService;
             JalaninAjaDulu();
             DeleteItem = ReactiveCommand.CreateFromTask(DeleteItemAsync);
         }
 
         private async Task JalaninAjaDulu()
         {            
-            var dataList = await dataService.GetAll();
+            var dataList = await _dataService.GetAll();            
             _pangkalan = new ObservableCollection<Pangkalan>(dataList);
         }
 
@@ -54,7 +54,7 @@ namespace Siapel.UI.ViewModels
 
         private async Task DeleteItemAsync()
         {
-            await dataService.Delete(SelectedPangkalan);
+            await _dataService.Delete(SelectedPangkalan);
         }
 
         public async void AddCommand()
@@ -69,10 +69,10 @@ namespace Siapel.UI.ViewModels
                 {
                     if (model != null)
                     {
-                        await dataService.Create(model);
+                        await _dataService.Create(model);
                     }
 
-                    await HostScreen.Router.NavigateAndReset.Execute(new PangkalanViewModel(this.HostScreen));
+                    await HostScreen.Router.NavigateAndReset.Execute(new PangkalanViewModel(this.HostScreen, _dataService));
                 });
 
             await HostScreen.Router.Navigate.Execute(vm);
