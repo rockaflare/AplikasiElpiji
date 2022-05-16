@@ -6,6 +6,7 @@ using Siapel.EF.DataServices.Core;
 using Siapel.EF.Services;
 using Siapel.UI.ViewModels.DialogViewModels;
 using Siapel.UI.Views.Pages.Dialogs;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -37,9 +38,12 @@ namespace Siapel.UI.ViewModels
         }
 
         private async Task JalaninAjaDulu()
-        {            
-            var dataList = await _dataService.GetAll();            
-            _pangkalan = new ObservableCollection<Pangkalan>(dataList);
+        {
+            if (_dataService!=null)
+            {
+                var dataList = await _dataService.GetAll();
+                _pangkalan = new ObservableCollection<Pangkalan>(dataList);
+            }            
         }
 
         private Pangkalan _selectedPangkalan = new Pangkalan();

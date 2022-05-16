@@ -1,18 +1,21 @@
+using Autofac;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
+using Avalonia.Threading;
 using ReactiveUI;
 using Siapel.Domain.Models;
 using Siapel.Domain.Services;
 using Siapel.EF;
 using Siapel.EF.DataServices.Core;
-using Siapel.UI.DependencyInjection;
+using Siapel.EF.Services;
 using Siapel.UI.ViewModels;
 using Siapel.UI.ViewModels.DialogViewModels;
 using Siapel.UI.Views;
 using Siapel.UI.Views.Pages;
 using Siapel.UI.Views.Pages.Dialogs;
 using Splat;
+using Splat.Autofac;
 using System;
 
 namespace Siapel.UI
@@ -25,32 +28,45 @@ namespace Siapel.UI
         [STAThread]
         public static void Main(string[] args)
         {
-            RegisterDependencies();
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<HomeView>().As<IViewFor<HomeViewModel>>();
+            builder.RegisterType<HargaView>().As<IViewFor<HargaViewModel>>();
+            builder.RegisterType<PangkalanView>().As<IViewFor<PangkalanViewModel>>();
+            builder.RegisterType<TransaksiView>().As<IViewFor<TransaksiViewModel>>();
+            builder.RegisterType<AddPangkalan>().As<IViewFor<AddPangkalanViewModel>>();
+
+            builder.Register((c, p) => new PangkalanDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Pangkalan>>();
+
+            var autoFacResolver = builder.UseAutofacDependencyResolver();
+            builder.RegisterInstance(autoFacResolver);
+
+            
+            Locator.CurrentMutable.InitializeSplat();
+            Locator.CurrentMutable.InitializeReactiveUI();
+
+            Locator.CurrentMutable.RegisterConstant(new AvaloniaActivationForViewFetcher(), typeof(IActivationForViewFetcher));
+            Locator.CurrentMutable.RegisterConstant(new AutoDataTemplateBindingHook(), typeof(IPropertyBindingHook));
+            RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
+
+            var container = builder.Build();
+            using (var scope = container.BeginLifetimeScope())
+            {
+                //var contextFactory = new SiapelDbContextFactory();
+                var service = scope.Resolve<IDataService<Pangkalan>>(new NamedParameter("contextFactory", new SiapelDbContextFactory()));
+            }
+            autoFacResolver.SetLifetimeScope(container);
+
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.
         public static AppBuilder BuildAvaloniaApp()
-        { 
-            Locator.CurrentMutable.Register(() => new HomeView(), typeof(IViewFor<HomeViewModel>));
-            Locator.CurrentMutable.Register(() => new HargaView(), typeof(IViewFor<HargaViewModel>));
-            Locator.CurrentMutable.Register(() => new PangkalanView(), typeof(IViewFor<PangkalanViewModel>));
-            Locator.CurrentMutable.Register(() => new TransaksiView(), typeof(IViewFor<TransaksiViewModel>));
-            Locator.CurrentMutable.Register(() => new AddPangkalan(), typeof(IViewFor<AddPangkalanViewModel>));
-
-            //SplatRegistrations.RegisterLazySingleton<IDataService<Pangkalan>, PangkalanDataService>();
-            //SplatRegistrations.SetupIOC();
-
-            //Locator.CurrentMutable.RegisterLazySingleton(() => new PangkalanDataService(Locator.Current.GetRequiredService<SiapelDbContextFactory>()), typeof(IDataService<Pangkalan>));
-
-            
-
+        {
             return AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .LogToTrace()
-                .UseReactiveUI();
+                .LogToTrace();
+                //.UseReactiveUI();
         }
-
-        private static void RegisterDependencies() => Bootstrapper.Register(Locator.CurrentMutable, Locator.Current);
     }
 }
