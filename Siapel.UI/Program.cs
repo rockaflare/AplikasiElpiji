@@ -28,35 +28,6 @@ namespace Siapel.UI
         [STAThread]
         public static void Main(string[] args)
         {
-            var builder = new ContainerBuilder();
-
-            builder.RegisterType<HomeView>().As<IViewFor<HomeViewModel>>();
-            builder.RegisterType<HargaView>().As<IViewFor<HargaViewModel>>();
-            builder.RegisterType<PangkalanView>().As<IViewFor<PangkalanViewModel>>();
-            builder.RegisterType<TransaksiView>().As<IViewFor<TransaksiViewModel>>();
-            builder.RegisterType<AddPangkalan>().As<IViewFor<AddPangkalanViewModel>>();
-
-            builder.Register((c, p) => new PangkalanDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Pangkalan>>();
-
-            var autoFacResolver = builder.UseAutofacDependencyResolver();
-            builder.RegisterInstance(autoFacResolver);
-
-            
-            Locator.CurrentMutable.InitializeSplat();
-            Locator.CurrentMutable.InitializeReactiveUI();
-
-            Locator.CurrentMutable.RegisterConstant(new AvaloniaActivationForViewFetcher(), typeof(IActivationForViewFetcher));
-            Locator.CurrentMutable.RegisterConstant(new AutoDataTemplateBindingHook(), typeof(IPropertyBindingHook));
-            RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
-
-            var container = builder.Build();
-            using (var scope = container.BeginLifetimeScope())
-            {
-                //var contextFactory = new SiapelDbContextFactory();
-                var service = scope.Resolve<IDataService<Pangkalan>>(new NamedParameter("contextFactory", new SiapelDbContextFactory()));
-            }
-            autoFacResolver.SetLifetimeScope(container);
-
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
 

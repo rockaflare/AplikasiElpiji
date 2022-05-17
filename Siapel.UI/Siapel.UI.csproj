@@ -32,7 +32,4 @@
     <ProjectReference Include="..\Siapel.Domain\Siapel.Domain.csproj" />
     <ProjectReference Include="..\Siapel.EF\Siapel.EF.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DependencyInjection\" />
-  </ItemGroup>
 </Project>

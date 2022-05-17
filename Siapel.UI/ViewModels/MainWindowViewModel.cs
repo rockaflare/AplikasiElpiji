@@ -14,9 +14,9 @@ namespace Siapel.UI.ViewModels
     {
         public RoutingState Router { get; } = new RoutingState();
         private readonly IDataService<Pangkalan> _dataService;
-        public MainWindowViewModel()
+        public MainWindowViewModel(IDataService<Pangkalan> pangkalanService)
         {
-            
+            _dataService = pangkalanService;
         }
 
 

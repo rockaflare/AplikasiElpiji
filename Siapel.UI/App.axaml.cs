@@ -1,11 +1,22 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using Avalonia.Threading;
+using ReactiveUI;
 using Siapel.Domain.Models;
 using Siapel.Domain.Services;
 using Siapel.EF.DataServices.Core;
+using Siapel.UI.DependencyInjection;
 using Siapel.UI.ViewModels;
 using Siapel.UI.Views;
+using Splat;
+using Splat.Autofac;
+using Autofac;
+using Siapel.EF;
+using Siapel.UI.Views.Pages;
+using Siapel.UI.Views.Pages.Dialogs;
+using Siapel.UI.ViewModels.DialogViewModels;
 
 namespace Siapel.UI
 {
@@ -20,10 +31,27 @@ namespace Siapel.UI
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow
+                var builder = Bootstrapper.Register();
+                var autoFacResolver = builder.UseAutofacDependencyResolver();
+                builder.RegisterInstance(autoFacResolver);
+
+                Locator.CurrentMutable.InitializeSplat();
+                Locator.CurrentMutable.InitializeReactiveUI();
+
+                Locator.CurrentMutable.RegisterConstant(new AvaloniaActivationForViewFetcher(), typeof(IActivationForViewFetcher));
+                Locator.CurrentMutable.RegisterConstant(new AutoDataTemplateBindingHook(), typeof(IPropertyBindingHook));
+                RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
+
+                var container = builder.Build();
+                using (var scope = container.BeginLifetimeScope())
                 {
-                    DataContext = new MainWindowViewModel(),
-                };
+                    var service = scope.Resolve<IDataService<Pangkalan>>(new NamedParameter("contextFactory", new SiapelDbContextFactory()));
+                    desktop.MainWindow = new MainWindow
+                    {
+                        DataContext = new MainWindowViewModel(service),
+                    };
+                }
+                autoFacResolver.SetLifetimeScope(container);
             }
 
             base.OnFrameworkInitializationCompleted();
