@@ -21,28 +21,34 @@ namespace Siapel.UI.ViewModels
     public class PangkalanViewModel : ReactiveObject, IRoutableViewModel
     {
         string Lah = "Pangkalan";
-        private ObservableCollection<Pangkalan> _pangkalan;
+        private ObservableCollection<Pangkalan> _pangkalan { get; } = new ObservableCollection<Pangkalan>();
         private readonly IDataService<Pangkalan> _dataService;
         public string? UrlPathSegment => Lah;
         public IScreen HostScreen { get; }
 
         public IEnumerable<Pangkalan> Pangkalans => _pangkalan;
-        
+        public ReactiveCommand<Unit, Unit> DeleteItem { get; }
+        public ReactiveCommand<Unit, Unit> LoadItem { get; }
 
         public PangkalanViewModel(IScreen screen, IDataService<Pangkalan> dataService)
         {
             HostScreen = screen;
             _dataService = dataService;
-            JalaninAjaDulu();
-            DeleteItem = ReactiveCommand.CreateFromTask(DeleteItemAsync);
+            LoadItem = ReactiveCommand.CreateFromTask(JalaninAjaDulu);
+            LoadItem.Execute();
+            DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
         }
 
         private async Task JalaninAjaDulu()
         {
+            _pangkalan.Clear();
             if (_dataService!=null)
             {
                 var dataList = await _dataService.GetAll();
-                _pangkalan = new ObservableCollection<Pangkalan>(dataList);
+                foreach (var item in dataList)
+                {
+                    _pangkalan.Add(new Pangkalan { Id = item.Id, Nama = item.Nama, Perma = item.Perma, Status = item.Status });
+                }
             }            
         }
 
@@ -54,11 +60,37 @@ namespace Siapel.UI.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _selectedPangkalan, value);
         }
 
-        public ReactiveCommand<Unit, Unit> DeleteItem { get; }
+        
 
-        private async Task DeleteItemAsync()
+        private async void DeleteItemAsync()
         {
             await _dataService.Delete(SelectedPangkalan);
+            await LoadItem.Execute();            
+        }
+
+        private async Task DeleteConfirmation()
+        {
+            var dialog = new ContentDialog()
+            {
+                Title = "Hapus item",
+                Content = "Anda yakin ingin menghapus?",
+                PrimaryButtonText = "Ok",
+                CloseButtonText = "Batal"
+            };
+            
+            if (SelectedPangkalan != null)
+            {
+                var result = await dialog.ShowAsync();
+                if (result == ContentDialogResult.Primary)
+                {
+                    DeleteItemAsync();
+                }
+            }
+            else
+            {
+                dialog.Content = "Tidak ada item dipilih";
+                var result = await dialog.ShowAsync();
+            }
         }
 
         public async void AddCommand()
@@ -76,10 +108,34 @@ namespace Siapel.UI.ViewModels
                         await _dataService.Create(model);
                     }
 
-                    await HostScreen.Router.NavigateAndReset.Execute(new PangkalanViewModel(this.HostScreen, _dataService));
+                    await HostScreen.Router.NavigateAndReset.Execute(new PangkalanViewModel(this.HostScreen, _dataService));                    
                 });
 
             await HostScreen.Router.Navigate.Execute(vm);
+        }
+
+        public async void UpdateCommand()
+        {
+            if (SelectedPangkalan != null)
+            {
+                var vm = new AddPangkalanViewModel(this.HostScreen, SelectedPangkalan);
+
+                Observable.Merge(
+                vm.Save,
+                vm.Cancel.Select(_ => (Pangkalan)null))
+                .Take(1)
+                .Subscribe(async model =>
+                {
+                    if (model != null)
+                    {
+                        await _dataService.Create(model);
+                    }
+
+                    await HostScreen.Router.NavigateAndReset.Execute(new PangkalanViewModel(this.HostScreen, _dataService));
+                });
+
+                await HostScreen.Router.NavigateAndReset.Execute(vm);
+            }
         }
     }
 }

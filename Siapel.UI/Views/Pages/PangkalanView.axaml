@@ -22,6 +22,12 @@
 					<TextBlock Text="Hapus" Margin="5 0 0 0"/>
 				</StackPanel>
 			</Button>
+			<Button Margin="5 0 0 0" Command="{Binding UpdateCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Delete"/>
+					<TextBlock Text="Update" Margin="5 0 0 0"/>
+				</StackPanel>
+			</Button>
 		</StackPanel>
 		<DataGrid Grid.Row="3" Margin="0 10 0 0" ColumnWidth="*" HorizontalAlignment="Left" x:Name="PangkalanDG" SelectionMode="Single" SelectedItem="{Binding SelectedPangkalan}" Items="{Binding Pangkalans}" AutoGenerateColumns="False">			
 			<DataGrid.Columns>

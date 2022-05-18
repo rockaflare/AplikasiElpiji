@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Siapel.UI.Commands.AddCommands
+namespace Siapel.UI.Commands.LoadCommands
 {
-    public class AddPangkalanCommand
+    public class LoadPangkalanCommand
     {
-
     }
 }
