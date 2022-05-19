@@ -15,26 +15,17 @@ namespace Siapel.UI.ViewModels.DialogViewModels
     {
         public string? UrlPathSegment => "Tambah Pangkalan";
         public IScreen HostScreen { get; }
-        private readonly IDataService<Pangkalan> _dataService;
+        private Pangkalan _pangkalan;
 
         public AddPangkalanViewModel(IScreen screen, Pangkalan pangkalan = null)
         {
             HostScreen = screen;
-            _dataService = new PangkalanDataService(new EF.SiapelDbContextFactory());
-            SetUpdateField(pangkalan);
+            _pangkalan = pangkalan;
+            SetField();
             var okEnabled = this.WhenAnyValue(x => x.NamaPangkalan, x => !string.IsNullOrWhiteSpace(x));
             Save = ReactiveCommand.Create(
-                () => new Pangkalan { Nama = NamaPangkalan, Status = Status, Perma = true }, okEnabled);
+                () => _pangkalan != null ? EditPangkalan() : new Pangkalan { Nama = NamaPangkalan, Status = Status, Perma = true }, okEnabled);
             Cancel = ReactiveCommand.Create(() => { });
-        }
-
-        private void SetUpdateField(Pangkalan pangkalan)
-        {
-            if (pangkalan != null)
-            {
-                _namaPangkalan = pangkalan.Nama;
-                _status = pangkalan.Status;
-            }            
         }
 
         private string _namaPangkalan;
@@ -52,9 +43,24 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             set => this.RaiseAndSetIfChanged(ref _status, value);
         }
 
-        private void Tes()
+        readonly ObservableAsPropertyHelper<Pangkalan> _pangkalanUpdate;
+        public Pangkalan PangkalanUpdate => _pangkalanUpdate.Value;
+        
+        private Pangkalan EditPangkalan()
         {
-            
+            _pangkalan.Nama = _namaPangkalan;
+            _pangkalan.Status = _status;
+
+            return _pangkalan;
+        }
+
+        private void SetField()
+        {
+            if (_pangkalan != null)
+            {
+                _namaPangkalan = _pangkalan.Nama;
+                _status = _pangkalan.Status;
+            }
         }
 
         public ReactiveCommand<Unit, Pangkalan> Save { get; }

@@ -14,9 +14,11 @@ namespace Siapel.UI.ViewModels
     {
         public RoutingState Router { get; } = new RoutingState();
         private readonly IDataService<Pangkalan> _dataService;
-        public MainWindowViewModel(IDataService<Pangkalan> pangkalanService)
+        private readonly IPangkalanDataService _pangkalanService;
+        public MainWindowViewModel(IDataService<Pangkalan> pangkalanService, IPangkalanDataService pangkalanDataService)
         {
             _dataService = pangkalanService;
+            _pangkalanService = pangkalanDataService;
         }
 
 
@@ -65,7 +67,7 @@ namespace Siapel.UI.ViewModels
         }
         private void ShowPangkalan()
         {
-            Router.Navigate.Execute(new PangkalanViewModel(this, _dataService));
+            Router.Navigate.Execute(new PangkalanViewModel(this, _pangkalanService));
         }
 
         private void ShowTransaksi()

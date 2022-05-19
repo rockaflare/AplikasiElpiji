@@ -8,7 +8,7 @@
              x:Class="Siapel.UI.Views.Pages.PangkalanView">
 	<Grid Margin="15" RowDefinitions="50,40,30,*">
 		<Label Grid.Row="0" FontSize="16" Content="{Binding UrlPathSegment}"/>
-		<TextBox Grid.Row="1" VerticalAlignment="Center" Width="200" Watermark="Cari pangkalan . . ." HorizontalAlignment="Left"/>
+		<TextBox Grid.Row="1" VerticalAlignment="Center" Width="200" Classes.clearButton="True" Watermark="Cari pangkalan . . ." Text="{Binding CariPangkalan}" HorizontalAlignment="Left"/>
 		<StackPanel Grid.Row="2" Orientation="Horizontal">
 			<Button Command="{Binding AddCommand}">
 				<StackPanel Orientation="Horizontal">
@@ -29,7 +29,7 @@
 				</StackPanel>
 			</Button>
 		</StackPanel>
-		<DataGrid Grid.Row="3" Margin="0 10 0 0" ColumnWidth="*" HorizontalAlignment="Left" x:Name="PangkalanDG" SelectionMode="Single" SelectedItem="{Binding SelectedPangkalan}" Items="{Binding Pangkalans}" AutoGenerateColumns="False">			
+		<DataGrid Grid.Row="3" Margin="0 10 0 0" ColumnWidth="*" HorizontalAlignment="Left" x:Name="PangkalanDG" SelectionMode="Single" SelectedItem="{Binding SelectedPangkalan}" Items="{Binding HasilPencarian}" AutoGenerateColumns="False">			
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
 				<DataGridTextColumn Header="Nama" Binding="{Binding Nama}"/>

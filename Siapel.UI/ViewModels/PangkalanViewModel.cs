@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Siapel.UI.ViewModels
@@ -22,7 +23,7 @@ namespace Siapel.UI.ViewModels
     {
         string Lah = "Pangkalan";
         private ObservableCollection<Pangkalan> _pangkalan { get; } = new ObservableCollection<Pangkalan>();
-        private readonly IDataService<Pangkalan> _dataService;
+        private readonly IPangkalanDataService _dataService;
         public string? UrlPathSegment => Lah;
         public IScreen HostScreen { get; }
 
@@ -30,13 +31,25 @@ namespace Siapel.UI.ViewModels
         public ReactiveCommand<Unit, Unit> DeleteItem { get; }
         public ReactiveCommand<Unit, Unit> LoadItem { get; }
 
-        public PangkalanViewModel(IScreen screen, IDataService<Pangkalan> dataService)
+        public PangkalanViewModel(IScreen screen, IPangkalanDataService dataService)
         {
             HostScreen = screen;
             _dataService = dataService;
             LoadItem = ReactiveCommand.CreateFromTask(JalaninAjaDulu);
             LoadItem.Execute();
             DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
+
+            _hasilPencarian = this
+                .WhenAnyValue(x => x.CariPangkalan)
+                .Throttle(TimeSpan.FromMilliseconds(800))
+                .Select(cari => cari?.Trim())
+                .DistinctUntilChanged()
+                //.Where(cari => !string.IsNullOrWhiteSpace(cari))
+                .SelectMany(PangkalanSearch)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .ToProperty(this, x => x.HasilPencarian);
+
+            _hasilPencarian.ThrownExceptions.Subscribe(error => { });
         }
 
         private async Task JalaninAjaDulu()
@@ -60,7 +73,21 @@ namespace Siapel.UI.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _selectedPangkalan, value);
         }
 
-        
+        private string _cariPangkalan;
+        public string CariPangkalan
+        {
+            get => _cariPangkalan;
+            set => this.RaiseAndSetIfChanged(ref _cariPangkalan, value);
+        }
+
+        private readonly ObservableAsPropertyHelper<IEnumerable<Pangkalan>> _hasilPencarian;
+        public IEnumerable<Pangkalan> HasilPencarian => _hasilPencarian.Value;
+        //not yet implemented
+        private async Task<IEnumerable<Pangkalan>> PangkalanSearch(string term)
+        {
+            var dataList = term != null ? Pangkalans.Where(p => p.Nama.ToLower().Contains(term)).ToList() : Pangkalans;
+            return await Task.FromResult(dataList);
+        }
 
         private async void DeleteItemAsync()
         {
@@ -89,7 +116,7 @@ namespace Siapel.UI.ViewModels
             else
             {
                 dialog.Content = "Tidak ada item dipilih";
-                var result = await dialog.ShowAsync();
+                await dialog.ShowAsync();
             }
         }
 
@@ -128,13 +155,23 @@ namespace Siapel.UI.ViewModels
                 {
                     if (model != null)
                     {
-                        await _dataService.Create(model);
+                        await _dataService.Update(model);
                     }
 
                     await HostScreen.Router.NavigateAndReset.Execute(new PangkalanViewModel(this.HostScreen, _dataService));
                 });
 
                 await HostScreen.Router.NavigateAndReset.Execute(vm);
+            }
+            else
+            {
+                var dialog = new ContentDialog()
+                {
+                    Title = "Update item",
+                    Content = "Tidak ada item dipilih!",
+                    CloseButtonText = "Ok"
+                };
+                await dialog.ShowAsync();
             }
         }
     }

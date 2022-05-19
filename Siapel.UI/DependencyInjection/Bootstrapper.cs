@@ -33,6 +33,7 @@ namespace Siapel.UI.DependencyInjection
             builder.RegisterType<AddPangkalan>().As<IViewFor<AddPangkalanViewModel>>();
 
             builder.Register((c, p) => new PangkalanDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Pangkalan>>();
+            builder.Register((c, p) => new PangkalanDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IPangkalanDataService>();
 
             return builder;
         }

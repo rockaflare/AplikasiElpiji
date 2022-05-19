@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Siapel.EF.DataServices.Core
 {
-    public class PangkalanDataService : IDataService<Pangkalan>
+    public class PangkalanDataService : IPangkalanDataService
     {
         private readonly SiapelDbContextFactory _contextFactory;
         private readonly NonQueryDataService<Pangkalan> _nonQueryDataService;
@@ -38,6 +38,15 @@ namespace Siapel.EF.DataServices.Core
             }
         }
 
+        public async Task<IEnumerable<Pangkalan>> GetByName(string name)
+        {
+            using (SiapelDbContext context = _contextFactory.CreateDbContext())
+            {
+                IEnumerable<Pangkalan> entities = await context.Pangkalan.Where(n => n.Nama.Contains(name)).ToListAsync();
+                return entities;
+            }
+        }
+
         public async Task<IEnumerable<Pangkalan>> GetAll()
         {
             using (SiapelDbContext context = _contextFactory.CreateDbContext())
@@ -47,9 +56,9 @@ namespace Siapel.EF.DataServices.Core
             }
         }
 
-        public Task<Pangkalan> Update(Pangkalan entity)
+        public async Task<Pangkalan> Update(Pangkalan entity)
         {
-            throw new NotImplementedException();
+            return await _nonQueryDataService.Update(entity);
         }
     }
 }

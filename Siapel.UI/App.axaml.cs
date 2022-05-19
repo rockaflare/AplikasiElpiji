@@ -46,9 +46,10 @@ namespace Siapel.UI
                 using (var scope = container.BeginLifetimeScope())
                 {
                     var service = scope.Resolve<IDataService<Pangkalan>>(new NamedParameter("contextFactory", new SiapelDbContextFactory()));
+                    var pangkalanservice = scope.Resolve<IPangkalanDataService>(new NamedParameter("contextFactory", new SiapelDbContextFactory()));
                     desktop.MainWindow = new MainWindow
                     {
-                        DataContext = new MainWindowViewModel(service),
+                        DataContext = new MainWindowViewModel(service, pangkalanservice),
                     };
                 }
                 autoFacResolver.SetLifetimeScope(container);
