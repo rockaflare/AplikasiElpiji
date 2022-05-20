@@ -13,14 +13,16 @@ namespace Siapel.UI.ViewModels.DialogViewModels
 {
     public class AddPangkalanViewModel : ReactiveObject, IRoutableViewModel
     {
-        public string? UrlPathSegment => "Tambah Pangkalan";
+        private string _title;
+        public string? UrlPathSegment => _title;
         public IScreen HostScreen { get; }
         private Pangkalan _pangkalan;
 
-        public AddPangkalanViewModel(IScreen screen, Pangkalan pangkalan = null)
+        public AddPangkalanViewModel(IScreen screen, string title, Pangkalan pangkalan = null)
         {
             HostScreen = screen;
             _pangkalan = pangkalan;
+            _title = title;
             SetField();
             var okEnabled = this.WhenAnyValue(x => x.NamaPangkalan, x => !string.IsNullOrWhiteSpace(x));
             Save = ReactiveCommand.Create(
@@ -42,9 +44,6 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             get => _status;
             set => this.RaiseAndSetIfChanged(ref _status, value);
         }
-
-        readonly ObservableAsPropertyHelper<Pangkalan> _pangkalanUpdate;
-        public Pangkalan PangkalanUpdate => _pangkalanUpdate.Value;
         
         private Pangkalan EditPangkalan()
         {

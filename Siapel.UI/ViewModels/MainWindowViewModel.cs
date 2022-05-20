@@ -13,12 +13,14 @@ namespace Siapel.UI.ViewModels
     public class MainWindowViewModel : ReactiveObject, IScreen
     {
         public RoutingState Router { get; } = new RoutingState();
-        private readonly IDataService<Pangkalan> _dataService;
+        private readonly IDataService<Harga> _hargaService;        
         private readonly IPangkalanDataService _pangkalanService;
-        public MainWindowViewModel(IDataService<Pangkalan> pangkalanService, IPangkalanDataService pangkalanDataService)
+        private readonly ITransaksiDataService _transaksiService;
+        public MainWindowViewModel(IDataService<Harga> pangkalanService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService)
         {
-            _dataService = pangkalanService;
+            _hargaService = pangkalanService;
             _pangkalanService = pangkalanDataService;
+            _transaksiService = transaksiDataService;
         }
 
 
@@ -63,7 +65,7 @@ namespace Siapel.UI.ViewModels
         }
         private void ShowHarga()
         {
-            Router.Navigate.Execute(new HargaViewModel(this));
+            Router.Navigate.Execute(new HargaViewModel(this, _hargaService, _pangkalanService));
         }
         private void ShowPangkalan()
         {
@@ -72,7 +74,7 @@ namespace Siapel.UI.ViewModels
 
         private void ShowTransaksi()
         {
-            Router.Navigate.Execute(new TransaksiViewModel(this));
+            Router.Navigate.Execute(new TransaksiViewModel(this, _transaksiService));
         }
     }
 }

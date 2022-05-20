@@ -122,7 +122,7 @@ namespace Siapel.UI.ViewModels
 
         public async void AddCommand()
         {
-            var vm = new AddPangkalanViewModel(this.HostScreen);
+            var vm = new AddPangkalanViewModel(this.HostScreen, "Tambah Pangkalan");
 
             Observable.Merge(
                 vm.Save,
@@ -145,7 +145,7 @@ namespace Siapel.UI.ViewModels
         {
             if (SelectedPangkalan != null)
             {
-                var vm = new AddPangkalanViewModel(this.HostScreen, SelectedPangkalan);
+                var vm = new AddPangkalanViewModel(this.HostScreen, "Edit Pangkalan", SelectedPangkalan);
 
                 Observable.Merge(
                 vm.Save,

@@ -30,10 +30,14 @@ namespace Siapel.UI.DependencyInjection
             builder.RegisterType<HargaView>().As<IViewFor<HargaViewModel>>();
             builder.RegisterType<PangkalanView>().As<IViewFor<PangkalanViewModel>>();
             builder.RegisterType<TransaksiView>().As<IViewFor<TransaksiViewModel>>();
+
             builder.RegisterType<AddPangkalan>().As<IViewFor<AddPangkalanViewModel>>();
+            builder.RegisterType<HargaFieldDialog>().As<IViewFor<HargaFieldViewModel>>();
 
             builder.Register((c, p) => new PangkalanDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Pangkalan>>();
             builder.Register((c, p) => new PangkalanDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IPangkalanDataService>();
+            builder.Register((c, p) => new TransaksiDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<ITransaksiDataService>();
+            builder.Register((c, p) => new HargaDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Harga>>();
 
             return builder;
         }

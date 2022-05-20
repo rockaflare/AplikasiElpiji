@@ -10,7 +10,7 @@
 		<Label Grid.Row="0" FontSize="16" FontWeight="Medium" Content="{Binding UrlPathSegment}"/>
 		<TextBox Grid.Row="1" VerticalAlignment="Center" Width="200" Watermark="Cari pangkalan . . ." HorizontalAlignment="Left"/>
 		<StackPanel Grid.Row="2" Orientation="Horizontal">
-			<Button>
+			<Button Command="{Binding AddCommand}">
 				<StackPanel Orientation="Horizontal">
 					<ui:SymbolIcon Symbol="Add"/>
 					<TextBlock Text="Tambah" Margin="5 0 0 0"/>
@@ -23,29 +23,14 @@
 				</StackPanel>
 			</Button>
 		</StackPanel>
-		<DataGrid Name="HargaDG" Grid.Row="3" AutoGenerateColumns="False" ColumnWidth="*" Margin="0 10 0 0">
+		<DataGrid Name="HargaDG" Grid.Row="3" AutoGenerateColumns="False" ColumnWidth="*" Margin="0 10 0 0" Items="{Binding Harga}">
 			<DataGrid.Columns>				
 				<DataGridTextColumn Header="Pangkalan"/>
 				<DataGridTextColumn Header="50 KG"/>
 				<DataGridTextColumn Header="12 KG"/>
 				<DataGridTextColumn Header="5,5 KG"/>
 				<DataGridTextColumn Header="Tanggal Ubah"/>
-				<DataGridTemplateColumn Header="Edit">
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<Button><ui:SymbolIcon Symbol="Edit"/></Button>
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<DataGridTemplateColumn Header="Hapus">
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<Button>
-								<ui:SymbolIcon Symbol="Delete"/>
-							</Button>
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
+				
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>
