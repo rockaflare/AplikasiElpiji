@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Siapel.Domain.Models;
 using Siapel.Domain.Services;
 using Siapel.EF.Services;
@@ -23,7 +24,15 @@ namespace Siapel.EF.DataServices.Core
 
         public async Task<Harga> Create(Harga entity)
         {
-            return await _nonQueryDataService.Create(entity);
+            using (SiapelDbContext context = _contextFactory.CreateDbContext())
+            {
+                var pangkalan = context.Pangkalan.Single(x => x.Id == entity.Pangkalan.Id);
+                var createdResult = await context.Harga.AddAsync(new Harga { Pangkalan = pangkalan, TbLimaPuluh = entity.TbLimaPuluh, TbDuaBelas = entity.TbDuaBelas, TbLimaSetengah = entity.TbLimaSetengah, TanggalUbah = entity.TanggalUbah});
+                
+                await context.SaveChangesAsync();
+
+                return createdResult.Entity;
+            }
         }
 
         public async Task<bool> Delete(Harga entity)

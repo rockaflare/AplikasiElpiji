@@ -16,9 +16,9 @@ namespace Siapel.UI.ViewModels
         private readonly IDataService<Harga> _hargaService;        
         private readonly IPangkalanDataService _pangkalanService;
         private readonly ITransaksiDataService _transaksiService;
-        public MainWindowViewModel(IDataService<Harga> pangkalanService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService)
+        public MainWindowViewModel(IDataService<Harga> hargaService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService)
         {
-            _hargaService = pangkalanService;
+            _hargaService = hargaService;
             _pangkalanService = pangkalanDataService;
             _transaksiService = transaksiDataService;
         }

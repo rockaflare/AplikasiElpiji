@@ -24,11 +24,19 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             _title = title;
             _pangkalanList = pangkalan;
             SetField();
-            var okEnabled = this.WhenAnyValue(x => x.Pangkalan != null);
+            var okEnabled = this.WhenAnyValue(x => x.HargaLimaPuluh, x => x.HargaDuaBelas, x => x.HargaLimaSetengah, (lp, db, ls) => !string.IsNullOrWhiteSpace(lp.ToString()) && !string.IsNullOrWhiteSpace(db.ToString()) && !string.IsNullOrEmpty(ls.ToString()));
             Save = ReactiveCommand.Create(
-                () => _harga != null ? EditHarga() : new Harga { Pangkalan = Pangkalan, TbLimaPuluh = HargaLimaPuluh, TbDuaBelas = HargaDuaBelas, TbLimaSetengah = HargaLimaSetengah }, okEnabled);
+                () => _harga != null ? EditHarga() : new Harga { Pangkalan = Pangkalan, TbLimaPuluh = HargaLimaPuluh, TbDuaBelas = HargaDuaBelas, TbLimaSetengah = HargaLimaSetengah, TanggalUbah = DateTime.Now });
             Cancel = ReactiveCommand.Create(() => { });
+            
         }
+
+        //private Pangkalan _selectedPangkalan;
+        //public Pangkalan SelectedPangkalan
+        //{
+        //    get => _selectedPangkalan;
+        //    set => this.RaiseAndSetIfChanged(ref _selectedPangkalan, value);
+        //}
 
         private Pangkalan _pangkalan;
         public Pangkalan Pangkalan
