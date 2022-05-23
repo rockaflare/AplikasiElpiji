@@ -24,7 +24,7 @@
 			</Button>
 			<Button Margin="5 0 0 0" Command="{Binding UpdateCommand}" IsEnabled="{Binding SelectedPangkalan.Perma}">
 				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="Delete"/>
+					<ui:SymbolIcon Symbol="Edit"/>
 					<TextBlock Text="Update" Margin="5 0 0 0"/>
 				</StackPanel>
 			</Button>
@@ -34,24 +34,7 @@
 				<DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
 				<DataGridTextColumn Header="Nama" Binding="{Binding Nama}"/>
 				<DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
-				<DataGridTemplateColumn Header="Edit">
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<Button IsVisible="{Binding Perma}">
-								<ui:SymbolIcon Symbol="Edit"/>
-							</Button>
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<DataGridTemplateColumn Header="Hapus">
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<Button IsVisible="{Binding Perma}">
-								<ui:SymbolIcon Symbol="Delete"/>
-							</Button>
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
+				
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>

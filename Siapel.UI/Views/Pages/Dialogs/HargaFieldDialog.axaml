@@ -8,16 +8,25 @@
              x:Class="Siapel.UI.Views.Pages.Dialogs.HargaFieldDialog">
 	<Grid RowDefinitions="40,40,40,40,40,40" Margin="40" HorizontalAlignment="Left">
 		<TextBlock Grid.Row="0" Text="{Binding UrlPathSegment}" FontSize="20"/>
-		<ComboBox Name="PangkalanCb" Grid.Row="1" Height="40" MinWidth="500" Margin="0 10 0 0" HorizontalAlignment="Center" PlaceholderText="Pangkalan" SelectedItem="{Binding Pangkalan}" Items="{Binding PangkalanList}">
+		<ComboBox Name="PangkalanCb" Grid.Row="1" Height="40" MinWidth="500" Margin="0 10 0 0" HorizontalAlignment="Center" PlaceholderText="Pangkalan" SelectedItem="{Binding Pangkalan}" Items="{Binding PangkalanList}" SelectedIndex="{Binding PangkalanIndex}">
 			<ComboBox.ItemTemplate>
 				<DataTemplate>
 					<TextBlock Text="{Binding Nama}"/>
 				</DataTemplate>
 			</ComboBox.ItemTemplate>
 		</ComboBox>
-		<NumericUpDown Name="Limapuluh" Grid.Row="2" Watermark="50 KG" Margin="0 5 0 0" Text="{Binding HargaLimaPuluh}"/>
-		<NumericUpDown Name="Duabelas" Grid.Row="3" Watermark="12 KG" Margin="0 5 0 0" Text="{Binding HargaDuaBelas}"/>
-		<NumericUpDown Name="Limasetengah" Grid.Row="4" Watermark="5,5 KG" Margin="0 5 0 0" Text="{Binding HargaLimaSetengah}"/>
+		<Grid Grid.Row="2" ColumnDefinitions="50,*">
+			<TextBlock Grid.Column="0" Text="50 KG" Margin="0 0 5 0"  VerticalAlignment="Center"/>
+			<TextBox Grid.Column="1" Name="Limapuluh" Watermark="50 KG" Text="{Binding HargaLimaPuluh}"/>
+		</Grid>
+		<Grid Grid.Row="3" ColumnDefinitions="50,*" Margin="0 5 0 0">
+			<TextBlock Grid.Column="0" Text="12 KG" Margin="0 0 5 0"  VerticalAlignment="Center"/>
+			<TextBox Grid.Column="1" Name="Duabelas" Watermark="50 KG" Text="{Binding HargaDuaBelas}"/>
+		</Grid>
+		<Grid Grid.Row="4" ColumnDefinitions="50,*" Margin="0 5 0 0">
+			<TextBlock Grid.Column="0" Text="5,5 KG" Margin="0 0 5 0"  VerticalAlignment="Center"/>
+			<TextBox Grid.Column="1" Name="Limasetengah" Watermark="50 KG" Text="{Binding HargaLimaSetengah}"/>
+		</Grid>
 		<StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0 10 0 0">
 			<Button Command="{Binding Save}">
 				<StackPanel Orientation="Horizontal">

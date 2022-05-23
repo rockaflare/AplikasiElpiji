@@ -37,6 +37,12 @@ namespace Siapel.UI.ViewModels.DialogViewModels
         //    get => _selectedPangkalan;
         //    set => this.RaiseAndSetIfChanged(ref _selectedPangkalan, value);
         //}
+        private int _pangkalanIndex;
+        public int PangkalanIndex
+        {
+            get => _pangkalanIndex;
+            set => this.RaiseAndSetIfChanged(ref _pangkalanIndex, value);
+        }
 
         private Pangkalan _pangkalan;
         public Pangkalan Pangkalan
@@ -71,16 +77,21 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             _harga.TbLimaSetengah = _hargaLimaSetengah;
 
             return _harga;
-        }
+        }       
 
         private void SetField()
         {
             if (_harga != null)
-            {
+            {                
                 _pangkalan = _harga.Pangkalan;
                 _hargaLimaPuluh = _harga.TbLimaPuluh;
                 _hargaDuaBelas = _harga.TbDuaBelas;
                 _hargaLimaSetengah = _harga.TbLimaSetengah;
+                _pangkalanIndex = PangkalanList.FindIndex(a => a.Nama == _pangkalan.Nama);
+            }
+            else
+            {
+                _pangkalanIndex = -1;
             }
         }
 

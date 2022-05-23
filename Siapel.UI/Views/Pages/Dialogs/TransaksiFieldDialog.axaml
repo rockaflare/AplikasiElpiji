@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Siapel.UI.Views.Pages.Dialogs.TransaksiFieldDialog">
+	<Grid RowDefinitions="40,50,40,40,40,40,40,40,50" Margin="40" HorizontalAlignment="Left">
+		<TextBlock Grid.Row="0" Text="{Binding UrlPathSegment}" FontSize="20"/>
+		<DatePicker Grid.Row="1" Header="Tanggal Order"/>
+		<ComboBox Name="PangkalanCb" Grid.Row="2" Height="40" MinWidth="500" Margin="0 10 0 0" HorizontalAlignment="Center" PlaceholderText="Pangkalan" SelectedItem="{Binding Pangkalan}" Items="{Binding PangkalanList}" SelectedIndex="{Binding PangkalanIndex}">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Nama}"/>
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+		<ComboBox Name="TabungTipe" Grid.Row="3" PlaceholderText="Jenis Tabung"></ComboBox>
+		<TextBox Grid.Row="4" Watermark="Harga"/>
+		<ComboBox Name="JenisBayar" Grid.Row="5" PlaceholderText="Jenis Pembayaran"></ComboBox>
+		<TextBox Grid.Row="6" Watermark="Total"/>
+		<TextBox Grid.Row="7" Watermark="Status"/>
+		<DatePicker Grid.Row="8" Header="Tanggal Lunas"/>
+	</Grid>
+</UserControl>

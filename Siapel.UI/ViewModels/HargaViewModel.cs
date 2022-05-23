@@ -11,6 +11,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.ReactiveUI;
+using FluentAvalonia.UI.Controls;
 
 namespace Siapel.UI.ViewModels
 {
@@ -26,6 +27,7 @@ namespace Siapel.UI.ViewModels
         public IEnumerable<Harga> Harga => _harga;
         
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
+        private ReactiveCommand<Unit, Unit> DeleteItem { get; }
 
         public HargaViewModel(IScreen screen, IDataService<Harga> dataService, IPangkalanDataService pangkalanService)
         {
@@ -34,6 +36,7 @@ namespace Siapel.UI.ViewModels
             _pangkalanService = pangkalanService;
             LoadItem = ReactiveCommand.CreateFromTask(HargaUpdater);
             LoadItem.Execute();
+            DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
         }
 
         private async Task HargaUpdater()
@@ -46,6 +49,44 @@ namespace Siapel.UI.ViewModels
                 {
                     _harga.Add(item);
                 }
+            }
+        }
+
+        private Harga _selectedHarga;
+        public Harga SelectedHarga
+        {
+            get => _selectedHarga;
+            set => this.RaiseAndSetIfChanged(ref _selectedHarga, value);
+        }
+
+        private async void DeleteItemAsync()
+        {
+            await _dataService.Delete(SelectedHarga);
+            await LoadItem.Execute();
+        }
+
+        private async Task DeleteConfirmation()
+        {
+            var dialog = new ContentDialog()
+            {
+                Title = "Hapus item",
+                Content = "Anda yakin ingin menghapus?",
+                PrimaryButtonText = "Ok",
+                CloseButtonText = "Batal"
+            };
+
+            if (SelectedHarga != null)
+            {
+                var result = await dialog.ShowAsync();
+                if (result == ContentDialogResult.Primary)
+                {
+                    DeleteItemAsync();
+                }
+            }
+            else
+            {
+                dialog.Content = "Tidak ada item dipilih";
+                await dialog.ShowAsync();
             }
         }
 
@@ -69,6 +110,40 @@ namespace Siapel.UI.ViewModels
                 });
 
             await HostScreen.Router.Navigate.Execute(vm);
+        }
+        public async void UpdateCommand()
+        {
+            if (SelectedHarga != null)
+            {
+                var pangkalans = await _pangkalanService.GetAll();
+                var vm = new HargaFieldViewModel(this.HostScreen, "Tambah Harga", new List<Pangkalan>(pangkalans), SelectedHarga);
+
+                Observable.Merge(
+                    vm.Save,
+                    vm.Cancel.Select(_ => (Harga)null))
+                    .Take(1)
+                    .Subscribe(async model =>
+                    {
+                        if (model != null)
+                        {
+                            await _dataService.Create(model);
+                        }
+
+                        await HostScreen.Router.NavigateAndReset.Execute(new HargaViewModel(this.HostScreen, _dataService, _pangkalanService));
+                    });
+
+                await HostScreen.Router.Navigate.Execute(vm);
+            }
+            else
+            {
+                var dialog = new ContentDialog()
+                {
+                    Title = "Update item",
+                    Content = "Tidak ada item dipilih!",
+                    CloseButtonText = "Ok"
+                };
+                await dialog.ShowAsync();
+            }
         }
     }
 }
