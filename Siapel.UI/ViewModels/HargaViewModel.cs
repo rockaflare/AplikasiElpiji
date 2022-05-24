@@ -116,7 +116,7 @@ namespace Siapel.UI.ViewModels
             if (SelectedHarga != null)
             {
                 var pangkalans = await _pangkalanService.GetAll();
-                var vm = new HargaFieldViewModel(this.HostScreen, "Tambah Harga", new List<Pangkalan>(pangkalans), SelectedHarga);
+                var vm = new HargaFieldViewModel(this.HostScreen, "Edit Harga", new List<Pangkalan>(pangkalans), SelectedHarga);
 
                 Observable.Merge(
                     vm.Save,
@@ -126,7 +126,7 @@ namespace Siapel.UI.ViewModels
                     {
                         if (model != null)
                         {
-                            await _dataService.Create(model);
+                            await _dataService.Update(model);
                         }
 
                         await HostScreen.Router.NavigateAndReset.Execute(new HargaViewModel(this.HostScreen, _dataService, _pangkalanService));

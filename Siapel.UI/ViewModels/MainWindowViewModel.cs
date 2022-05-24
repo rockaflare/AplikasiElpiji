@@ -74,7 +74,7 @@ namespace Siapel.UI.ViewModels
 
         private void ShowTransaksi()
         {
-            Router.Navigate.Execute(new TransaksiViewModel(this, _transaksiService, _pangkalanService));
+            Router.Navigate.Execute(new TransaksiViewModel(this, _transaksiService, _pangkalanService, _hargaService));
         }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,18 +17,34 @@ namespace Siapel.UI.ViewModels.DialogViewModels
         public IScreen HostScreen { get; }
         private Transaksi _transaksi;
         private List<Pangkalan> _pangkalanList;
+        private List<Harga> _hargaList;
+        private List<string> _itemList;
+        private List<string> _jenisBayar;
         public List<Pangkalan> PangkalanList => _pangkalanList;
+        public List<Harga> HargaList => _hargaList;
+        public List<string> ItemList => _itemList;
+        public List<string> JenisBayarList => _jenisBayar;
 
-        public TransaksiFieldViewModel(IScreen screen, string title, List<Pangkalan> pangkalan, Transaksi transaksi = null)
+        public TransaksiFieldViewModel(IScreen screen, string title, List<Pangkalan> pangkalan, List<Harga> harga, Transaksi transaksi = null)
         {
             HostScreen = screen;
             _title = title;
             _pangkalanList = pangkalan;
             _transaksi = transaksi;
+            _hargaList = harga;
+            _itemList = new List<string>() { "50 KG", "12 KG", "5,5 KG" };
+            _jenisBayar = new List<string>() { "Tunai", "Transfer", "Invoice" };
+            SetField();
             var okEnabled = this.WhenAnyValue(x => x.Item, x => !string.IsNullOrWhiteSpace(x));
             Save = ReactiveCommand.Create(
-                () => _transaksi != null ? EditTransaksi() : new Transaksi { Tanggal = DateOnly.Parse(DateTime.Now.ToLongDateString()) });
+                () => _transaksi != null ? EditTransaksi() : new Transaksi { Tanggal = Tanggal, Pangkalan = Pangkalan, Item = Item, Harga = Harga.Value, Jumlah = JumlahItem.Value, JenisBayar = TipeBayar, Total = Total.Value, Status = Status, TanggalLunas = TanggalLunas});
             Cancel = ReactiveCommand.Create(() => { });
+
+            ExecuteHargaItem = ReactiveCommand.Create(GetHargaPangkalan);
+            CalculateCommand = ReactiveCommand.Create(CalculateTotal);
+
+            this.WhenAnyValue(x => x.Pangkalan, x => x.Item).Select(_ => Unit.Default).InvokeCommand(ExecuteHargaItem);
+            this.WhenAnyValue(x => x.JumlahItem, x => x.Pangkalan, x => x.Item).Select(_ => Unit.Default).InvokeCommand(CalculateCommand);
         }
         private int _pangkalanIndex;
         public int PangkalanIndex
@@ -42,17 +59,11 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             get => _pangkalan;
             set => this.RaiseAndSetIfChanged(ref _pangkalan, value);
         }
-        private DateOnly _tanggal;
-        public DateOnly Tanggal
+        private DateTimeOffset _tanggal;
+        public DateTimeOffset Tanggal
         {
             get => _tanggal;
             set => this.RaiseAndSetIfChanged(ref _tanggal, value);
-        }
-        private Pangkalan _selectedPangkalan;
-        public Pangkalan SelectedPangkalan
-        {
-            get => _selectedPangkalan;
-            set => this.RaiseAndSetIfChanged(ref _selectedPangkalan, value);
         }
         private string _item;
         public string Item
@@ -60,11 +71,115 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             get => _item;
             set => this.RaiseAndSetIfChanged(ref _item, value);
         }
+        private int? _harga;
+        public int? Harga
+        {
+            get => _harga;
+            set => this.RaiseAndSetIfChanged(ref _harga, value);
+        }
+        private ReactiveCommand<Unit, Unit> ExecuteHargaItem { get; set; }
+        private void GetHargaPangkalan()
+        {
+            int? hargaResult = null;
+            if (Pangkalan !=null)
+            {
+                var defHarga = HargaList.First();
+                var getHarga = HargaList.FirstOrDefault(p => p.Pangkalan.Id == _pangkalan.Id, defHarga);                
+                if (getHarga != null)
+                {
+                    switch (_item)
+                    {
+                        case "50 KG":
+                            hargaResult = getHarga.TbLimaPuluh;
+                            break;
+                        case "12 KG":
+                            hargaResult = getHarga.TbDuaBelas;
+                            break;
+                        case "5,5 KG":
+                            hargaResult = getHarga.TbLimaSetengah;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }            
+            Harga = hargaResult;
+        }
+        private int? _jumlahItem;
+        public int? JumlahItem
+        {
+            get => _jumlahItem;
+            set => this.RaiseAndSetIfChanged(ref _jumlahItem, value);
+        }
+        private ReactiveCommand<Unit, Unit> CalculateCommand { get; set; }
+        private void CalculateTotal()
+        {
+            if (_jumlahItem != null && _harga != null)
+            {
+                Total = _jumlahItem * _harga;
+            }
+        }
+        private string _tipeBayar;
+        public string TipeBayar
+        {
+            get => _tipeBayar;
+            set => this.RaiseAndSetIfChanged(ref _tipeBayar, value);
+        }
+        private int? _total;
+        public int? Total
+        {
+            get => _total;
+            set => this.RaiseAndSetIfChanged(ref _total, value);
+        }
+        private string _status;
+        public string Status
+        {
+            get => _status;
+            set => this.RaiseAndSetIfChanged(ref _status, value);
+        }
+        private DateTimeOffset? _tanggalLunas;
+        public DateTimeOffset? TanggalLunas
+        {
+            get => _tanggalLunas;
+            set => this.RaiseAndSetIfChanged(ref _tanggalLunas, value);
+        }
 
         private Transaksi EditTransaksi()
         {
             _transaksi.Tanggal = _tanggal;
+            _transaksi.Pangkalan = _pangkalan;
+            _transaksi.Item = _item;
+            _transaksi.Harga = _harga.Value;
+            _transaksi.Jumlah = _jumlahItem.Value;
+            _transaksi.JenisBayar = _tipeBayar;
+            _transaksi.Total = _total.Value;
+            _transaksi.Status = _status;
+            _tanggalLunas = _transaksi.TanggalLunas;            
+
             return _transaksi;
+        }
+
+        private void SetField()
+        {
+            if (_transaksi != null)
+            {
+                _tanggal = _transaksi.Tanggal;
+                _pangkalan = _transaksi.Pangkalan;
+                _item = _transaksi.Item;
+                _harga = _transaksi.Harga;
+                _jumlahItem = _transaksi.Jumlah;
+                _tipeBayar = _transaksi.JenisBayar;
+                _total = _transaksi.Total;
+                _status = _transaksi.Status;
+                _tanggalLunas = _transaksi.TanggalLunas;
+                _pangkalanIndex = PangkalanList.FindIndex(a => a.Nama == _pangkalan.Nama);
+            }
+            else
+            {
+                _pangkalanIndex = -1;
+                Tanggal = DateTimeOffset.Now;
+                TanggalLunas = null;
+            }
         }
         public ReactiveCommand<Unit, Transaksi> Save { get; }
         public ReactiveCommand<Unit, Unit> Cancel { get; }

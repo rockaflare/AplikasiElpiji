@@ -3,10 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
              x:Class="Siapel.UI.Views.Pages.Dialogs.TransaksiFieldDialog">
-	<Grid RowDefinitions="40,50,40,40,40,40,40,40,50" Margin="40" HorizontalAlignment="Left">
+	<Grid RowDefinitions="40,50,50,50,50,50,50,50,50,60,50" Margin="40" HorizontalAlignment="Left">
 		<TextBlock Grid.Row="0" Text="{Binding UrlPathSegment}" FontSize="20"/>
-		<DatePicker Grid.Row="1" Header="Tanggal Order"/>
+		<DatePicker Grid.Row="1" Header="Tanggal Order" SelectedDate="{Binding Tanggal, Mode=TwoWay}"/>
 		<ComboBox Name="PangkalanCb" Grid.Row="2" Height="40" MinWidth="500" Margin="0 10 0 0" HorizontalAlignment="Center" PlaceholderText="Pangkalan" SelectedItem="{Binding Pangkalan}" Items="{Binding PangkalanList}" SelectedIndex="{Binding PangkalanIndex}">
 			<ComboBox.ItemTemplate>
 				<DataTemplate>
@@ -14,11 +16,26 @@
 				</DataTemplate>
 			</ComboBox.ItemTemplate>
 		</ComboBox>
-		<ComboBox Name="TabungTipe" Grid.Row="3" PlaceholderText="Jenis Tabung"></ComboBox>
-		<TextBox Grid.Row="4" Watermark="Harga"/>
-		<ComboBox Name="JenisBayar" Grid.Row="5" PlaceholderText="Jenis Pembayaran"></ComboBox>
-		<TextBox Grid.Row="6" Watermark="Total"/>
-		<TextBox Grid.Row="7" Watermark="Status"/>
-		<DatePicker Grid.Row="8" Header="Tanggal Lunas"/>
+		<ComboBox Name="TabungTipe" Grid.Row="3" Height="40" MinWidth="500" Margin="0 10 0 0" PlaceholderText="Jenis Tabung" Items="{Binding ItemList}" SelectedItem="{Binding Item}"></ComboBox>
+		<TextBox Grid.Row="4" Watermark="Harga" Margin="0 10 0 0" Text="{Binding Harga}"/>
+		<TextBox Grid.Row="5" Watermark="Jumlah" Margin="0 10 0 0" Text="{Binding JumlahItem}"/>
+		<ComboBox Name="JenisBayar" Grid.Row="6" Height="40" MinWidth="500" Margin="0 10 0 0" PlaceholderText="Jenis Pembayaran" Items="{Binding JenisBayarList}" SelectedItem="{Binding TipeBayar}"></ComboBox>
+		<TextBox Grid.Row="7" Watermark="Total" Margin="0 10 0 0" Text="{Binding Total}"/>
+		<TextBox Grid.Row="8" Watermark="Status" Margin="0 10 0 0" Text="{Binding Status}"/>
+		<DatePicker Grid.Row="9" Header="Tanggal Lunas" Margin="0 10 0 0" SelectedDate="{Binding TanggalLunas}"/>
+		<StackPanel Grid.Row="10" Orientation="Horizontal" Margin="0 10 0 0">
+			<Button Command="{Binding Save}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Checkmark"/>
+					<TextBlock Text="Simpan" Margin="5 0 0 0"/>
+				</StackPanel>
+			</Button>
+			<Button Command="{Binding Cancel}" Margin="10 0 0 0">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Cancel"/>
+					<TextBlock Text="Batal" Margin="5 0 0 0"/>
+				</StackPanel>
+			</Button>
+		</StackPanel>
 	</Grid>
 </UserControl>

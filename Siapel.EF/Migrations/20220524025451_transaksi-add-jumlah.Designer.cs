@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Siapel.EF;
 
@@ -10,9 +11,10 @@ using Siapel.EF;
 namespace Siapel.EF.Migrations
 {
     [DbContext(typeof(SiapelDbContext))]
-    partial class SiapelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220524025451_transaksi-add-jumlah")]
+    partial class transaksiaddjumlah
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
@@ -117,10 +119,10 @@ namespace Siapel.EF.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset>("Tanggal")
+                    b.Property<DateOnly>("Tanggal")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset?>("TanggalLunas")
+                    b.Property<DateOnly>("TanggalLunas")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Total")

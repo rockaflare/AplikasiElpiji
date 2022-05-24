@@ -9,13 +9,14 @@ namespace Siapel.Domain.Models
     public class Transaksi
     {
         public int Id { get; set; }
-        public DateOnly Tanggal { get; set; }
+        public DateTimeOffset Tanggal { get; set; }
         public Pangkalan Pangkalan { get; set; }
         public string Item { get; set; }
         public int Harga { get; set; }
+        public int Jumlah { get; set; }
         public string JenisBayar { get; set; }
         public int Total { get; set; }
         public string Status { get; set; }
-        public DateOnly TanggalLunas { get; set; }
+        public DateTimeOffset? TanggalLunas { get; set; }
     }
 }

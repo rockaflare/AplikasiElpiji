@@ -24,39 +24,30 @@
 					<TextBlock Text="Tambah" Margin="5 0 0 0"/>
 				</StackPanel>
 			</Button>
-			<Button Margin="5 0 0 0">
+			<Button Margin="5 0 0 0" Command="{Binding DeleteItem}">
 				<StackPanel Orientation="Horizontal">
 					<ui:SymbolIcon Symbol="Delete"/>
 					<TextBlock Text="Hapus" Margin="5 0 0 0"/>
 				</StackPanel>
 			</Button>
+			<Button Margin="5 0 0 0" Command="{Binding UpdateCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Edit"/>
+					<TextBlock Text="Edit" Margin="5 0 0 0"/>
+				</StackPanel>
+			</Button>
 		</StackPanel>
-		<DataGrid Grid.Row="3" AutoGenerateColumns="False">
+		<DataGrid Grid.Row="3" AutoGenerateColumns="False" Items="{Binding Transaksi}" SelectedItem="{Binding SelectedTransaksi}">
 			<DataGrid.Columns>
-				<DataGridTextColumn Header="Tanggal Buat"/>
-				<DataGridTextColumn Header="Tuan / Toko"/>
-				<DataGridTextColumn Header="Jenis Tabung"/>
-				<DataGridTextColumn Header="Harga"/>
-				<DataGridTextColumn Header="Jenis Pembayaran"/>
-				<DataGridTextColumn Header="Total"/>
-				<DataGridTemplateColumn Header="Edit">
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<Button>
-								<ui:SymbolIcon Symbol="Edit"/>
-							</Button>
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
-				<DataGridTemplateColumn Header="Hapus">
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<Button>
-								<ui:SymbolIcon Symbol="Delete"/>
-							</Button>
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
+				<DataGridTextColumn Header="Tanggal Buat" Binding="{Binding Tanggal, StringFormat=\{0:dd MMMM yyyy\}}"/>
+				<DataGridTextColumn Header="Tuan / Toko" Binding="{Binding Pangkalan.Nama}"/>
+				<DataGridTextColumn Header="Jenis Tabung" Binding="{Binding Item}"/>
+				<DataGridTextColumn Header="Harga" Binding="{Binding Harga}"/>
+				<DataGridTextColumn Header="Jumlah" Binding="{Binding Jumlah}"/>
+				<DataGridTextColumn Header="Jenis Pembayaran" Binding="{Binding JenisBayar}"/>
+				<DataGridTextColumn Header="Total" Binding="{Binding Total}"/>
+				<DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
+				<DataGridTextColumn Header="Tanggal Lunas" Binding="{Binding TanggalLunas, StringFormat=\{0:dd MMMM yyyy\}}"/>
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>

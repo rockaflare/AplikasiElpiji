@@ -16,7 +16,7 @@
 					<TextBlock Text="Tambah" Margin="5 0 0 0"/>
 				</StackPanel>
 			</Button>
-			<Button Margin="5 0 0 0" Command="{Binding DeleteItem}">
+			<Button Margin="5 0 0 0" Command="{Binding DeleteItem}" IsEnabled="{Binding SelectedHarga.Pangkalan.Perma}">
 				<StackPanel Orientation="Horizontal">
 					<ui:SymbolIcon Symbol="Delete"/>
 					<TextBlock Text="Hapus" Margin="5 0 0 0"/>
@@ -25,7 +25,7 @@
 			<Button Margin="5 0 0 0" Command="{Binding UpdateCommand}">
 				<StackPanel Orientation="Horizontal">
 					<ui:SymbolIcon Symbol="Edit"/>
-					<TextBlock Text="Update" Margin="5 0 0 0"/>
+					<TextBlock Text="Edit" Margin="5 0 0 0"/>
 				</StackPanel>
 			</Button>
 		</StackPanel>

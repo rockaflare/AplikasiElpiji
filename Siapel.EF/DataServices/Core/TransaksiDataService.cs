@@ -23,7 +23,27 @@ namespace Siapel.EF.DataServices.Core
 
         public async Task<Transaksi> Create(Transaksi entity)
         {
-            return await _nonQueryDataService.Create(entity);
+            using (SiapelDbContext context = _contextFactory.CreateDbContext())
+            {
+                var pangkalan = context.Pangkalan.Single(x => x.Id == entity.Pangkalan.Id);
+                var createdResult = await context.Transaksi.AddAsync(
+                    new Transaksi
+                    {
+                        Tanggal = entity.Tanggal,
+                        Pangkalan = pangkalan,
+                        Item = entity.Item,
+                        Harga = entity.Harga,
+                        Jumlah = entity.Jumlah,
+                        JenisBayar = entity.JenisBayar,
+                        Total = entity.Total,
+                        Status = entity.Status,
+                        TanggalLunas = entity.TanggalLunas
+                    }
+                    );
+
+                await context.SaveChangesAsync();
+                return createdResult.Entity;
+            }
         }
 
         public async Task<bool> Delete(Transaksi entity)
