@@ -10,12 +10,18 @@
 		<Label Grid.Row="0" Content="{Binding UrlPathSegment}"/>
 		<StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
 			<Label Content="Filter" FontSize="16" FontWeight="Bold"/>
-			<ComboBox Margin="5 0 0 0" Width="200" PlaceholderText="Tuan / Toko"/>
-			<Label Content="Tanggal awal" Margin="10 0 0 0"/>
-			<DatePicker Margin="5 0 0 0"/>
-			<Label Content="Tanggal akhir" Margin="10 0 0 0"/>
-			<DatePicker Margin="5 0 0 0"/>
-			<ComboBox Margin="5 0 0 0" Width="200" PlaceholderText="Jenis Pembayaran"/>
+			<ComboBox Margin="5 0 0 0" Width="200" PlaceholderText="Tuan / Toko" Items="{Binding Pangkalans}" SelectedItem="{Binding SelectedPangkalanFilter}">
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Nama}"/>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+			<Label Content="Tanggal awal" Margin="10 5 0 0"/>
+			<DatePicker Margin="5 0 0 0" SelectedDate="{Binding StartDate}"/>
+			<Label Content="Tanggal akhir" Margin="10 5 0 0"/>
+			<DatePicker Margin="5 0 0 0" SelectedDate="{Binding EndDate}" MinYear="{Binding StartDate}"/>
+			<ComboBox Margin="5 0 0 0" Width="200" PlaceholderText="Jenis Pembayaran" Items="{Binding JenisPembayaranList}" SelectedItem="{Binding SelectedPembayaranFilter}"/>
 		</StackPanel>
 		<StackPanel Grid.Row="2" Orientation="Horizontal">
 			<Button Command="{Binding AddCommand}">
@@ -37,7 +43,7 @@
 				</StackPanel>
 			</Button>
 		</StackPanel>
-		<DataGrid Grid.Row="3" AutoGenerateColumns="False" Items="{Binding Transaksi}" SelectedItem="{Binding SelectedTransaksi}">
+		<DataGrid Grid.Row="3" AutoGenerateColumns="False" Items="{Binding TransaksiFilter}" SelectedItem="{Binding SelectedTransaksi}">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Tanggal Buat" Binding="{Binding Tanggal, StringFormat=\{0:dd MMMM yyyy\}}"/>
 				<DataGridTextColumn Header="Tuan / Toko" Binding="{Binding Pangkalan.Nama}"/>

@@ -31,6 +31,9 @@ namespace Siapel.EF
                 new Pangkalan { Id = 1, Nama = "UMUM", Status = "Aktif", Perma = false },
                 new Pangkalan { Id = 2, Nama = "WIJAYA", Status = "Aktif", Perma = true },
                 new Pangkalan { Id = 3, Nama = "NIHAYAH", Status = "Aktif", Perma = true });
+            modelBuilder.Entity<Harga>().HasData(
+                new { Id = 1, PangkalanId = 1, TbLimaPuluh = 1012000, TbDuaBelas = 195000, TbLimaSetengah = 93000, TanggalUbah = DateTime.Now}
+                );
         }
     }
 }

@@ -42,9 +42,11 @@ namespace Siapel.UI.ViewModels.DialogViewModels
 
             ExecuteHargaItem = ReactiveCommand.Create(GetHargaPangkalan);
             CalculateCommand = ReactiveCommand.Create(CalculateTotal);
+            SetPaymentStatus = ReactiveCommand.Create(PaymentStatusSetter);
 
             this.WhenAnyValue(x => x.Pangkalan, x => x.Item).Select(_ => Unit.Default).InvokeCommand(ExecuteHargaItem);
             this.WhenAnyValue(x => x.JumlahItem, x => x.Pangkalan, x => x.Item).Select(_ => Unit.Default).InvokeCommand(CalculateCommand);
+            this.WhenAnyValue(x => x.TipeBayar, x => x.TanggalLunas).Select(_ => Unit.Default).InvokeCommand(SetPaymentStatus);
         }
         private int _pangkalanIndex;
         public int PangkalanIndex
@@ -131,6 +133,35 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             get => _total;
             set => this.RaiseAndSetIfChanged(ref _total, value);
         }
+        private ReactiveCommand<Unit, Unit> SetPaymentStatus { get; set; }
+        private void PaymentStatusSetter()
+        {
+            string resultStatus = "";
+            if (TipeBayar != null)
+            {
+                if (_transaksi == null)
+                {
+                    if (TipeBayar != "Invoice")
+                    {
+                        resultStatus = "Lunas";
+                        TanggalLunas = DateTimeOffset.Now;
+                    }
+                    else
+                    {
+                        resultStatus = "Belum Lunas";
+                        TanggalLunas = null;
+                    }
+                }
+                else
+                {
+                    if (TipeBayar == "Invoice" && TanggalLunas != null)
+                    {
+                        resultStatus = "Invoice Lunas";
+                    }
+                }
+            }
+            Status = resultStatus;
+        }
         private string _status;
         public string Status
         {
@@ -143,7 +174,12 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             get => _tanggalLunas;
             set => this.RaiseAndSetIfChanged(ref _tanggalLunas, value);
         }
-
+        private bool _canEditTipeBayar;
+        public bool CanEditTipeBayar
+        {
+            get => _canEditTipeBayar;
+            set => this.RaiseAndSetIfChanged(ref _canEditTipeBayar, value);
+        }
         private Transaksi EditTransaksi()
         {
             _transaksi.Tanggal = _tanggal;
@@ -154,7 +190,7 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             _transaksi.JenisBayar = _tipeBayar;
             _transaksi.Total = _total.Value;
             _transaksi.Status = _status;
-            _tanggalLunas = _transaksi.TanggalLunas;            
+            _transaksi.TanggalLunas = _tanggalLunas;           
 
             return _transaksi;
         }
@@ -172,10 +208,12 @@ namespace Siapel.UI.ViewModels.DialogViewModels
                 _total = _transaksi.Total;
                 _status = _transaksi.Status;
                 _tanggalLunas = _transaksi.TanggalLunas;
+                _canEditTipeBayar = false;
                 _pangkalanIndex = PangkalanList.FindIndex(a => a.Nama == _pangkalan.Nama);
             }
             else
             {
+                _canEditTipeBayar = true;
                 _pangkalanIndex = -1;
                 Tanggal = DateTimeOffset.Now;
                 TanggalLunas = null;

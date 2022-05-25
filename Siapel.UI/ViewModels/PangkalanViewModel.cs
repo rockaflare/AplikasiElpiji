@@ -101,12 +101,12 @@ namespace Siapel.UI.ViewModels
             {
                 Title = "Hapus item",
                 Content = "Anda yakin ingin menghapus?",
-                PrimaryButtonText = "Ok",
-                CloseButtonText = "Batal"
+                PrimaryButtonText = "Ok"
             };
             
             if (SelectedPangkalan != null)
             {
+                dialog.CloseButtonText = "Batal";
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Primary)
                 {

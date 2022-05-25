@@ -19,7 +19,7 @@
 		<ComboBox Name="TabungTipe" Grid.Row="3" Height="40" MinWidth="500" Margin="0 10 0 0" PlaceholderText="Jenis Tabung" Items="{Binding ItemList}" SelectedItem="{Binding Item}"></ComboBox>
 		<TextBox Grid.Row="4" Watermark="Harga" Margin="0 10 0 0" Text="{Binding Harga}"/>
 		<TextBox Grid.Row="5" Watermark="Jumlah" Margin="0 10 0 0" Text="{Binding JumlahItem}"/>
-		<ComboBox Name="JenisBayar" Grid.Row="6" Height="40" MinWidth="500" Margin="0 10 0 0" PlaceholderText="Jenis Pembayaran" Items="{Binding JenisBayarList}" SelectedItem="{Binding TipeBayar}"></ComboBox>
+		<ComboBox Name="JenisBayar" Grid.Row="6" Height="40" MinWidth="500" Margin="0 10 0 0" PlaceholderText="Jenis Pembayaran" Items="{Binding JenisBayarList}" SelectedItem="{Binding TipeBayar}" IsEnabled="{Binding CanEditTipeBayar}"></ComboBox>
 		<TextBox Grid.Row="7" Watermark="Total" Margin="0 10 0 0" Text="{Binding Total}"/>
 		<TextBox Grid.Row="8" Watermark="Status" Margin="0 10 0 0" Text="{Binding Status}"/>
 		<DatePicker Grid.Row="9" Header="Tanggal Lunas" Margin="0 10 0 0" SelectedDate="{Binding TanggalLunas}"/>
