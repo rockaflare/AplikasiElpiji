@@ -30,6 +30,7 @@ namespace Siapel.UI.DependencyInjection
             builder.RegisterType<HargaView>().As<IViewFor<HargaViewModel>>();
             builder.RegisterType<PangkalanView>().As<IViewFor<PangkalanViewModel>>();
             builder.RegisterType<TransaksiView>().As<IViewFor<TransaksiViewModel>>();
+            builder.RegisterType<LaporanView>().As<IViewFor<LaporanViewModel>>();
 
             builder.RegisterType<MainWindowViewModel>().AsSelf();
 

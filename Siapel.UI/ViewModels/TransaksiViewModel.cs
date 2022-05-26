@@ -22,6 +22,7 @@ namespace Siapel.UI.ViewModels
         private readonly IPangkalanDataService _pangkalanService;
         private readonly IDataService<Harga> _hargaService;
         private List<string> _jenisPembayaran;
+        private List<string> _jenisTabung;
         private List<Pangkalan> _listPangkalan;
         public string? UrlPathSegment => "Transaksi";
 
@@ -30,6 +31,7 @@ namespace Siapel.UI.ViewModels
         public IEnumerable<Transaksi> TransaksiFilter => _transaksiFilter;
         public List<Pangkalan> Pangkalans => _listPangkalan;
         public List<string> JenisPembayaranList => _jenisPembayaran;
+        public List<string> JenisItemList => _jenisTabung;
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
         private ReactiveCommand<Unit, Unit> DeleteItem { get; }
         private ReactiveCommand<Unit, Unit> PangkalanCbx { get; }
@@ -42,6 +44,7 @@ namespace Siapel.UI.ViewModels
             _pangkalanService = pangkalanDataService;
             _hargaService = hargaDataService;
             _jenisPembayaran = new List<string>() { "Tunai", "Transfer", "Invoice" };
+            _jenisTabung = new List<string>() { "50 KG", "12 KG", "5,5 KG" };
             PangkalanCbx = ReactiveCommand.CreateFromTask(GetPangkalan);
             PangkalanCbx.Execute();
             LoadItem = ReactiveCommand.CreateFromTask(TransaksiUpdater);
@@ -49,7 +52,7 @@ namespace Siapel.UI.ViewModels
             DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
             FilterTransaksi = ReactiveCommand.Create(TransaksiFilterUpdater);
 
-            this.WhenAnyValue(x => x.SelectedPangkalanFilter, x => x.StartDate, x => x.EndDate, x => x.SelectedPembayaranFilter).Select(_ => Unit.Default).InvokeCommand(FilterTransaksi);
+            this.WhenAnyValue(x => x.SelectedPangkalanFilter, x => x.SelectedItemFilter, x => x.StartDate, x => x.EndDate, x => x.SelectedPembayaranFilter).Select(_ => Unit.Default).InvokeCommand(FilterTransaksi);
         }
 
         private async Task TransaksiUpdater()
@@ -69,6 +72,7 @@ namespace Siapel.UI.ViewModels
         {
             var filtered = Transaksi.Where(
                 x => (SelectedPangkalanFilter == null ? true : x.Pangkalan.Id == SelectedPangkalanFilter.Id)
+                && (SelectedItemFilter == null ? true : x.Item == SelectedItemFilter)
                 && (StartDate == null ? true : x.Tanggal >= StartDate)
                 && (EndDate == null ? true : x.Tanggal <= EndDate)
                 && (SelectedPembayaranFilter == null ? true : x.JenisBayar == SelectedPembayaranFilter)
@@ -109,6 +113,12 @@ namespace Siapel.UI.ViewModels
             get => _selectedPangkalanFilter;
             set => this.RaiseAndSetIfChanged(ref _selectedPangkalanFilter, value);
         }
+        private string _selectedItemFilter;
+        public string SelectedItemFilter
+        {
+            get => _selectedItemFilter;
+            set => this.RaiseAndSetIfChanged(ref _selectedItemFilter, value);
+        }
         private DateTimeOffset? _startDate;
         public DateTimeOffset? StartDate
         {
@@ -132,6 +142,7 @@ namespace Siapel.UI.ViewModels
         {
             await _dataService.Delete(SelectedTransaksi);
             await LoadItem.Execute();
+            await FilterTransaksi.Execute();
         }
 
         private async Task DeleteConfirmation()
@@ -157,6 +168,14 @@ namespace Siapel.UI.ViewModels
                 dialog.Content = "Tidak ada item dipilih";
                 await dialog.ShowAsync();
             }
+        }
+        public void ResetFilter()
+        {
+            SelectedPangkalanFilter = null;
+            SelectedItemFilter = null;
+            StartDate = null;
+            EndDate = null;
+            SelectedPembayaranFilter = null;
         }
 
         public async void AddCommand()

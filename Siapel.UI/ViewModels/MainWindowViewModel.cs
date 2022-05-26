@@ -53,6 +53,9 @@ namespace Siapel.UI.ViewModels
                     case "Transaksi":
                         ShowTransaksi();
                         break;
+                    case "Laporan":
+                        ShowLaporan();
+                        break;
                     default:
                         break;
                 }
@@ -76,5 +79,10 @@ namespace Siapel.UI.ViewModels
         {
             Router.Navigate.Execute(new TransaksiViewModel(this, _transaksiService, _pangkalanService, _hargaService));
         }
+        private void ShowLaporan()
+        {
+            Router.Navigate.Execute(new LaporanViewModel(this));
+        }
+
     }
 }

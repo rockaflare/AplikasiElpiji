@@ -12,7 +12,7 @@
         Icon="/Assets/avalonia-logo.ico"
 		Width="1100" Height="800"
 		WindowStartupLocation="CenterScreen"
-        Title="Siapel.UI">
+        Title="Siapel - Sistem Informasi Aplikasi Elpiji">
 
 	<Grid>
 		<Grid.RowDefinitions>
