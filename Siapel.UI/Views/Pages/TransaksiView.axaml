@@ -7,7 +7,7 @@
 			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
              x:Class="Siapel.UI.Views.Pages.TransaksiView">
 	<Grid Margin="15" RowDefinitions="50,*">
-		<Label Grid.Row="0" Content="{Binding UrlPathSegment}"/>
+		<Label Grid.Row="0" FontSize="20" FontWeight="Medium" Content="{Binding UrlPathSegment}"/>
 		<StackPanel Grid.Row="1" Spacing="5" MaxHeight="1000">
 			<Expander Header="Filter Transaksi">
 				<StackPanel Spacing="5" Orientation="Vertical" VerticalAlignment="Center">
@@ -19,11 +19,17 @@
 							</DataTemplate>
 						</ComboBox.ItemTemplate>
 					</ComboBox>
-					<Label Content="Tanggal awal" Margin="10 5 0 0"/>
-					<DatePicker Margin="5 0 0 0" SelectedDate="{Binding StartDate}"/>
-					<Label Content="Tanggal akhir" Margin="10 5 0 0"/>
-					<DatePicker Margin="5 0 0 0" SelectedDate="{Binding EndDate}" MinYear="{Binding StartDate}"/>
+					<ComboBox Margin="5 0 0 0" Width="200" PlaceholderText="Jenis Tabung" Items="{Binding JenisItemList}" SelectedItem="{Binding SelectedItemFilter}"/>
+					<DatePicker Margin="5 0 0 0" SelectedDate="{Binding StartDate}" Header="Tanggal awal"/>
+					<DatePicker Margin="5 0 0 0" SelectedDate="{Binding EndDate}" Header="Tanggal akhir" MinYear="{Binding StartDate}"/>
 					<ComboBox Margin="5 0 0 0" Width="200" PlaceholderText="Jenis Pembayaran" Items="{Binding JenisPembayaranList}" SelectedItem="{Binding SelectedPembayaranFilter}"/>
+
+					<Button Command="{Binding ResetFilter}">
+						<StackPanel Orientation="Horizontal">
+							<ui:SymbolIcon Symbol="Filter"/>
+							<TextBlock Text="Hapus Filter" Margin="5 0 0 0"/>
+						</StackPanel>
+					</Button>
 				</StackPanel>
 			</Expander>
 			<StackPanel Orientation="Horizontal">

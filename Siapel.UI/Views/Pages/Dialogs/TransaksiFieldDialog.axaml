@@ -7,7 +7,7 @@
 			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
              x:Class="Siapel.UI.Views.Pages.Dialogs.TransaksiFieldDialog">
 	<Grid RowDefinitions="40,50,50,50,50,50,50,50,50,60,50" Margin="40" HorizontalAlignment="Left">
-		<TextBlock Grid.Row="0" Text="{Binding UrlPathSegment}" FontSize="20"/>
+		<Label Grid.Row="0" FontSize="20" FontWeight="Medium" Content="{Binding UrlPathSegment}"/>
 		<DatePicker Grid.Row="1" Header="Tanggal Order" SelectedDate="{Binding Tanggal, Mode=TwoWay}"/>
 		<ComboBox Name="PangkalanCb" Grid.Row="2" Height="40" MinWidth="500" Margin="0 10 0 0" HorizontalAlignment="Center" PlaceholderText="Pangkalan" SelectedItem="{Binding Pangkalan}" Items="{Binding PangkalanList}" SelectedIndex="{Binding PangkalanIndex}">
 			<ComboBox.ItemTemplate>
