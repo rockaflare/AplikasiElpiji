@@ -67,8 +67,13 @@ namespace Siapel.UI.ViewModels
 
         private void TransaksiFilterUpdater()
         {
-            var filtered = Transaksi.Where(p => p.Pangkalan == SelectedPangkalanFilter || p.Tanggal >= StartDate && p.Tanggal <= EndDate && p.JenisBayar == SelectedPembayaranFilter).ToList();
-            var unfiltered = _transaksi;
+            var filtered = Transaksi.Where(
+                x => (SelectedPangkalanFilter == null ? true : x.Pangkalan.Id == SelectedPangkalanFilter.Id)
+                && (StartDate == null ? true : x.Tanggal >= StartDate)
+                && (EndDate == null ? true : x.Tanggal <= EndDate)
+                && (SelectedPembayaranFilter == null ? true : x.JenisBayar == SelectedPembayaranFilter)
+                ).ToList();
+            var unfiltered = _transaksi;            
             if (filtered.Count > 0)
             {
                 _transaksiFilter.Clear();
