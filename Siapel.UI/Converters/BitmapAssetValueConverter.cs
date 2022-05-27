@@ -1,9 +1,9 @@
 ﻿using Avalonia;
 using Avalonia.Data.Converters;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -19,7 +19,7 @@ namespace Siapel.UI.Converters
         {
             if (value == null) return null;
 
-            if (value is string rawUri && targetType.IsAssignableFrom(typeof(Bitmap)))
+            if (value is string rawUri && targetType.IsAssignableFrom(typeof(IBitmap)))
             {
                 Uri uri;
                 if (rawUri.StartsWith("avares://"))

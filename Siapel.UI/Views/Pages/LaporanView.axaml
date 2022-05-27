@@ -2,16 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"			 
+			 xmlns:ext="clr-namespace:Siapel.UI.Converters;assembly=Siapel.UI"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
              x:Class="Siapel.UI.Views.Pages.LaporanView">
+	<UserControl.Resources>
+		<ext:BitmapAssetValueConverter x:Key="imageConverter"/>
+	</UserControl.Resources>
 	<Grid Margin="15" RowDefinitions="50, *">
 		<Label Grid.Row="0" FontSize="20" FontWeight="Medium" Content="{Binding UrlPathSegment}"/>
-		<StackPanel Spacing="5" Orientation="Vertical">
+		<StackPanel Grid.Row="1" Spacing="5" Orientation="Vertical">
 			<Expander Header="Pilih Laporan">
 				<TextBlock Text="Belum"/>
 			</Expander>
+			<Button Command="{Binding GenerateLaporanCommand}">
+				<StackPanel Orientation="Horizontal">
+					<ui:SymbolIcon Symbol="Document"/>
+					<TextBlock Text="Buat Laporan" Margin="5 0 0 0"/>
+				</StackPanel>
+			</Button>
 			<ScrollViewer>
-				
+				<Image Stretch="None" Source="{Binding ImagePathLoc, Converter={StaticResource imageConverter}}"/>
 			</ScrollViewer>
 		</StackPanel>
 	</Grid>
