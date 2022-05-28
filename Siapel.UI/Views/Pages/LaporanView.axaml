@@ -14,7 +14,10 @@
 		<Label Grid.Row="0" FontSize="20" FontWeight="Medium" Content="{Binding UrlPathSegment}"/>
 		<StackPanel Grid.Row="1" Spacing="5" Orientation="Vertical">
 			<Expander Header="Pilih Laporan">
-				<TextBlock Text="Belum"/>
+				<StackPanel Spacing="5" Orientation="Vertical">
+					<ComboBox PlaceholderText="Jenis Laporan" Items="{Binding JenisLaporan}"></ComboBox>
+					<DatePicker Header="Tanggal Laporan"/>
+				</StackPanel>				
 			</Expander>
 			<Button Command="{Binding GenerateLaporanCommand}">
 				<StackPanel Orientation="Horizontal">
@@ -22,9 +25,20 @@
 					<TextBlock Text="Buat Laporan" Margin="5 0 0 0"/>
 				</StackPanel>
 			</Button>
-			<ScrollViewer>
-				<Image Stretch="None" Source="{Binding ImagePathLoc, Converter={StaticResource imageConverter}}"/>
-			</ScrollViewer>
+			<StackPanel>
+				<DataGrid Items="{Binding InvoiceList}" MinHeight="200">
+					
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Tanggal Buat" Binding="{Binding Tanggal, StringFormat=\{0:dd MMMM yyyy\}}"/>
+						<DataGridTextColumn Header="Tuan / Toko" Binding="{Binding Pangkalan.Nama}"/>
+						<DataGridTextColumn Header="50 KG" Binding="{Binding Tab50Kg}"/>
+						<DataGridTextColumn Header="12 KG" Binding="{Binding Tab12Kg}"/>
+						<DataGridTextColumn Header="5,5 KG" Binding="{Binding Tab5Kg}"/>
+					</DataGrid.Columns>
+					
+					
+				</DataGrid>
+			</StackPanel>
 		</StackPanel>
 	</Grid>
 </UserControl>

@@ -1,5 +1,6 @@
 ﻿using QuestPDF.Drawing;
 using QuestPDF.Fluent;
+using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using Siapel.Domain.Models;
 using System;
@@ -12,8 +13,8 @@ namespace Siapel.UI.Documents
 {
     public class InvoiceDocument : IDocument
     {
-        private IEnumerable<Transaksi>? _invoiceData;
-        public InvoiceDocument(IEnumerable<Transaksi>? invoiceData = null, string? tanggal = null)
+        private List<object>? _invoiceData;
+        public InvoiceDocument(List<object>? invoiceData = null, string? tanggal = null)
         {
             _invoiceData = invoiceData;
         }
@@ -32,7 +33,7 @@ namespace Siapel.UI.Documents
         }
         void ComposeHeader(IContainer container)
         {
-            var titleStyle = TextStyle.Default.FontSize(21).SemiBold();
+            var titleStyle = TextStyle.Default.FontSize(36).SemiBold();
 
             container
                 .Row(row =>
@@ -51,7 +52,55 @@ namespace Siapel.UI.Documents
         }
         void ComposeContent(IContainer container)
         {
+            container.PaddingVertical(30).Column(column =>
+            {
+                column.Spacing(5);
 
+                column.Item().Element(ComposeTables);
+            });
+        }
+        void ComposeTables(IContainer container)
+        {
+            container.Table(table =>
+            {
+                IContainer DefaultCellStyle(IContainer container, string backgroundColor)
+                {
+                    return container
+                        .Border(1)
+                        .BorderColor(Colors.Grey.Lighten1)
+                        .Background(backgroundColor)
+                        .PaddingVertical(5)
+                        .PaddingHorizontal(10)
+                        .AlignCenter()
+                        .AlignMiddle()
+                        .ShowOnce()
+                        ;
+                }
+
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                });
+
+                table.Header(header =>
+                {
+                    header.Cell().RowSpan(2).ExtendHorizontal().Element(CellStyle).Text("Tanggal");
+                    header.Cell().RowSpan(2).Element(CellStyle).Text("Tuan/ Toko");
+
+                    header.Cell().ColumnSpan(3).Element(CellStyle).Text("Tabung");
+
+                    header.Cell().Element(CellStyle).Text("50 KG");
+                    header.Cell().Element(CellStyle).Text("12 KG");
+                    header.Cell().Element(CellStyle).Text("5,5 KG");
+
+                    IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten3);
+                });
+
+            });
         }
     }
 }
