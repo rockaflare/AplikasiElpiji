@@ -57,10 +57,10 @@
 					<DataGridTextColumn Header="Tanggal Buat" Binding="{Binding Tanggal, StringFormat=\{0:dd MMMM yyyy\}}"/>
 					<DataGridTextColumn Header="Tuan / Toko" Binding="{Binding Pangkalan.Nama}"/>
 					<DataGridTextColumn Header="Jenis Tabung" Binding="{Binding Item}"/>
-					<DataGridTextColumn Header="Harga" Binding="{Binding Harga}"/>
+					<DataGridTextColumn Header="Harga" Binding="{Binding Harga, StringFormat=\{0:C\}}"/>
 					<DataGridTextColumn Header="Jumlah" Binding="{Binding Jumlah}"/>
 					<DataGridTextColumn Header="Jenis Pembayaran" Binding="{Binding JenisBayar}"/>
-					<DataGridTextColumn Header="Total" Binding="{Binding Total}"/>
+					<DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=\{0:C\}}"/>
 					<DataGridTextColumn Header="Status" Binding="{Binding Status}"/>
 					<DataGridTextColumn Header="Tanggal Lunas" Binding="{Binding TanggalLunas, StringFormat=\{0:dd MMMM yyyy\}}"/>
 				</DataGrid.Columns>
