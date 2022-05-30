@@ -30,7 +30,7 @@
 				</StackPanel>
 			</Button>
 		</StackPanel>
-		<DataGrid Grid.Row="3" Margin="0 10 0 0" ColumnWidth="*" HorizontalAlignment="Left" x:Name="PangkalanDG" SelectionMode="Single" SelectedItem="{Binding SelectedPangkalan}" Items="{Binding HasilPencarian}" AutoGenerateColumns="False">			
+		<DataGrid Grid.Row="3" IsReadOnly="True" Margin="0 10 0 0" ColumnWidth="*" HorizontalAlignment="Left" x:Name="PangkalanDG" SelectionMode="Single" SelectedItem="{Binding SelectedPangkalan}" Items="{Binding HasilPencarian}" AutoGenerateColumns="False">			
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="ID" Binding="{Binding Id}"/>
 				<DataGridTextColumn Header="Nama" Binding="{Binding Nama}"/>

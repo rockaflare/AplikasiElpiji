@@ -52,7 +52,7 @@
 					</StackPanel>
 				</Button>
 			</StackPanel>
-			<DataGrid AutoGenerateColumns="False" Items="{Binding TransaksiFilter}" SelectedItem="{Binding SelectedTransaksi}" MinHeight="200">
+			<DataGrid AutoGenerateColumns="False" IsReadOnly="True" Items="{Binding TransaksiFilter}" SelectedItem="{Binding SelectedTransaksi}" MinHeight="200">
 				<DataGrid.Columns>
 					<DataGridTextColumn Header="Tanggal Buat" Binding="{Binding Tanggal, StringFormat=\{0:dd MMMM yyyy\}}"/>
 					<DataGridTextColumn Header="Tuan / Toko" Binding="{Binding Pangkalan.Nama}"/>

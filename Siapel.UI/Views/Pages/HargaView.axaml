@@ -29,7 +29,7 @@
 				</StackPanel>
 			</Button>
 		</StackPanel>
-		<DataGrid Name="HargaDG" Grid.Row="3" AutoGenerateColumns="False" ColumnWidth="*" Margin="0 10 0 0" Items="{Binding Harga}" SelectedItem="{Binding SelectedHarga}">
+		<DataGrid Name="HargaDG" Grid.Row="3" IsReadOnly="True" AutoGenerateColumns="False" ColumnWidth="*" Margin="0 10 0 0" Items="{Binding Harga}" SelectedItem="{Binding SelectedHarga}">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Pangkalan" Binding="{Binding Pangkalan.Nama}"/>
 				<DataGridTextColumn Header="50 KG" Binding="{Binding TbLimaPuluh, StringFormat=\{0:C\}}"/>
