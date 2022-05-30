@@ -74,6 +74,18 @@ namespace Siapel.UI.ViewModels
                 }
             }
         }
+        private string _selectedLaporan;
+        public string SelectedLaporan
+        {
+            get => _selectedLaporan;
+            set => this.RaiseAndSetIfChanged(ref _selectedLaporan, value);
+        }
+        private DateTimeOffset? _selectedTanggalLaporan;
+        public DateTimeOffset? SelectedTanggalLaporan
+        {
+            get => _selectedTanggalLaporan;
+            set => this.RaiseAndSetIfChanged(ref _selectedTanggalLaporan, value);
+        }
 
         private void GenerateInvoice()
         {
