@@ -98,7 +98,8 @@ namespace Siapel.UI.ViewModels
         private async Task GetPangkalan()
         {
             var entities = await _pangkalanService.GetAll();
-            _listPangkalan = new List<Pangkalan>(entities);
+            var pangkalanentities = entities.Where(x => x.Perma == true).ToList();
+            _listPangkalan = new List<Pangkalan>(pangkalanentities);
         }
 
         private Transaksi _selectedTransaksi;
@@ -180,9 +181,8 @@ namespace Siapel.UI.ViewModels
 
         public async void AddCommand()
         {
-            var pangkalans = await _pangkalanService.GetAll();
             var hargas = await _hargaService.GetAll();
-            var vm = new TransaksiFieldViewModel(this.HostScreen, "Transaksi Baru", new List<Pangkalan>(pangkalans), new List<Harga>(hargas));
+            var vm = new TransaksiFieldViewModel(this.HostScreen, "Transaksi Baru", new List<Pangkalan>(Pangkalans), new List<Harga>(hargas));
 
             Observable.Merge(
                 vm.Save,
@@ -205,9 +205,8 @@ namespace Siapel.UI.ViewModels
         {
             if (SelectedTransaksi != null)
             {
-                var pangkalans = await _pangkalanService.GetAll();
                 var hargas = await _hargaService.GetAll();
-                var vm = new TransaksiFieldViewModel(this.HostScreen, "Edit Transaksi", new List<Pangkalan>(pangkalans), new List<Harga>(hargas), SelectedTransaksi);
+                var vm = new TransaksiFieldViewModel(this.HostScreen, "Edit Transaksi", new List<Pangkalan>(Pangkalans), new List<Harga>(hargas), SelectedTransaksi);
 
                 Observable.Merge(
                     vm.Save,

@@ -26,13 +26,16 @@
 				</StackPanel>
 			</Button>
 			<StackPanel>
-				<DataGrid Items="{Binding InvoiceList}" MinHeight="200">
+				<DataGrid Items="{Binding InvoiceList}">
 					
 					<DataGrid.Columns>
 						<DataGridTextColumn Header="Tanggal Buat" Binding="{Binding Tanggal, StringFormat=\{0:dd MMMM yyyy\}}"/>
-						<DataGridTextColumn Header="Tuan / Toko" Binding="{Binding Pangkalan.Nama}"/>
+						<DataGridTextColumn Header="Tuan / Toko" Binding="{Binding Pangkalan}"/>
+						<DataGridTextColumn Header="Jumlah 50 KG" Binding="{Binding Jml50Kg}"/>
 						<DataGridTextColumn Header="50 KG" Binding="{Binding Tab50Kg}"/>
+						<DataGridTextColumn Header="Jumlah 12 KG" Binding="{Binding Jml12Kg}"/>
 						<DataGridTextColumn Header="12 KG" Binding="{Binding Tab12Kg}"/>
+						<DataGridTextColumn Header="Jumlah 5,5 KG" Binding="{Binding Jml5Kg}"/>
 						<DataGridTextColumn Header="5,5 KG" Binding="{Binding Tab5Kg}"/>
 					</DataGrid.Columns>
 					

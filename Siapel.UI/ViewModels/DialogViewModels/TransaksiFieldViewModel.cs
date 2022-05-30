@@ -37,7 +37,7 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             SetField();
             var okEnabled = this.WhenAnyValue(x => x.Item, x => !string.IsNullOrWhiteSpace(x));
             Save = ReactiveCommand.Create(
-                () => _transaksi != null ? EditTransaksi() : new Transaksi { Tanggal = Tanggal, Pangkalan = Pangkalan, Item = Item, Harga = Harga.Value, Jumlah = JumlahItem.Value, JenisBayar = TipeBayar, Total = Total.Value, Status = Status, TanggalLunas = TanggalLunas});
+                () => _transaksi != null ? EditTransaksi() : new Transaksi { Tanggal = Tanggal.Date, Pangkalan = Pangkalan, Item = Item, Harga = Harga.Value, Jumlah = JumlahItem.Value, JenisBayar = TipeBayar, Total = Total.Value, Status = Status, TanggalLunas = TanggalLunas?.Date});
             Cancel = ReactiveCommand.Create(() => { });
 
             ExecuteHargaItem = ReactiveCommand.Create(GetHargaPangkalan);
