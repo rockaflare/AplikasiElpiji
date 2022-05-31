@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace Siapel.UI.ViewModels
         private ObservableCollection<Transaksi> _transaksi { get; } = new ObservableCollection<Transaksi>();
         private List<object> _invoiceList { get; } = new List<object>();
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
+        private ReactiveCommand<Unit, Unit> SaveItem { get; }
         string Title = "Laporan";
         public string? UrlPathSegment => Title;
         public IScreen HostScreen { get; }
@@ -34,8 +36,13 @@ namespace Siapel.UI.ViewModels
             HostScreen = screen;
             _transaksiDataService = transaksiDataService;
             _jenisLaporan = new List<string>() { "Invoice", "Harian"};
+            SelectedTanggalLaporan = DateTimeOffset.Now;
             LoadItem = ReactiveCommand.CreateFromTask(LaporanUpdater);
             LoadItem.Execute();
+
+            SaveItem = ReactiveCommand.Create(GenerateLaporanCommand);
+
+            this.WhenAnyValue(x => x.SaveDestinationPath).Select(_ => Unit.Default).InvokeCommand(SaveItem);
         }
 
         private async Task LaporanUpdater()
@@ -52,7 +59,7 @@ namespace Siapel.UI.ViewModels
             if (_transaksi != null)
             {
                 var listtes = _transaksi
-                    .Where(x => x.JenisBayar == "Invoice")
+                    .Where(x =>  x.JenisBayar == "Invoice" && x.Status != "Lunas" )
                     .GroupBy(t => new { t.Pangkalan, t.Tanggal })
                     .Select(n => new
                     {
@@ -80,11 +87,18 @@ namespace Siapel.UI.ViewModels
             get => _selectedLaporan;
             set => this.RaiseAndSetIfChanged(ref _selectedLaporan, value);
         }
-        private DateTimeOffset? _selectedTanggalLaporan;
-        public DateTimeOffset? SelectedTanggalLaporan
+        private DateTimeOffset _selectedTanggalLaporan;
+        public DateTimeOffset SelectedTanggalLaporan
         {
             get => _selectedTanggalLaporan;
             set => this.RaiseAndSetIfChanged(ref _selectedTanggalLaporan, value);
+        }
+
+        private string _saveDestinationPath;
+        public string SaveDestinationPath
+        {
+            get => _saveDestinationPath;
+            set => this.RaiseAndSetIfChanged(ref _saveDestinationPath, value);
         }
 
         private void GenerateInvoice()
@@ -94,10 +108,13 @@ namespace Siapel.UI.ViewModels
 
         public void GenerateLaporanCommand()
         {
-            var document = new InvoiceDocument(InvoiceList);
-            document.GeneratePdf("Invoice-Tes-1.pdf");
+            var document = new InvoiceDocument(InvoiceList, SelectedTanggalLaporan.Date.ToLongDateString());
+            if (!string.IsNullOrWhiteSpace(SaveDestinationPath))
+            {
+                document.GeneratePdf(SaveDestinationPath);
+            }            
         }
 
-        public string ImagePathLoc => "/Assets/avalonia-logo.ico";
+        
     }
 }

@@ -16,15 +16,18 @@
 			<Expander Header="Pilih Laporan">
 				<StackPanel Spacing="5" Orientation="Vertical">
 					<ComboBox PlaceholderText="Jenis Laporan" Items="{Binding JenisLaporan}"></ComboBox>
-					<DatePicker Header="Tanggal Laporan"/>
+					<DatePicker Header="Tanggal Laporan" SelectedDate="{Binding SelectedTanggalLaporan}"/>
 				</StackPanel>				
 			</Expander>
-			<Button Command="{Binding GenerateLaporanCommand}">
-				<StackPanel Orientation="Horizontal">
-					<ui:SymbolIcon Symbol="Document"/>
-					<TextBlock Text="Buat Laporan" Margin="5 0 0 0"/>
-				</StackPanel>
-			</Button>
+			<StackPanel Spacing="5" Orientation="Horizontal" VerticalAlignment="Center">
+				<TextBox x:Name="ReportSavePath" Text="{Binding SaveDestinationPath}" Width="300" Watermark="Lokasi File" IsEnabled="False"/>
+				<Button Name="LaporanFileDialog">
+					<StackPanel Orientation="Horizontal">
+						<ui:SymbolIcon Symbol="Save"/>
+						<TextBlock Text="Simpan Laporan" Margin="5 0 0 0"/>
+					</StackPanel>
+				</Button>
+			</StackPanel>			
 			<StackPanel>
 				<DataGrid Items="{Binding InvoiceList}">
 					
@@ -37,8 +40,7 @@
 						<DataGridTextColumn Header="12 KG" Binding="{Binding Tab12Kg}"/>
 						<DataGridTextColumn Header="Jumlah 5,5 KG" Binding="{Binding Jml5Kg}"/>
 						<DataGridTextColumn Header="5,5 KG" Binding="{Binding Tab5Kg}"/>
-					</DataGrid.Columns>
-					
+					</DataGrid.Columns>					
 					
 				</DataGrid>
 			</StackPanel>

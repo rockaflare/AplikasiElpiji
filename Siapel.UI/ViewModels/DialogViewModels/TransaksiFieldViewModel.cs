@@ -156,7 +156,7 @@ namespace Siapel.UI.ViewModels.DialogViewModels
                 {
                     if (TipeBayar == "Invoice" && TanggalLunas != null)
                     {
-                        resultStatus = "Invoice Lunas";
+                        resultStatus = "Lunas";
                     }
                 }
             }

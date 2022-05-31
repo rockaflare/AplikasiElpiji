@@ -31,7 +31,7 @@ namespace Siapel.UI.DependencyInjection
             builder.RegisterType<PangkalanView>().As<IViewFor<PangkalanViewModel>>();
             builder.RegisterType<TransaksiView>().As<IViewFor<TransaksiViewModel>>();
             builder.RegisterType<LaporanView>().As<IViewFor<LaporanViewModel>>();
-
+                        
             builder.RegisterType<MainWindowViewModel>().AsSelf();
 
             builder.RegisterType<AddPangkalan>().As<IViewFor<AddPangkalanViewModel>>();
@@ -42,6 +42,8 @@ namespace Siapel.UI.DependencyInjection
             builder.Register((c, p) => new PangkalanDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IPangkalanDataService>();
             builder.Register((c, p) => new TransaksiDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<ITransaksiDataService>();
             builder.Register((c, p) => new HargaDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Harga>>();
+
+            
 
             return builder;
         }

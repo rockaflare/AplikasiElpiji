@@ -14,9 +14,11 @@ namespace Siapel.UI.Documents
     public class InvoiceDocument : IDocument
     {
         private List<object>? _invoiceData;
+        private string? _tanggal;
         public InvoiceDocument(List<object>? invoiceData = null, string? tanggal = null)
         {
             _invoiceData = invoiceData;
+            _tanggal = tanggal;
         }
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
         public void Compose(IDocumentContainer container)
@@ -46,7 +48,7 @@ namespace Siapel.UI.Documents
                         column.Item().Text(text =>
                         {
                             text.Span("Tanggal : ").SemiBold();
-                            text.Span("22 Mei 2022");
+                            text.Span(_tanggal);
                         });
                     });
                 });

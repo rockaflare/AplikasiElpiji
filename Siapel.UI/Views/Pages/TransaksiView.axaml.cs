@@ -13,6 +13,6 @@ namespace Siapel.UI.Views.Pages
         {
             this.WhenActivated(disposables => { });
             AvaloniaXamlLoader.Load(this);
-        }
+        }        
     }
 }
