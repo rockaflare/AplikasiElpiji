@@ -47,6 +47,7 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             this.WhenAnyValue(x => x.Pangkalan, x => x.Item).Select(_ => Unit.Default).InvokeCommand(ExecuteHargaItem);
             this.WhenAnyValue(x => x.JumlahItem, x => x.Pangkalan, x => x.Item).Select(_ => Unit.Default).InvokeCommand(CalculateCommand);
             this.WhenAnyValue(x => x.TipeBayar, x => x.TanggalLunas).Select(_ => Unit.Default).InvokeCommand(SetPaymentStatus);
+            
         }
         private int _pangkalanIndex;
         public int PangkalanIndex
@@ -136,7 +137,7 @@ namespace Siapel.UI.ViewModels.DialogViewModels
         private ReactiveCommand<Unit, Unit> SetPaymentStatus { get; set; }
         private void PaymentStatusSetter()
         {
-            string resultStatus = "";
+            string resultStatus = Status;
             if (TipeBayar != null)
             {
                 if (_transaksi == null)

@@ -76,8 +76,8 @@ namespace Siapel.UI.ViewModels
                 && (StartDate == null ? true : x.Tanggal >= StartDate)
                 && (EndDate == null ? true : x.Tanggal <= EndDate)
                 && (SelectedPembayaranFilter == null ? true : x.JenisBayar == SelectedPembayaranFilter)
-                ).ToList();
-            var unfiltered = _transaksi;            
+                ).OrderByDescending(x => x.Tanggal).ToList();
+            var unfiltered = _transaksi.OrderByDescending(x => x.Tanggal);            
             if (filtered.Count > 0)
             {
                 _transaksiFilter.Clear();
