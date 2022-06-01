@@ -34,6 +34,8 @@ namespace Siapel.UI.DependencyInjection
                         
             builder.RegisterType<MainWindowViewModel>().AsSelf();
 
+            builder.RegisterType<SiapelDbContextFactory>().AsSelf();
+
             builder.RegisterType<AddPangkalan>().As<IViewFor<AddPangkalanViewModel>>();
             builder.RegisterType<HargaFieldDialog>().As<IViewFor<HargaFieldViewModel>>();
             builder.RegisterType<TransaksiFieldDialog>().As<IViewFor<TransaksiFieldViewModel>>();
