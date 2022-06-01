@@ -17,6 +17,7 @@ using Siapel.EF;
 using Siapel.UI.Views.Pages;
 using Siapel.UI.Views.Pages.Dialogs;
 using Siapel.UI.ViewModels.DialogViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Siapel.UI
 {
@@ -54,6 +55,11 @@ namespace Siapel.UI
                     {
                         DataContext = new MainWindowViewModel(hargaservice, pangkalanservice, transaksiservice),
                     };
+                    SiapelDbContextFactory contextFactory = scope.Resolve<SiapelDbContextFactory>();
+                    using (SiapelDbContext context = contextFactory.CreateDbContext())
+                    {
+                        context.Database.Migrate();
+                    }
 
                 }
                 autoFacResolver.SetLifetimeScope(container);

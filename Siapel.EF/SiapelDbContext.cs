@@ -19,6 +19,7 @@ namespace Siapel.EF
         public DbSet<Pangkalan> Pangkalan { get; set; }
         public DbSet<Harga> Harga { get; set; }
         public DbSet<Transaksi> Transaksi { get; set; }
+        public DbSet<Pemasukan> Pemasukan { get; set; }
         //public DbSet<Pengeluaran> Pengeluaran { get; set; }
         //public DbSet<StokGudang> StokGudang { get; set; }
         //public DbSet<StokReal> StokReal { get; set; }
