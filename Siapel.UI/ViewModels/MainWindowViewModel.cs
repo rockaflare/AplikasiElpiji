@@ -13,12 +13,14 @@ namespace Siapel.UI.ViewModels
     public class MainWindowViewModel : ReactiveObject, IScreen
     {
         public RoutingState Router { get; } = new RoutingState();
-        private readonly IDataService<Harga> _hargaService;        
+        private readonly IDataService<Harga> _hargaService;
+        private readonly IDataService<Pemasukan> _pemasukanService;
         private readonly IPangkalanDataService _pangkalanService;
         private readonly ITransaksiDataService _transaksiService;
-        public MainWindowViewModel(IDataService<Harga> hargaService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService)
+        public MainWindowViewModel(IDataService<Harga> hargaService, IDataService<Pemasukan> pemasukanService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService)
         {
             _hargaService = hargaService;
+            _pemasukanService = pemasukanService;
             _pangkalanService = pangkalanDataService;
             _transaksiService = transaksiDataService;
         }
@@ -50,17 +52,25 @@ namespace Siapel.UI.ViewModels
                     case "Pangkalan":
                         ShowPangkalan();
                         break;
+                    case "Pemasukan":
+                        ShowPemasukan();
+                        break;
                     case "Transaksi":
                         ShowTransaksi();
                         break;
                     case "Laporan":
                         ShowLaporan();
                         break;
+                    case "Master":
+                        break;
                     default:
+                        ShowDefaultPage();
                         break;
                 }
             }
         }
+
+        
 
         private void ShowHome()
         {
@@ -79,9 +89,20 @@ namespace Siapel.UI.ViewModels
         {
             Router.Navigate.Execute(new TransaksiViewModel(this, _transaksiService, _pangkalanService, _hargaService));
         }
+        private void ShowPemasukan()
+        {
+            Router.Navigate.Execute(new PemasukanViewModel(this, _pemasukanService));
+        }
         private void ShowLaporan()
         {
             Router.Navigate.Execute(new LaporanViewModel(this, _transaksiService));
+        }
+
+
+
+        private void ShowDefaultPage()
+        {
+            Router.Navigate.Execute(new NotFoundPageDefaultViewModel(this));
         }
 
     }

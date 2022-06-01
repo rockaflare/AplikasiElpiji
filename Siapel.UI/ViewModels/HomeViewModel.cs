@@ -9,9 +9,7 @@ namespace Siapel.UI.ViewModels
 {
     public class HomeViewModel : ReactiveObject, IRoutableViewModel
     {
-        string Lah = "Home View";
-
-        public string? UrlPathSegment => Lah;
+        public string? UrlPathSegment => "Home - Halaman Utama";
 
         public IScreen HostScreen { get; }
 

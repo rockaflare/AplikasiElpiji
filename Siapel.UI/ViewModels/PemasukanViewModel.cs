@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using FluentAvalonia.UI.Controls;
+using ReactiveUI;
 using Siapel.Domain.Models;
 using Siapel.Domain.Services;
 using Siapel.UI.ViewModels.DialogViewModels;
@@ -10,57 +11,53 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Avalonia.ReactiveUI;
-using FluentAvalonia.UI.Controls;
 
 namespace Siapel.UI.ViewModels
 {
-    public class HargaViewModel : ReactiveObject, IRoutableViewModel
+    public class PemasukanViewModel : ReactiveObject, IRoutableViewModel
     {
-        private ObservableCollection<Harga> _harga { get; } = new ObservableCollection<Harga>();
-        private readonly IDataService<Harga> _dataService;
-        private readonly IPangkalanDataService _pangkalanService;
-        public string? UrlPathSegment => "Harga Tabung";
+        private IDataService<Pemasukan> _dataService;
+        private ObservableCollection<Pemasukan> _pemasukan { get; } = new ObservableCollection<Pemasukan>();
+        public string? UrlPathSegment => "Pemasukan";
 
         public IScreen HostScreen { get; }
-        public IEnumerable<Harga> Harga => _harga;
-        
+        public IEnumerable<Pemasukan> Pemasukan => _pemasukan;
+
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
         private ReactiveCommand<Unit, Unit> DeleteItem { get; }
 
-        public HargaViewModel(IScreen screen, IDataService<Harga> dataService, IPangkalanDataService pangkalanService)
+        public PemasukanViewModel(IScreen screen, IDataService<Pemasukan> dataService)
         {
             HostScreen = screen;
             _dataService = dataService;
-            _pangkalanService = pangkalanService;
-            LoadItem = ReactiveCommand.CreateFromTask(HargaUpdater);
+            LoadItem = ReactiveCommand.CreateFromTask(PemasukanUpdater);
             LoadItem.Execute();
             DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
         }
 
-        private async Task HargaUpdater()
+        private async Task PemasukanUpdater()
         {
-            _harga.Clear();
+            _pemasukan.Clear();
             if (_dataService != null)
             {
                 var dataList = await _dataService.GetAll();
                 foreach (var item in dataList)
                 {
-                    _harga.Add(item);
+                    _pemasukan.Add(item);
                 }
             }
         }
 
-        private Harga _selectedHarga;
-        public Harga SelectedHarga
+        private Pemasukan _selectedPemasukan;
+        public Pemasukan SelectedPemasukan
         {
-            get => _selectedHarga;
-            set => this.RaiseAndSetIfChanged(ref _selectedHarga, value);
+            get => _selectedPemasukan;
+            set => this.RaiseAndSetIfChanged(ref _selectedPemasukan, value);
         }
 
         private async void DeleteItemAsync()
         {
-            await _dataService.Delete(SelectedHarga);
+            await _dataService.Delete(SelectedPemasukan);
             await LoadItem.Execute();
         }
 
@@ -73,7 +70,7 @@ namespace Siapel.UI.ViewModels
                 PrimaryButtonText = "Ok"
             };
 
-            if (SelectedHarga != null)
+            if (SelectedPemasukan != null)
             {
                 dialog.CloseButtonText = "Batal";
                 var result = await dialog.ShowAsync();
@@ -91,12 +88,11 @@ namespace Siapel.UI.ViewModels
 
         public async void AddCommand()
         {
-            var pangkalans = await _pangkalanService.GetAll();
-            var vm = new HargaFieldViewModel(this.HostScreen, "Tambah Harga", new List<Pangkalan>(pangkalans));
+            var vm = new PemasukanFieldViewModel(this.HostScreen, "Tambah Pemasukan");
 
             Observable.Merge(
                 vm.Save,
-                vm.Cancel.Select(_ => (Harga)null))
+                vm.Cancel.Select(_ => (Pemasukan)null))
                 .Take(1)
                 .Subscribe(async model =>
                 {
@@ -105,21 +101,20 @@ namespace Siapel.UI.ViewModels
                         await _dataService.Create(model);
                     }
 
-                    await HostScreen.Router.NavigateAndReset.Execute(new HargaViewModel(this.HostScreen, _dataService, _pangkalanService));
+                    await HostScreen.Router.NavigateAndReset.Execute(new PemasukanViewModel(this.HostScreen, _dataService));
                 });
 
             await HostScreen.Router.Navigate.Execute(vm);
         }
         public async void UpdateCommand()
         {
-            if (SelectedHarga != null)
+            if (SelectedPemasukan != null)
             {
-                var pangkalans = await _pangkalanService.GetAll();
-                var vm = new HargaFieldViewModel(this.HostScreen, "Edit Harga", new List<Pangkalan>(pangkalans), SelectedHarga);
+                var vm = new PemasukanFieldViewModel(this.HostScreen, "Edit Pemasukan", SelectedPemasukan);
 
                 Observable.Merge(
                     vm.Save,
-                    vm.Cancel.Select(_ => (Harga)null))
+                    vm.Cancel.Select(_ => (Pemasukan)null))
                     .Take(1)
                     .Subscribe(async model =>
                     {
@@ -128,7 +123,7 @@ namespace Siapel.UI.ViewModels
                             await _dataService.Update(model);
                         }
 
-                        await HostScreen.Router.NavigateAndReset.Execute(new HargaViewModel(this.HostScreen, _dataService, _pangkalanService));
+                        await HostScreen.Router.NavigateAndReset.Execute(new PemasukanViewModel(this.HostScreen, _dataService));
                     });
 
                 await HostScreen.Router.Navigate.Execute(vm);

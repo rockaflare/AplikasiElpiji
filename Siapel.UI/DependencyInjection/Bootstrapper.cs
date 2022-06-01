@@ -6,6 +6,7 @@ using Siapel.Domain.Models;
 using Siapel.Domain.Services;
 using Siapel.EF;
 using Siapel.EF.DataServices.Core;
+using Siapel.EF.Services;
 using Siapel.UI.ViewModels;
 using Siapel.UI.ViewModels.DialogViewModels;
 using Siapel.UI.Views.Pages;
@@ -26,10 +27,12 @@ namespace Siapel.UI.DependencyInjection
         {
             var builder = new ContainerBuilder();
 
+            builder.RegisterType<PageNotFoundDefault>().As<IViewFor<NotFoundPageDefaultViewModel>>();
             builder.RegisterType<HomeView>().As<IViewFor<HomeViewModel>>();
             builder.RegisterType<HargaView>().As<IViewFor<HargaViewModel>>();
             builder.RegisterType<PangkalanView>().As<IViewFor<PangkalanViewModel>>();
             builder.RegisterType<TransaksiView>().As<IViewFor<TransaksiViewModel>>();
+            builder.RegisterType<PemasukanView>().As<IViewFor<PemasukanViewModel>>();
             builder.RegisterType<LaporanView>().As<IViewFor<LaporanViewModel>>();
                         
             builder.RegisterType<MainWindowViewModel>().AsSelf();
@@ -39,11 +42,12 @@ namespace Siapel.UI.DependencyInjection
             builder.RegisterType<AddPangkalan>().As<IViewFor<AddPangkalanViewModel>>();
             builder.RegisterType<HargaFieldDialog>().As<IViewFor<HargaFieldViewModel>>();
             builder.RegisterType<TransaksiFieldDialog>().As<IViewFor<TransaksiFieldViewModel>>();
+            builder.RegisterType<PemasukanFieldDialog>().As<IViewFor<PemasukanFieldViewModel>>();
 
-            builder.Register((c, p) => new PangkalanDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Pangkalan>>();
             builder.Register((c, p) => new PangkalanDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IPangkalanDataService>();
             builder.Register((c, p) => new TransaksiDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<ITransaksiDataService>();
             builder.Register((c, p) => new HargaDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Harga>>();
+            builder.Register((c, p) => new GenericDataService<Pemasukan>(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Pemasukan>>();
 
             
 
