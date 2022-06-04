@@ -14,11 +14,21 @@ namespace Siapel.UI.Documents
     public class InvoiceDocument : IDocument
     {
         private List<object>? _invoiceData;
-        private string? _tanggal;
-        public InvoiceDocument(List<object>? invoiceData = null, string? tanggal = null)
+        private List<object>? _invoiceRekapData;
+        private string _tanggal;
+        private string _invoiceGrandTotal;
+        private string _invoiceGrandTotalLP;
+        private string _invoiceGrandTotalDB;
+        private string _invoiceGrandTotalLS;
+        public InvoiceDocument(List<object>? invoiceData = null, List<object>? invoiceRekapData = null, string tanggal = null, string invoiceGrandTotal = null, string invoiceGrandTotalLP = null, string invoiceGrandTotalDB = null, string invoiceGrandTotalLS = null)
         {
             _invoiceData = invoiceData;
+            _invoiceRekapData = invoiceRekapData;
             _tanggal = tanggal;
+            _invoiceGrandTotal = invoiceGrandTotal;
+            _invoiceGrandTotalLP = invoiceGrandTotalLP;
+            _invoiceGrandTotalDB = invoiceGrandTotalDB;
+            _invoiceGrandTotalLS = invoiceGrandTotalLS;
         }
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
         public void Compose(IDocumentContainer container)
@@ -59,12 +69,16 @@ namespace Siapel.UI.Documents
             {
                 column.Spacing(5);
 
-                column.Item().Element(ComposeTables);
+                column.Item().Text("Invoice Detail");
+                column.Item().Element(ComposeInvoiceDetailTable);
+                column.Item().Text("");
+                column.Item().Text("Invoice Rekap");
+                column.Item().Element(ComposeInvoiceTotalTable);
             });
         }
-        void ComposeTables(IContainer container)
+        void ComposeInvoiceDetailTable(IContainer container)
         {
-            var textStyle = TextStyle.Default.FontSize(11).NormalWeight();
+            var textStyle = TextStyle.Default.FontFamily("Calibri").FontSize(11).Light();
             container.Table(table =>
             {
                 IContainer DefaultCellStyle(IContainer container, string backgroundColor)
@@ -93,6 +107,7 @@ namespace Siapel.UI.Documents
                     columns.RelativeColumn();
                     columns.ConstantColumn(30);
                     columns.RelativeColumn();
+                    columns.RelativeColumn();
                 });
 
                 table.Header(header =>
@@ -103,6 +118,8 @@ namespace Siapel.UI.Documents
                     header.Cell().ColumnSpan(2).Element(CellStyle).Text("50 KG");
                     header.Cell().ColumnSpan(2).Element(CellStyle).Text("12 KG");
                     header.Cell().ColumnSpan(2).Element(CellStyle).Text("5,5 KG");
+
+                    header.Cell().RowSpan(2).Element(CellStyle).Text("Total");
 
                     header.Cell().Element(CellStyle).Text("Qty");
                     header.Cell().Element(CellStyle).Text("Total");
@@ -130,6 +147,7 @@ namespace Siapel.UI.Documents
                         var tab12 = item.GetType().GetProperty("Tab12Kg").GetValue(item);
                         var jml5 = item.GetType().GetProperty("Jml5Kg").GetValue(item);
                         var tab5 = item.GetType().GetProperty("Tab5Kg").GetValue(item);
+                        var totalsemua = item.GetType().GetProperty("TotalSemua").GetValue(item);
 
                         table.Cell().Element(CellStyle).ExtendHorizontal().Text(tanggal).Style(textStyle);
                         table.Cell().Element(CellStyle).Text(pangkalan).Style(textStyle);
@@ -143,9 +161,92 @@ namespace Siapel.UI.Documents
                         table.Cell().Element(CellStyle).Text(jml5).Style(textStyle);
                         table.Cell().Element(CellStyle).Text(tab5).Style(textStyle);
 
+                        table.Cell().Element(CellStyle).Text(totalsemua).Style(textStyle);
+
                         IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.White);
                     }
                 }
+
+            });
+        }
+        void ComposeInvoiceTotalTable(IContainer container)
+        {
+            var textStyle = TextStyle.Default.FontFamily("Calibri").FontSize(11).Light();
+            container.Table(table =>
+            {
+                IContainer DefaultCellStyle(IContainer container, string backgroundColor)
+                {
+                    return container
+                        .Border(1)
+                        .BorderColor(Colors.Grey.Lighten1)
+                        .Background(backgroundColor)
+                        .PaddingVertical(2)
+                        .PaddingHorizontal(4)
+                        .AlignCenter()
+                        .AlignMiddle()
+                        .ShowOnce()
+                        ;
+                }
+
+
+
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                });
+
+                table.Header(header =>
+                {
+                    header.Cell().Element(CellStyle).Text("Tuan/ Toko");
+
+                    header.Cell().Element(CellStyle).Text("50 KG");
+                    header.Cell().Element(CellStyle).Text("12 KG");
+                    header.Cell().Element(CellStyle).Text("5,5 KG");
+
+                    header.Cell().Element(CellStyle).Text("Total");
+
+                    IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten3);
+                });
+
+                if (_invoiceRekapData != null)
+                {
+
+                    foreach (var item in _invoiceRekapData)
+                    {
+                        var pangkalan = item.GetType().GetProperty("Pangkalan").GetValue(item);
+                        var tab50 = item.GetType().GetProperty("Tab50Kg").GetValue(item);
+                        var tab12 = item.GetType().GetProperty("Tab12Kg").GetValue(item);
+                        var tab5 = item.GetType().GetProperty("Tab5Kg").GetValue(item);
+                        var totalsemua = item.GetType().GetProperty("TotalSemua").GetValue(item);
+
+                        table.Cell().Element(CellStyle).Text(pangkalan).Style(textStyle);
+
+                        table.Cell().Element(CellStyle).Text(tab50).Style(textStyle);
+
+                        table.Cell().Element(CellStyle).Text(tab12).Style(textStyle);
+
+                        table.Cell().Element(CellStyle).Text(tab5).Style(textStyle);
+
+                        table.Cell().Element(CellStyle).Text(totalsemua).Style(textStyle);
+
+                        IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.White);
+                    }
+                }
+
+                table.Footer(footer =>
+                {
+                    footer.Cell().Element(CellStyle).Text("Grand Total : ");
+                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotalLP);
+                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotalDB);
+                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotalLS);
+                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotal);
+
+                    IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten3);
+                });
 
             });
         }

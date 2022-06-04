@@ -21,16 +21,31 @@ namespace Siapel.UI.ViewModels
         private ITransaksiDataService _transaksiDataService;
         private ObservableCollection<Transaksi> _transaksi { get; } = new ObservableCollection<Transaksi>();
         private List<object> _invoiceList { get; } = new List<object>();
+        private List<object> _invoiceGrandTotalList { get; } = new List<object>();
+        private List<object> _laporanHarianLimaPuluh { get; } = new List<object>();
+        private List<object> _laporanHarianDuaBelas { get; } = new List<object>();
+        private List<object> _laporanHarianLimaSetengah { get; } = new List<object>();
+        private List<object> _totalOfTransaksiList { get; } = new List<object>();
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
         private ReactiveCommand<Unit, Unit> SaveItem { get; }
+        private ReactiveCommand<Unit, Unit> LaporanSelector { get; }
+        private string _invoiceGrandTotal;
+        private string _invoiceGrandTotalLp;
+        private string _invoiceGrandTotalDb;
+        private string _invoiceGrandTotalLs;
         string Title = "Laporan";
         public string? UrlPathSegment => Title;
         public IScreen HostScreen { get; }
         public IEnumerable<Transaksi> Transaksi => _transaksi;
         public List<string> JenisLaporan => _jenisLaporan;
         public List<object> InvoiceList => _invoiceList;
-
+        public List<object> InvoiceGrandTotalList => _invoiceGrandTotalList;
+        public List<object> LaporanHarianLimaPuluh => _laporanHarianLimaPuluh;
+        public List<object> LaporanHarianDuaBelas => _laporanHarianDuaBelas;
+        public List<object> LaporanHarianLimaSetengah => _laporanHarianLimaSetengah;
+        public List<object> TotalOfTransaksiList => _totalOfTransaksiList;
         
+
         public LaporanViewModel(IScreen screen, ITransaksiDataService transaksiDataService = null)
         {
             HostScreen = screen;
@@ -41,7 +56,9 @@ namespace Siapel.UI.ViewModels
             LoadItem.Execute();
 
             SaveItem = ReactiveCommand.Create(GenerateLaporanCommand);
+            LaporanSelector = ReactiveCommand.Create(SelectLaporan);
 
+            this.WhenAnyValue(x => x.SelectedLaporan).Select(_ => Unit.Default).InvokeCommand(LaporanSelector);
             this.WhenAnyValue(x => x.SaveDestinationPath).Select(_ => Unit.Default).InvokeCommand(SaveItem);
         }
 
@@ -56,10 +73,19 @@ namespace Siapel.UI.ViewModels
                     _transaksi.Add(item);
                 }                
             }
+        }
+        private bool _isInvoice;
+        public bool IsInvoice
+        {
+            get => _isInvoice;
+            set => this.RaiseAndSetIfChanged(ref _isInvoice, value);
+        }
+        private void InvoiceCreator()
+        {
             if (_transaksi != null)
             {
                 var listtes = _transaksi
-                    .Where(x =>  x.JenisBayar == "Invoice" && x.Status != "Lunas" )
+                    .Where(x => x.JenisBayar == "Invoice" && x.Status != "Lunas")
                     .GroupBy(t => new { t.Pangkalan, t.Tanggal })
                     .Select(n => new
                     {
@@ -71,13 +97,144 @@ namespace Siapel.UI.ViewModels
                         Tab12Kg = n.Where(x => x.Item == "12 KG").Sum(x => x.Total).ToString("Rp #,#"),
                         Jml5Kg = n.Where(x => x.Item == "5,5 KG").Sum(x => x.Jumlah),
                         Tab5Kg = n.Where(x => x.Item == "5,5 KG").Sum(x => x.Total).ToString("Rp #,#"),
-                        TotalSemua = n.Sum(c => c.Total)
-                    })                    
+                        TotalSemua = n.Sum(c => c.Total).ToString("Rp #,#")
+                        
+                    })
+                    .OrderBy(t => t.Pangkalan)
                     .ToList();
-
+                _invoiceList.Clear();
                 foreach (var item in listtes)
                 {
                     _invoiceList.Add(item);
+                }
+                var grandTotalList = _transaksi
+                    .Where(x => x.JenisBayar == "Invoice" && x.Status != "Lunas")
+                    .GroupBy(t => new { t.Pangkalan })
+                    .Select(n => new
+                    {
+                        Pangkalan = n.Select(x => x.Pangkalan.Nama).First(),
+                        Tab50Kg = n.Where(x => x.Item == "50 KG").Sum(x => x.Total).ToString("Rp #,#"),
+                        Tab12Kg = n.Where(x => x.Item == "12 KG").Sum(x => x.Total).ToString("Rp #,#"),
+                        Tab5Kg = n.Where(x => x.Item == "5,5 KG").Sum(x => x.Total).ToString("Rp #,#"),
+                        TotalSemua = n.Sum(c => c.Total).ToString("Rp #,#"),
+                        TotalInt = n.Sum(c => c.Total)
+                    })
+                    .OrderBy(t => t.Pangkalan)
+                    .ToList();
+                _invoiceGrandTotalList.Clear();
+                foreach (var item in grandTotalList)
+                {
+                    _invoiceGrandTotalList.Add(item);
+                }
+
+                var grandTotalInvoice = _transaksi                    
+                    .Where(x => x.JenisBayar == "Invoice" && x.Status != "Lunas")
+                    .Sum(t => t.Total)
+                    ;
+                var grandTotalLP = _transaksi
+                    .Where(x => x.JenisBayar == "Invoice" && x.Status != "Lunas" && x.Item == "50 KG")
+                    .Sum(t => t.Total)
+                    ;
+                var grandTotalDB = _transaksi
+                    .Where(x => x.JenisBayar == "Invoice" && x.Status != "Lunas" && x.Item == "12 KG")
+                    .Sum(t => t.Total)
+                    ;
+                var grandTotalLS = _transaksi
+                    .Where(x => x.JenisBayar == "Invoice" && x.Status != "Lunas" && x.Item == "5,5 KG")
+                    .Sum(t => t.Total)
+                    ;
+                _invoiceGrandTotal = grandTotalInvoice != null ? grandTotalInvoice.ToString("Rp #,#") : "";
+                _invoiceGrandTotalLp = grandTotalLP != null ? grandTotalLP.ToString("Rp #,#") : "";
+                _invoiceGrandTotalDb = grandTotalDB != null ? grandTotalDB.ToString("Rp #,#") : "";
+                _invoiceGrandTotalLs = grandTotalLS != null ? grandTotalLS.ToString("Rp #,#") : "";
+            }
+        }
+        private void LapHarianCreator()
+        {
+            if (_transaksi != null)
+            {
+                var limaPuluhList = _transaksi
+                    .Where(x => x.Item == "50 KG" && x.Tanggal == SelectedTanggalLaporan.Date)
+                    .GroupBy(t => new { t.Pangkalan })
+                    .Select(n => new
+                    {
+                        Pangkalan = n.Select(x => x.Pangkalan.Nama).First(),
+                        Jumlah = n.Sum(x => x.Jumlah),
+                        Harga = n.Select(x => x.Harga).First().ToString("Rp #,#"),
+                        Tunai = n.Where(x => x.JenisBayar == "Tunai").Sum(x => x.Total).ToString("Rp #,#"),
+                        Transfer = n.Where(x => x.JenisBayar == "Transfer").Sum(x => x.Total).ToString("Rp #,#"),
+                        Invoice = n.Where(x => x.JenisBayar == "Invoice").Sum(x => x.Total).ToString("Rp #,#"),
+                        TotalSemua = n.Sum(c => c.Total).ToString("Rp #,#")
+
+                    })
+                    .OrderBy(t => t.Pangkalan)
+                    .ToList();
+                _laporanHarianLimaPuluh.Clear();
+                foreach (var item in limaPuluhList)
+                {
+                    _laporanHarianLimaPuluh.Add(item);
+                }
+                var duaBelasList = _transaksi
+                   .Where(x => x.Item == "12 KG" && x.Tanggal == SelectedTanggalLaporan.Date)
+                   .GroupBy(t => new { t.Pangkalan })
+                   .Select(n => new
+                   {
+                       Pangkalan = n.Select(x => x.Pangkalan.Nama).First(),
+                       Jumlah = n.Sum(x => x.Jumlah),
+                       Harga = n.Select(x => x.Harga).First().ToString("Rp #,#"),
+                       Tunai = n.Where(x => x.JenisBayar == "Tunai").Sum(x => x.Total).ToString("Rp #,#"),
+                       Transfer = n.Where(x => x.JenisBayar == "Transfer").Sum(x => x.Total).ToString("Rp #,#"),
+                       Invoice = n.Where(x => x.JenisBayar == "Invoice").Sum(x => x.Total).ToString("Rp #,#"),
+                       TotalSemua = n.Sum(c => c.Total).ToString("Rp #,#")
+
+                   })
+                   .OrderBy(t => t.Pangkalan)
+                   .ToList();
+                _laporanHarianDuaBelas.Clear();
+                foreach (var item in limaPuluhList)
+                {
+                    _laporanHarianDuaBelas.Add(item);
+                }
+                var limaSetengahList = _transaksi
+                    .Where(x => x.Item == "50 KG" && x.Tanggal == SelectedTanggalLaporan.Date)
+                    .GroupBy(t => new { t.Pangkalan })
+                    .Select(n => new
+                    {
+                        Pangkalan = n.Select(x => x.Pangkalan.Nama).First(),
+                        Jumlah = n.Sum(x => x.Jumlah),
+                        Harga = n.Select(x => x.Harga).First().ToString("Rp #,#"),
+                        Tunai = n.Where(x => x.JenisBayar == "Tunai").Sum(x => x.Total).ToString("Rp #,#"),
+                        Transfer = n.Where(x => x.JenisBayar == "Transfer").Sum(x => x.Total).ToString("Rp #,#"),
+                        Invoice = n.Where(x => x.JenisBayar == "Invoice").Sum(x => x.Total).ToString("Rp #,#"),
+                        TotalSemua = n.Sum(c => c.Total).ToString("Rp #,#")
+
+                    })
+                    .OrderBy(t => t.Pangkalan)
+                    .ToList();
+                _laporanHarianLimaSetengah.Clear();
+                foreach (var item in limaPuluhList)
+                {
+                    _laporanHarianLimaSetengah.Add(item);
+                }
+                var totalOfTransaksiList = _transaksi
+                    .Where(x => x.Tanggal == SelectedTanggalLaporan.Date)
+                    .GroupBy(t => t.Item)
+                    .Select(n => new
+                    {
+                        Item = n.Select(x => x.Item).First(),
+                        Jumlah = n.Sum(x => x.Jumlah),
+                        Harga = n.Select(x => x.Harga).First().ToString("Rp #,#"),
+                        Tunai = n.Where(x => x.JenisBayar == "Tunai").Sum(x => x.Total).ToString("Rp #,#"),
+                        Transfer = n.Where(x => x.JenisBayar == "Transfer").Sum(x => x.Total).ToString("Rp #,#"),
+                        Invoice = n.Where(x => x.JenisBayar == "Invoice").Sum(x => x.Total).ToString("Rp #,#"),
+                        TotalSemua = n.Sum(c => c.Total).ToString("Rp #,#")
+
+                    })
+                    .ToList();
+                _totalOfTransaksiList.Clear();
+                foreach (var item in totalOfTransaksiList)
+                {
+                    _totalOfTransaksiList.Add(item);
                 }
             }
         }
@@ -101,18 +258,40 @@ namespace Siapel.UI.ViewModels
             set => this.RaiseAndSetIfChanged(ref _saveDestinationPath, value);
         }
 
-        private void GenerateInvoice()
+        private void SelectLaporan()
         {
-            
+            if (SelectedLaporan != null)
+            {
+                if (SelectedLaporan == "Invoice")
+                {
+                    InvoiceCreator();
+                }
+                else if(SelectedLaporan == "Harian")
+                {
+                    LapHarianCreator();
+                }
+            }
         }
 
         public void GenerateLaporanCommand()
-        {
-            var document = new InvoiceDocument(InvoiceList, SelectedTanggalLaporan.Date.ToLongDateString());
-            if (!string.IsNullOrWhiteSpace(SaveDestinationPath))
+        {            
+            if (SelectedLaporan != null && !string.IsNullOrWhiteSpace(SaveDestinationPath))
             {
-                document.GeneratePdf(SaveDestinationPath);
-            }            
+                var invoiceDocument = new InvoiceDocument(InvoiceList, InvoiceGrandTotalList, SelectedTanggalLaporan.Date.ToLongDateString(), _invoiceGrandTotal, _invoiceGrandTotalLp, _invoiceGrandTotalDb, _invoiceGrandTotalLs);
+                var harianDocument = new NewLaporanHarianDocument(LaporanHarianLimaPuluh, LaporanHarianDuaBelas, LaporanHarianLimaSetengah, SelectedTanggalLaporan.Date.ToLongDateString(), TotalOfTransaksiList);
+
+                switch (SelectedLaporan)
+                {
+                    case "Invoice":
+                        invoiceDocument.GeneratePdf(SaveDestinationPath);
+                        break;
+                    case "Harian":
+                        harianDocument.GeneratePdf(SaveDestinationPath);
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         

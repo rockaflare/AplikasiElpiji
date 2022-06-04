@@ -30,7 +30,7 @@
 				</ui:NavigationViewItem>
 				<ui:NavigationViewItem Content="Transaksi" Icon="Tag" Tag="Transaksi"/>
 				<ui:NavigationViewItem Content="Pemasukan" Icon="Clipboard" Tag="Pemasukan"/>
-				<ui:NavigationViewItem Content="Stok" Icon="ClipboardCode" Tag="Stok"/>
+				<ui:NavigationViewItem Content="In / Out" Icon="ClipboardCode" Tag="InOut"/>
 				<ui:NavigationViewItem Content="Tabung Bocor" Icon="New" Tag="TabungBocor"/>
 				<ui:NavigationViewItem Content="Titip Tabung" Icon="Orientation" Tag="TitipTabung"/>
 				<ui:NavigationViewItem Content="Laporan" Icon="Calculator" Tag="Laporan"/>

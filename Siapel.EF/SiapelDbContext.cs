@@ -29,7 +29,7 @@ namespace Siapel.EF
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Pangkalan>().HasData(
-                new Pangkalan { Id = 1, Nama = "UMUM", Status = "Aktif", Perma = false },
+                new Pangkalan { Id = 1, Nama = "DEFAULT", Status = "Aktif", Perma = false },
                 new Pangkalan { Id = 2, Nama = "WIJAYA", Status = "Aktif", Perma = true },
                 new Pangkalan { Id = 3, Nama = "NIHAYAH", Status = "Aktif", Perma = true });
             modelBuilder.Entity<Harga>().HasData(
