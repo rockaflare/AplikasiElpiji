@@ -25,7 +25,7 @@ namespace Siapel.UI.ViewModels
         private List<object> _laporanHarianLimaPuluh { get; } = new List<object>();
         private List<object> _laporanHarianDuaBelas { get; } = new List<object>();
         private List<object> _laporanHarianLimaSetengah { get; } = new List<object>();
-        private List<object> _totalOfTransaksiList { get; } = new List<object>();
+        private List<LaporanHarian> _totalOfTransaksiList { get; } = new List<LaporanHarian>();
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
         private ReactiveCommand<Unit, Unit> SaveItem { get; }
         private ReactiveCommand<Unit, Unit> LaporanSelector { get; }
@@ -43,7 +43,7 @@ namespace Siapel.UI.ViewModels
         public List<object> LaporanHarianLimaPuluh => _laporanHarianLimaPuluh;
         public List<object> LaporanHarianDuaBelas => _laporanHarianDuaBelas;
         public List<object> LaporanHarianLimaSetengah => _laporanHarianLimaSetengah;
-        public List<object> TotalOfTransaksiList => _totalOfTransaksiList;
+        public List<LaporanHarian> TotalOfTransaksiList => _totalOfTransaksiList;
         
 
         public LaporanViewModel(IScreen screen, ITransaksiDataService transaksiDataService = null)
@@ -51,14 +51,14 @@ namespace Siapel.UI.ViewModels
             HostScreen = screen;
             _transaksiDataService = transaksiDataService;
             _jenisLaporan = new List<string>() { "Invoice", "Harian"};
-            SelectedTanggalLaporan = DateTimeOffset.Now;
+            SelectedTanggalLaporan = DateTimeOffset.Now.AddDays(-1);
             LoadItem = ReactiveCommand.CreateFromTask(LaporanUpdater);
             LoadItem.Execute();
 
             SaveItem = ReactiveCommand.Create(GenerateLaporanCommand);
             LaporanSelector = ReactiveCommand.Create(SelectLaporan);
 
-            this.WhenAnyValue(x => x.SelectedLaporan).Select(_ => Unit.Default).InvokeCommand(LaporanSelector);
+            this.WhenAnyValue(x => x.SelectedLaporan, x => x.SelectedTanggalLaporan).Select(_ => Unit.Default).InvokeCommand(LaporanSelector);
             this.WhenAnyValue(x => x.SaveDestinationPath).Select(_ => Unit.Default).InvokeCommand(SaveItem);
         }
 
@@ -155,7 +155,7 @@ namespace Siapel.UI.ViewModels
             {
                 var limaPuluhList = _transaksi
                     .Where(x => x.Item == "50 KG" && x.Tanggal == SelectedTanggalLaporan.Date)
-                    .GroupBy(t => new { t.Pangkalan })
+                    .GroupBy(t => t.Pangkalan)
                     .Select(n => new
                     {
                         Pangkalan = n.Select(x => x.Pangkalan.Nama).First(),
@@ -165,9 +165,7 @@ namespace Siapel.UI.ViewModels
                         Transfer = n.Where(x => x.JenisBayar == "Transfer").Sum(x => x.Total).ToString("Rp #,#"),
                         Invoice = n.Where(x => x.JenisBayar == "Invoice").Sum(x => x.Total).ToString("Rp #,#"),
                         TotalSemua = n.Sum(c => c.Total).ToString("Rp #,#")
-
                     })
-                    .OrderBy(t => t.Pangkalan)
                     .ToList();
                 _laporanHarianLimaPuluh.Clear();
                 foreach (var item in limaPuluhList)
@@ -176,7 +174,7 @@ namespace Siapel.UI.ViewModels
                 }
                 var duaBelasList = _transaksi
                    .Where(x => x.Item == "12 KG" && x.Tanggal == SelectedTanggalLaporan.Date)
-                   .GroupBy(t => new { t.Pangkalan })
+                   .GroupBy(t => t.Pangkalan)
                    .Select(n => new
                    {
                        Pangkalan = n.Select(x => x.Pangkalan.Nama).First(),
@@ -191,13 +189,13 @@ namespace Siapel.UI.ViewModels
                    .OrderBy(t => t.Pangkalan)
                    .ToList();
                 _laporanHarianDuaBelas.Clear();
-                foreach (var item in limaPuluhList)
+                foreach (var item in duaBelasList)
                 {
                     _laporanHarianDuaBelas.Add(item);
                 }
                 var limaSetengahList = _transaksi
-                    .Where(x => x.Item == "50 KG" && x.Tanggal == SelectedTanggalLaporan.Date)
-                    .GroupBy(t => new { t.Pangkalan })
+                    .Where(x => x.Item == "5,5 KG" && x.Tanggal == SelectedTanggalLaporan.Date)
+                    .GroupBy(t => t.Pangkalan)
                     .Select(n => new
                     {
                         Pangkalan = n.Select(x => x.Pangkalan.Nama).First(),
@@ -212,14 +210,14 @@ namespace Siapel.UI.ViewModels
                     .OrderBy(t => t.Pangkalan)
                     .ToList();
                 _laporanHarianLimaSetengah.Clear();
-                foreach (var item in limaPuluhList)
+                foreach (var item in limaSetengahList)
                 {
                     _laporanHarianLimaSetengah.Add(item);
                 }
                 var totalOfTransaksiList = _transaksi
                     .Where(x => x.Tanggal == SelectedTanggalLaporan.Date)
                     .GroupBy(t => t.Item)
-                    .Select(n => new
+                    .Select(n => new LaporanHarian()
                     {
                         Item = n.Select(x => x.Item).First(),
                         Jumlah = n.Sum(x => x.Jumlah),
@@ -227,8 +225,11 @@ namespace Siapel.UI.ViewModels
                         Tunai = n.Where(x => x.JenisBayar == "Tunai").Sum(x => x.Total).ToString("Rp #,#"),
                         Transfer = n.Where(x => x.JenisBayar == "Transfer").Sum(x => x.Total).ToString("Rp #,#"),
                         Invoice = n.Where(x => x.JenisBayar == "Invoice").Sum(x => x.Total).ToString("Rp #,#"),
-                        TotalSemua = n.Sum(c => c.Total).ToString("Rp #,#")
-
+                        Total = n.Sum(c => c.Total).ToString("Rp #,#"),
+                        TunaiInt = n.Where(x => x.JenisBayar == "Tunai").Sum(x => x.Total),
+                        TransferInt = n.Where(x => x.JenisBayar == "Transfer").Sum(x => x.Total),
+                        InvoiceInt = n.Where(x => x.JenisBayar == "Invoice").Sum(x => x.Total),
+                        TotalInt = n.Sum(x => x.Total)
                     })
                     .ToList();
                 _totalOfTransaksiList.Clear();
@@ -278,7 +279,7 @@ namespace Siapel.UI.ViewModels
             if (SelectedLaporan != null && !string.IsNullOrWhiteSpace(SaveDestinationPath))
             {
                 var invoiceDocument = new InvoiceDocument(InvoiceList, InvoiceGrandTotalList, SelectedTanggalLaporan.Date.ToLongDateString(), _invoiceGrandTotal, _invoiceGrandTotalLp, _invoiceGrandTotalDb, _invoiceGrandTotalLs);
-                var harianDocument = new NewLaporanHarianDocument(LaporanHarianLimaPuluh, LaporanHarianDuaBelas, LaporanHarianLimaSetengah, SelectedTanggalLaporan.Date.ToLongDateString(), TotalOfTransaksiList);
+                var harianDocument = new NewLaporanHarianDocument(LaporanHarianLimaPuluh, LaporanHarianDuaBelas, LaporanHarianLimaSetengah, SelectedTanggalLaporan.Date.ToLongDateString(), TotalOfTransaksiList );
 
                 switch (SelectedLaporan)
                 {

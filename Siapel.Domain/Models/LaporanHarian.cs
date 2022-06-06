@@ -13,6 +13,11 @@ namespace Siapel.Domain.Models
         public string Harga { get; set; }
         public string Tunai { get; set; }
         public string Transfer { get; set; }
-        
+        public string Invoice { get; set; }
+        public string Total { get; set; }
+        public int TunaiInt { get; set; }
+        public int TransferInt { get; set; }
+        public int InvoiceInt { get; set; }
+        public int TotalInt { get; set; }
     }
 }
