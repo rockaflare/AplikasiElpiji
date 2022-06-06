@@ -13,6 +13,5 @@ namespace Siapel.Domain.Models
         public int? InLimaPuluh { get; set; }
         public int? InDuaBelas { get; set; }
         public int? InLimaSetengah { get; set; }
-
     }
 }

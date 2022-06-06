@@ -15,14 +15,16 @@ namespace Siapel.UI.ViewModels
         public RoutingState Router { get; } = new RoutingState();
         private readonly IDataService<Harga> _hargaService;
         private readonly IDataService<Pemasukan> _pemasukanService;
+        private readonly IDataService<StokAwal> _stokAwalService;
         private readonly IPangkalanDataService _pangkalanService;
         private readonly ITransaksiDataService _transaksiService;
-        public MainWindowViewModel(IDataService<Harga> hargaService, IDataService<Pemasukan> pemasukanService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService)
+        public MainWindowViewModel(IDataService<Harga> hargaService, IDataService<StokAwal> stokAwalDataService, IDataService<Pemasukan> pemasukanService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService)
         {
             _hargaService = hargaService;
             _pemasukanService = pemasukanService;
             _pangkalanService = pangkalanDataService;
             _transaksiService = transaksiDataService;
+            _stokAwalService = stokAwalDataService;
         }
 
 
@@ -52,11 +54,17 @@ namespace Siapel.UI.ViewModels
                     case "Pangkalan":
                         ShowPangkalan();
                         break;
+                    case "StokAwal":
+                        ShowStokAwal();
+                        break;
                     case "Pemasukan":
                         ShowPemasukan();
                         break;
                     case "Transaksi":
                         ShowTransaksi();
+                        break;
+                    case "InOut":
+                        ShowInOut();
                         break;
                     case "Laporan":
                         ShowLaporan();
@@ -84,7 +92,10 @@ namespace Siapel.UI.ViewModels
         {
             Router.Navigate.Execute(new PangkalanViewModel(this, _pangkalanService));
         }
-
+        private void ShowStokAwal()
+        {
+            Router.Navigate.Execute(new StokAwalViewModel(this, _stokAwalService));
+        }
         private void ShowTransaksi()
         {
             Router.Navigate.Execute(new TransaksiViewModel(this, _transaksiService, _pangkalanService, _hargaService));
@@ -92,6 +103,10 @@ namespace Siapel.UI.ViewModels
         private void ShowPemasukan()
         {
             Router.Navigate.Execute(new PemasukanViewModel(this, _pemasukanService));
+        }
+        private void ShowInOut()
+        {
+            Router.Navigate.Execute(new InOutViewModel(this));
         }
         private void ShowLaporan()
         {

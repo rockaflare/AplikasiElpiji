@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Siapel.EF;
 
@@ -10,9 +11,10 @@ using Siapel.EF;
 namespace Siapel.EF.Migrations
 {
     [DbContext(typeof(SiapelDbContext))]
-    partial class SiapelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220606065015_add-stokawal-table")]
+    partial class addstokawaltable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
@@ -49,7 +51,7 @@ namespace Siapel.EF.Migrations
                         {
                             Id = 1,
                             PangkalanId = 1,
-                            TanggalUbah = new DateTime(2022, 6, 6, 15, 45, 26, 385, DateTimeKind.Local).AddTicks(6900),
+                            TanggalUbah = new DateTime(2022, 6, 6, 14, 50, 15, 587, DateTimeKind.Local).AddTicks(2151),
                             TbDuaBelas = 195000,
                             TbLimaPuluh = 1012000,
                             TbLimaSetengah = 93000
@@ -157,7 +159,7 @@ namespace Siapel.EF.Migrations
                             InitDuaBelas = 50,
                             InitLimaPuluh = 20,
                             InitLimaSetengah = 100,
-                            Tanggal = new DateTimeOffset(new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 8, 0, 0, 0))
+                            Tanggal = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0))
                         });
                 });
 

@@ -26,10 +26,11 @@
 					<ui:NavigationViewItem.MenuItems>
 						<ui:NavigationViewItem Content="Pangkalan" Icon="Contact" Tag="Pangkalan"/>
 						<ui:NavigationViewItem Content="Harga" Icon="PhoneBook" Tag="Harga"/>
+						<ui:NavigationViewItem Content="Stok Awal" Icon="Star" Tag="StokAwal"/>
 					</ui:NavigationViewItem.MenuItems>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem Content="Transaksi" Icon="Tag" Tag="Transaksi"/>
 				<ui:NavigationViewItem Content="Pemasukan" Icon="Clipboard" Tag="Pemasukan"/>
+				<ui:NavigationViewItem Content="Transaksi" Icon="Tag" Tag="Transaksi"/>				
 				<ui:NavigationViewItem Content="In / Out" Icon="ClipboardCode" Tag="InOut"/>
 				<ui:NavigationViewItem Content="Tabung Bocor" Icon="New" Tag="TabungBocor"/>
 				<ui:NavigationViewItem Content="Titip Tabung" Icon="Orientation" Tag="TitipTabung"/>
@@ -39,7 +40,6 @@
 				<rxui:RoutedViewHost Router="{Binding Router}" PageTransition="{x:Null}"/>
 			</ui:NavigationView.Content>
 		</ui:NavigationView>
-
 	</Grid>
 
 </Window>
