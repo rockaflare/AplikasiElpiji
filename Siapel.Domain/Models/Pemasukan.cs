@@ -10,8 +10,7 @@ namespace Siapel.Domain.Models
     {
         public int Id { get; set; }
         public DateTimeOffset? Tanggal { get; set; }
-        public int? InLimaPuluh { get; set; }
-        public int? InDuaBelas { get; set; }
-        public int? InLimaSetengah { get; set; }
+        public string Item { get; set; }
+        public int? Jumlah { get; set; }
     }
 }

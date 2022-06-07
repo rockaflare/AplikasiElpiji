@@ -21,6 +21,7 @@ namespace Siapel.EF
         public DbSet<Transaksi> Transaksi { get; set; }
         public DbSet<Pemasukan> Pemasukan { get; set; }
         public DbSet<StokAwal> StokAwal { get; set; }
+        public DbSet<TransaksiLog> TransaksiLogs { get; set; }
         //public DbSet<Pengeluaran> Pengeluaran { get; set; }
         //public DbSet<StokGudang> StokGudang { get; set; }
         //public DbSet<StokReal> StokReal { get; set; }
@@ -38,7 +39,7 @@ namespace Siapel.EF
                 );
             modelBuilder.Entity<StokAwal>().HasData(new StokAwal
             {
-                Id = 1, Tanggal = new DateTimeOffset(2022, 1, 1, 0, 0, 0, new TimeSpan(8, 0, 0)), InitLimaPuluh = 20, InitDuaBelas = 50, InitLimaSetengah = 100, CanEdit = false
+                Id = 1, Tanggal = DateTimeOffset.Now, InitLimaPuluh = 20, InitDuaBelas = 50, InitLimaSetengah = 100, CanEdit = false
             });
         }
     }

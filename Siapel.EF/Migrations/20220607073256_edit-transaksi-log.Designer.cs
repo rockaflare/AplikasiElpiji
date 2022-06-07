@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Siapel.EF;
 
@@ -10,9 +11,10 @@ using Siapel.EF;
 namespace Siapel.EF.Migrations
 {
     [DbContext(typeof(SiapelDbContext))]
-    partial class SiapelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220607073256_edit-transaksi-log")]
+    partial class edittransaksilog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
@@ -49,7 +51,7 @@ namespace Siapel.EF.Migrations
                         {
                             Id = 1,
                             PangkalanId = 1,
-                            TanggalUbah = new DateTime(2022, 6, 7, 15, 52, 12, 528, DateTimeKind.Local).AddTicks(1193),
+                            TanggalUbah = new DateTime(2022, 6, 7, 15, 32, 56, 47, DateTimeKind.Local).AddTicks(5070),
                             TbDuaBelas = 195000,
                             TbLimaPuluh = 1012000,
                             TbLimaSetengah = 93000
@@ -107,11 +109,13 @@ namespace Siapel.EF.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Item")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("InDuaBelas")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<int?>("Jumlah")
+                    b.Property<int?>("InLimaPuluh")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("InLimaSetengah")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset?>("Tanggal")
@@ -155,7 +159,7 @@ namespace Siapel.EF.Migrations
                             InitDuaBelas = 50,
                             InitLimaPuluh = 20,
                             InitLimaSetengah = 100,
-                            Tanggal = new DateTimeOffset(new DateTime(2022, 6, 7, 15, 52, 12, 528, DateTimeKind.Unspecified).AddTicks(1262), new TimeSpan(0, 8, 0, 0, 0))
+                            Tanggal = new DateTimeOffset(new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 8, 0, 0, 0))
                         });
                 });
 

@@ -6,16 +6,13 @@ using System.Threading.Tasks;
 
 namespace Siapel.Domain.Models
 {
-    public class InOutStok
+    public class TransaksiLog
     {
         public int Id { get; set; }
         public DateTimeOffset Tanggal { get; set; }
         public string Item { get; set; }
-        public int StokAwal { get; set; }
-        public int Masuk { get; set; }
-        public int Penjualan { get; set; }
-        public int TitipanBocor { get; set; }
-        public int AmbilBocor { get; set; }
-        public int StokAkhir { get; set; }
+        public string Tipe { get; set; }
+        public int Jumlah { get; set; }
+        public int SisaStok { get; set; }
     }
 }
