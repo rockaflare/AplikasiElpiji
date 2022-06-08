@@ -16,15 +16,17 @@ namespace Siapel.UI.ViewModels
         private readonly IDataService<Harga> _hargaService;
         private readonly IDataService<Pemasukan> _pemasukanService;
         private readonly IDataService<StokAwal> _stokAwalService;
+        private readonly IDataService<TransaksiLog> _transaksiLogService;
         private readonly IPangkalanDataService _pangkalanService;
         private readonly ITransaksiDataService _transaksiService;
-        public MainWindowViewModel(IDataService<Harga> hargaService, IDataService<StokAwal> stokAwalDataService, IDataService<Pemasukan> pemasukanService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService)
+        public MainWindowViewModel(IDataService<Harga> hargaService, IDataService<StokAwal> stokAwalDataService, IDataService<Pemasukan> pemasukanService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService, IDataService<TransaksiLog> transaksiLogService)
         {
             _hargaService = hargaService;
             _pemasukanService = pemasukanService;
             _pangkalanService = pangkalanDataService;
             _transaksiService = transaksiDataService;
             _stokAwalService = stokAwalDataService;
+            _transaksiLogService = transaksiLogService;
         }
 
 
@@ -102,11 +104,11 @@ namespace Siapel.UI.ViewModels
         }
         private void ShowPemasukan()
         {
-            Router.Navigate.Execute(new PemasukanViewModel(this, _pemasukanService));
+            Router.Navigate.Execute(new PemasukanViewModel(this, _pemasukanService, _transaksiLogService, _stokAwalService));
         }
         private void ShowInOut()
         {
-            Router.Navigate.Execute(new InOutViewModel(this, _stokAwalService, _pemasukanService, _transaksiService));
+            Router.Navigate.Execute(new InOutViewModel(this, _stokAwalService, _pemasukanService, _transaksiService, _transaksiLogService));
         }
         private void ShowLaporan()
         {

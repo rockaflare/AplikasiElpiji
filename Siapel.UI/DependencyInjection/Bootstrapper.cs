@@ -51,6 +51,7 @@ namespace Siapel.UI.DependencyInjection
             builder.Register((c, p) => new HargaDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Harga>>();
             builder.Register((c, p) => new GenericDataService<Pemasukan>(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Pemasukan>>();
             builder.Register((c, p) => new GenericDataService<StokAwal>(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<StokAwal>>();
+            builder.Register((c, p) => new GenericDataService<TransaksiLog>(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<TransaksiLog>>();
 
 
 

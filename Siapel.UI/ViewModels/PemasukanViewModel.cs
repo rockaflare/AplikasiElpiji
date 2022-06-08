@@ -15,9 +15,13 @@ using System.Threading.Tasks;
 namespace Siapel.UI.ViewModels
 {
     public class PemasukanViewModel : ReactiveObject, IRoutableViewModel
-    {
+    {//TODO
         private IDataService<Pemasukan> _dataService;
+        private IDataService<TransaksiLog> _transaksiLogService;
+        private IDataService<StokAwal> _stokAwalService;
         private ObservableCollection<Pemasukan> _pemasukan { get; } = new ObservableCollection<Pemasukan>();
+        private List<StokAwal> _stokAwalList { get; } = new List<StokAwal>();
+        private List<TransaksiLog> _transaksiLogList { get; } = new List<TransaksiLog>();
         public string? UrlPathSegment => "Pemasukan";
 
         public IScreen HostScreen { get; }
@@ -26,10 +30,12 @@ namespace Siapel.UI.ViewModels
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
         private ReactiveCommand<Unit, Unit> DeleteItem { get; }
 
-        public PemasukanViewModel(IScreen screen, IDataService<Pemasukan> dataService)
+        public PemasukanViewModel(IScreen screen, IDataService<Pemasukan> dataService, IDataService<TransaksiLog> transaksiLogService, IDataService<StokAwal> stokAwalService)
         {
             HostScreen = screen;
             _dataService = dataService;
+            _stokAwalService = stokAwalService;
+            _transaksiLogService = transaksiLogService;
             LoadItem = ReactiveCommand.CreateFromTask(PemasukanUpdater);
             LoadItem.Execute();
             DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
@@ -46,6 +52,7 @@ namespace Siapel.UI.ViewModels
                     _pemasukan.Add(item);
                 }
             }
+            PopulateStockSources();
         }
 
         private Pemasukan _selectedPemasukan;
@@ -85,7 +92,35 @@ namespace Siapel.UI.ViewModels
                 await dialog.ShowAsync();
             }
         }
+        private int? GetLastStock(string item)
+        {
+            int? resultStock = 0;
+            if (_transaksiLogList.Count > 0)
+            {
+                resultStock = _transaksiLogList.OrderByDescending(x => x.Tanggal).First(x => x.Item == item).SisaStok;
+            }
+            else
+            {
+                resultStock = _stokAwalList.First(x => x.Item == item).Jumlah;
+            }
+            return resultStock;
+        }
+        private async void PopulateStockSources()
+        {
+            _stokAwalList.Clear();
+            _transaksiLogList.Clear();
+            var stoklist = await _stokAwalService.GetAll();
+            foreach (var item in stoklist)
+            {
+                _stokAwalList.Add(item);
+            }
 
+            var transloglist = await _transaksiLogService.GetAll();
+            foreach (var item in transloglist)
+            {
+                _transaksiLogList.Add(item);
+            }
+        }
         public async void AddCommand()
         {
             var vm = new PemasukanFieldViewModel(this.HostScreen, "Tambah Pemasukan");
@@ -99,9 +134,10 @@ namespace Siapel.UI.ViewModels
                     if (model != null)
                     {
                         await _dataService.Create(model);
+                        await _transaksiLogService.Create(new TransaksiLog { Item = model.Item, SisaStok = GetLastStock(model.Item) + model.Jumlah, Tanggal = model.Tanggal});
                     }
 
-                    await HostScreen.Router.NavigateAndReset.Execute(new PemasukanViewModel(this.HostScreen, _dataService));
+                    await HostScreen.Router.NavigateAndReset.Execute(new PemasukanViewModel(this.HostScreen, _dataService, _transaksiLogService, _stokAwalService));
                 });
 
             await HostScreen.Router.Navigate.Execute(vm);
@@ -123,7 +159,7 @@ namespace Siapel.UI.ViewModels
                             await _dataService.Update(model);
                         }
 
-                        await HostScreen.Router.NavigateAndReset.Execute(new PemasukanViewModel(this.HostScreen, _dataService));
+                        await HostScreen.Router.NavigateAndReset.Execute(new PemasukanViewModel(this.HostScreen, _dataService, _transaksiLogService, _stokAwalService));
                     });
 
                 await HostScreen.Router.Navigate.Execute(vm);

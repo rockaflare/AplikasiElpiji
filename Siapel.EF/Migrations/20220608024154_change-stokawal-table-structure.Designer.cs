@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Siapel.EF;
 
@@ -10,9 +11,10 @@ using Siapel.EF;
 namespace Siapel.EF.Migrations
 {
     [DbContext(typeof(SiapelDbContext))]
-    partial class SiapelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220608024154_change-stokawal-table-structure")]
+    partial class changestokawaltablestructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
@@ -49,7 +51,7 @@ namespace Siapel.EF.Migrations
                         {
                             Id = 1,
                             PangkalanId = 1,
-                            TanggalUbah = new DateTime(2022, 6, 8, 13, 30, 38, 430, DateTimeKind.Local).AddTicks(2936),
+                            TanggalUbah = new DateTime(2022, 6, 8, 10, 41, 54, 341, DateTimeKind.Local).AddTicks(5626),
                             TbDuaBelas = 195000,
                             TbLimaPuluh = 1012000,
                             TbLimaSetengah = 93000
@@ -225,10 +227,17 @@ namespace Siapel.EF.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Jumlah")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("SisaStok")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset>("Tanggal")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Tipe")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

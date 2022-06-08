@@ -22,11 +22,6 @@ namespace Siapel.EF
         public DbSet<Pemasukan> Pemasukan { get; set; }
         public DbSet<StokAwal> StokAwal { get; set; }
         public DbSet<TransaksiLog> TransaksiLogs { get; set; }
-        //public DbSet<Pengeluaran> Pengeluaran { get; set; }
-        //public DbSet<StokGudang> StokGudang { get; set; }
-        //public DbSet<StokReal> StokReal { get; set; }
-        //public DbSet<TabungBocor> TabungBocor { get; set; }
-        //public DbSet<TitipTabung> TitipTabung { get;set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,10 +32,11 @@ namespace Siapel.EF
             modelBuilder.Entity<Harga>().HasData(
                 new { Id = 1, PangkalanId = 1, TbLimaPuluh = 1012000, TbDuaBelas = 195000, TbLimaSetengah = 93000, TanggalUbah = DateTime.Now}
                 );
-            modelBuilder.Entity<StokAwal>().HasData(new StokAwal
-            {
-                Id = 1, Tanggal = DateTimeOffset.Now, InitLimaPuluh = 20, InitDuaBelas = 50, InitLimaSetengah = 100, CanEdit = false
-            });
+            modelBuilder.Entity<StokAwal>().HasData(
+                new StokAwal { Id = 1, Tanggal = DateTimeOffset.Now.Date, Item = "50 KG", Jumlah = 20, CanEdit = false },
+                new StokAwal { Id = 2, Tanggal = DateTimeOffset.Now.Date, Item = "12 KG", Jumlah = 220, CanEdit = false },
+                new StokAwal { Id = 3, Tanggal = DateTimeOffset.Now.Date, Item = "5,5 KG", Jumlah = 355, CanEdit = false }
+                );
         }
     }
 }

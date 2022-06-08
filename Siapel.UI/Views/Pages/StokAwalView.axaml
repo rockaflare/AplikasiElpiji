@@ -25,9 +25,8 @@
 		<DataGrid Name="StokAwalDG" Grid.Row="2" IsReadOnly="True" AutoGenerateColumns="False" ColumnWidth="*" Margin="0 10 0 0" Items="{Binding StokAwal}">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="Tanggal" Binding="{Binding Tanggal, StringFormat=\{0:dd MMMM yyyy\}}"/>
-				<DataGridTextColumn Header="50 KG" Binding="{Binding InitLimaPuluh}"/>
-				<DataGridTextColumn Header="12 KG" Binding="{Binding InitDuaBelas}"/>
-				<DataGridTextColumn Header="5,5 KG" Binding="{Binding InitLimaSetengah}"/>
+				<DataGridTextColumn Header="Jenis Tabung" Binding="{Binding Item}"/>
+				<DataGridTextColumn Header="Jumlah" Binding="{Binding Jumlah}"/>
 			</DataGrid.Columns>
 		</DataGrid>
 	</Grid>
