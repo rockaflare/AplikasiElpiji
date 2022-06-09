@@ -32,6 +32,7 @@ namespace Siapel.UI.ViewModels
         public List<object> StokInOut => _stokInOut;
 
 
+
         public InOutViewModel(IScreen screen, IDataService<StokAwal> stokAwalService, IDataService<Pemasukan> pemasukanService, ITransaksiDataService transaksiDataService, IDataService<TransaksiLog> transaksiLogService)
         {
             HostScreen = screen;
@@ -42,10 +43,8 @@ namespace Siapel.UI.ViewModels
             _selectedTanggal = DateTimeOffset.Now;
             LoadItem = ReactiveCommand.CreateFromTask(LoadAllItem);
             LoadItem.Execute();
-
-
-            GetStokAwalDefault();
-            //this.WhenAnyValue(x => x.SelectedTanggal).Subscribe(_ => GetStokAwalDefault());
+            SelectedTanggal = DateTimeOffset.Now;
+            this.WhenAnyValue(x => x.SelectedTanggal).Subscribe(_ => SummaLummaDumma());
         }
 
         private DateTimeOffset _selectedTanggal;
@@ -57,17 +56,65 @@ namespace Siapel.UI.ViewModels
 
         private async Task LoadAllItem()
         {
-            _stokAwal= await _stokAwalService.GetAll();
+            _stokAwal = await _stokAwalService.GetAll();
             _transaksiLog = await _transaksiLogService.GetAll();
             _pemasukan = await _pemasukanService.GetAll();
             _transaksi = await _transaksiDataService.GetAll();
         }
 
-        private void GetStokAwalDefault()
+        private int? GetStokAwalDefault(int? masuk, int? keluar, int? lastStok)
         {
-            var stokAwalTanggal = _stokAwal.First(x => x.Item ==  "50 KG").Tanggal;
-            bool isSameShit = SelectedTanggal.Date == stokAwalTanggal ? true : false;
+            int? resultStokAwal = lastStok + keluar - masuk;
+            return resultStokAwal;
         }
 
+        private int? GetSumPemasukan(string item, DateTimeOffset tanggal)
+        {
+            int? resultPemasukan = 0;
+            if (_pemasukan.Any())
+            {
+                var pemasukanSum = _pemasukan.Where(x => x.Item == item && x.Tanggal == tanggal).Sum(x => x.Jumlah);
+                if (pemasukanSum > 0)
+                {
+                    resultPemasukan = pemasukanSum;
+                }                
+            }
+            return resultPemasukan;
+        }
+        private int? GetSumPenjualan(string item, DateTimeOffset tanggal)
+        {
+            int? resultPenjualan = 0;
+            if (_transaksi.Any())
+            {
+                var penjualanSum = _transaksi.Where(x => x.Item == item && x.Tanggal == tanggal).Sum(x => x.Jumlah);
+                if (penjualanSum > 0)
+                {
+                    resultPenjualan = penjualanSum;
+                }               
+            }
+            return resultPenjualan;
+        }
+
+        private int? GetLastStok(string item, DateTimeOffset tanggal)
+        {
+            int? resultLastStok = 0;
+            if (_transaksiLog.Any())
+            {
+                var tLogResult = _transaksiLog.OrderByDescending(x => x.Tanggal).Where(x => x.Tanggal <= tanggal).FirstOrDefault().SisaStok;
+                if (tLogResult != null)
+                {
+                    resultLastStok = tLogResult;
+                }                
+            }
+            return resultLastStok;
+        }
+
+        private void SummaLummaDumma()
+        {
+            var sakhir = GetLastStok("50 KG", SelectedTanggal.Date);
+            var klr = GetSumPenjualan("50 KG", SelectedTanggal.Date);
+            var msk = GetSumPemasukan("50 KG", SelectedTanggal.Date);
+            var sawal = GetStokAwalDefault(msk, klr, sakhir);
+        }
     }
 }

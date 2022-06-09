@@ -96,11 +96,11 @@ namespace Siapel.UI.ViewModels
         }
         private void ShowStokAwal()
         {
-            Router.Navigate.Execute(new StokAwalViewModel(this, _stokAwalService));
+            Router.Navigate.Execute(new StokAwalViewModel(this, _stokAwalService, _transaksiLogService));
         }
         private void ShowTransaksi()
         {
-            Router.Navigate.Execute(new TransaksiViewModel(this, _transaksiService, _pangkalanService, _hargaService));
+            Router.Navigate.Execute(new TransaksiViewModel(this, _transaksiService, _pangkalanService, _hargaService, _transaksiLogService, _stokAwalService));
         }
         private void ShowPemasukan()
         {

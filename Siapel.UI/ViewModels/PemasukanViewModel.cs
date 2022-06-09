@@ -65,6 +65,7 @@ namespace Siapel.UI.ViewModels
         private async void DeleteItemAsync()
         {
             await _dataService.Delete(SelectedPemasukan);
+            await _transaksiLogService.Create(new TransaksiLog { Item = SelectedPemasukan.Item, SisaStok = GetLastStock(SelectedPemasukan.Item) - SelectedPemasukan.Jumlah, Tanggal = DateTimeOffset.Now });
             await LoadItem.Execute();
         }
 
@@ -97,7 +98,11 @@ namespace Siapel.UI.ViewModels
             int? resultStock = 0;
             if (_transaksiLogList.Count > 0)
             {
-                resultStock = _transaksiLogList.OrderByDescending(x => x.Tanggal).First(x => x.Item == item).SisaStok;
+                var transaksiResult = _transaksiLogList.OrderByDescending(x => x.Tanggal).First(x => x.Item == item).SisaStok;
+                if (transaksiResult != null)
+                {
+                    resultStock = transaksiResult;
+                }
             }
             else
             {
@@ -134,46 +139,13 @@ namespace Siapel.UI.ViewModels
                     if (model != null)
                     {
                         await _dataService.Create(model);
-                        await _transaksiLogService.Create(new TransaksiLog { Item = model.Item, SisaStok = GetLastStock(model.Item) + model.Jumlah, Tanggal = model.Tanggal});
+                        await _transaksiLogService.Create(new TransaksiLog { Item = model.Item, SisaStok = GetLastStock(model.Item) + model.Jumlah, Tanggal = DateTimeOffset.Now});
                     }
 
                     await HostScreen.Router.NavigateAndReset.Execute(new PemasukanViewModel(this.HostScreen, _dataService, _transaksiLogService, _stokAwalService));
                 });
 
             await HostScreen.Router.Navigate.Execute(vm);
-        }
-        public async void UpdateCommand()
-        {
-            if (SelectedPemasukan != null)
-            {
-                var vm = new PemasukanFieldViewModel(this.HostScreen, "Edit Pemasukan", SelectedPemasukan);
-
-                Observable.Merge(
-                    vm.Save,
-                    vm.Cancel.Select(_ => (Pemasukan)null))
-                    .Take(1)
-                    .Subscribe(async model =>
-                    {
-                        if (model != null)
-                        {
-                            await _dataService.Update(model);
-                        }
-
-                        await HostScreen.Router.NavigateAndReset.Execute(new PemasukanViewModel(this.HostScreen, _dataService, _transaksiLogService, _stokAwalService));
-                    });
-
-                await HostScreen.Router.Navigate.Execute(vm);
-            }
-            else
-            {
-                var dialog = new ContentDialog()
-                {
-                    Title = "Update item",
-                    Content = "Tidak ada item dipilih!",
-                    CloseButtonText = "Ok"
-                };
-                await dialog.ShowAsync();
-            }
         }
     }
 }

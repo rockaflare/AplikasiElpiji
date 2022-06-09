@@ -21,9 +21,13 @@ namespace Siapel.UI.ViewModels
         private readonly ITransaksiDataService _dataService;
         private readonly IPangkalanDataService _pangkalanService;
         private readonly IDataService<Harga> _hargaService;
+        private readonly IDataService<TransaksiLog> _transaksiLogService;
+        private readonly IDataService<StokAwal> _stokAwalService;
         private List<string> _jenisPembayaran;
         private List<string> _jenisTabung;
         private List<Pangkalan> _listPangkalan;
+        private List<StokAwal> _stokAwalList { get; } = new List<StokAwal>();
+        private List<TransaksiLog> _transaksiLogList { get; } = new List<TransaksiLog>();
         public string? UrlPathSegment => "Transaksi";
 
         public IScreen HostScreen { get; }
@@ -37,12 +41,14 @@ namespace Siapel.UI.ViewModels
         private ReactiveCommand<Unit, Unit> PangkalanCbx { get; }
         private ReactiveCommand<Unit, Unit> FilterTransaksi { get; }
 
-        public TransaksiViewModel(IScreen screen, ITransaksiDataService dataService, IPangkalanDataService pangkalanDataService, IDataService<Harga> hargaDataService)
+        public TransaksiViewModel(IScreen screen, ITransaksiDataService dataService, IPangkalanDataService pangkalanDataService, IDataService<Harga> hargaDataService, IDataService<TransaksiLog> transaksiLogService, IDataService<StokAwal> stokAwalService)
         {
             HostScreen = screen;
             _dataService = dataService;
             _pangkalanService = pangkalanDataService;
             _hargaService = hargaDataService;
+            _transaksiLogService = transaksiLogService;
+            _stokAwalService = stokAwalService;
             _jenisPembayaran = new List<string>() { "Tunai", "Transfer", "Invoice" };
             _jenisTabung = new List<string>() { "50 KG", "12 KG", "5,5 KG" };
             PangkalanCbx = ReactiveCommand.CreateFromTask(GetPangkalan);
@@ -66,6 +72,7 @@ namespace Siapel.UI.ViewModels
                     _transaksi.Add(item);
                 }
             }
+            PopulateStockSources();
         }
 
         private void TransaksiFilterUpdater()
@@ -142,6 +149,7 @@ namespace Siapel.UI.ViewModels
         private async void DeleteItemAsync()
         {
             await _dataService.Delete(SelectedTransaksi);
+            await _transaksiLogService.Create(new TransaksiLog { Item = SelectedTransaksi.Item, SisaStok = GetLastStock(SelectedTransaksi.Item) + SelectedTransaksi.Jumlah, Tanggal = DateTimeOffset.Now });
             await LoadItem.Execute();
             await FilterTransaksi.Execute();
         }
@@ -178,7 +186,39 @@ namespace Siapel.UI.ViewModels
             EndDate = null;
             SelectedPembayaranFilter = null;
         }
+        private int? GetLastStock(string item)
+        {
+            int? resultStock = 0;
+            if (_transaksiLogList.Count > 0)
+            {
+                var transaksiResult = _transaksiLogList.OrderByDescending(x => x.Tanggal).First(x => x.Item == item).SisaStok;
+                if (transaksiResult != null)
+                {
+                    resultStock = transaksiResult;
+                }
+            }
+            else
+            {
+                resultStock = _stokAwalList.First(x => x.Item == item).Jumlah;
+            }
+            return resultStock;
+        }
+        private async void PopulateStockSources()
+        {
+            _stokAwalList.Clear();
+            _transaksiLogList.Clear();
+            var stoklist = await _stokAwalService.GetAll();
+            foreach (var item in stoklist)
+            {
+                _stokAwalList.Add(item);
+            }
 
+            var transloglist = await _transaksiLogService.GetAll();
+            foreach (var item in transloglist)
+            {
+                _transaksiLogList.Add(item);
+            }
+        }
         public async void AddCommand()
         {
             var hargas = await _hargaService.GetAll();
@@ -193,9 +233,10 @@ namespace Siapel.UI.ViewModels
                     if (model != null)
                     {
                         await _dataService.Create(model);
+                        await _transaksiLogService.Create(new TransaksiLog { Item = model.Item, SisaStok = GetLastStock(model.Item) - model.Jumlah, Tanggal = DateTimeOffset.Now });
                     }
 
-                    await HostScreen.Router.NavigateAndReset.Execute(new TransaksiViewModel(this.HostScreen, _dataService, _pangkalanService, _hargaService));
+                    await HostScreen.Router.NavigateAndReset.Execute(new TransaksiViewModel(this.HostScreen, _dataService, _pangkalanService, _hargaService, _transaksiLogService, _stokAwalService));
                 });
 
             await HostScreen.Router.Navigate.Execute(vm);
@@ -205,6 +246,7 @@ namespace Siapel.UI.ViewModels
         {
             if (SelectedTransaksi != null)
             {
+                var oldJumlah = SelectedTransaksi.Jumlah;
                 var hargas = await _hargaService.GetAll();
                 var vm = new TransaksiFieldViewModel(this.HostScreen, "Edit Transaksi", new List<Pangkalan>(Pangkalans), new List<Harga>(hargas), SelectedTransaksi);
 
@@ -217,9 +259,11 @@ namespace Siapel.UI.ViewModels
                         if (model != null)
                         {
                             await _dataService.Update(model);
+                            var selisihJumlah = oldJumlah - model.Jumlah;
+                            await _transaksiLogService.Create(new TransaksiLog { Item = model.Item, SisaStok = GetLastStock(model.Item) + selisihJumlah, Tanggal = DateTimeOffset.Now });
                         }
 
-                        await HostScreen.Router.NavigateAndReset.Execute(new TransaksiViewModel(this.HostScreen, _dataService, _pangkalanService, _hargaService));
+                        await HostScreen.Router.NavigateAndReset.Execute(new TransaksiViewModel(this.HostScreen, _dataService, _pangkalanService, _hargaService, _transaksiLogService, _stokAwalService));
                     });
 
                 await HostScreen.Router.Navigate.Execute(vm);
