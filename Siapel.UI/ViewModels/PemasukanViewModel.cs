@@ -106,7 +106,15 @@ namespace Siapel.UI.ViewModels
                 }
                 else
                 {
-                    resultStock = _transaksiLogList.Where(x => x.Tanggal == tanggal?.AddDays(-1) && x.Item == item).OrderByDescending(x => x.Created).Select(x => x.SisaStok).FirstOrDefault();
+                    transaksiResult = _transaksiLogList.Where(x => x.Tanggal == tanggal?.AddDays(-1) && x.Item == item).OrderByDescending(x => x.Created).Select(x => x.SisaStok).FirstOrDefault();
+                    if (transaksiResult != null && transaksiResult > 0)
+                    {
+                        resultStock = transaksiResult;
+                    }
+                    else
+                    {
+                        resultStock = _stokAwalList.First(x => x.Item == item).Jumlah;
+                    }
                 }
             }
             else

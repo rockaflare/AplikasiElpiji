@@ -3,6 +3,7 @@ using Siapel.Domain.Models;
 using Siapel.Domain.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -23,13 +24,13 @@ namespace Siapel.UI.ViewModels
         private List<Transaksi> _transaksi { get; } = new List<Transaksi>();
 
         private int _stokAwalValue;
-        private List<object> _stokInOut { get; } = new List<object>();
+        private ObservableCollection<object> _stokInOut { get; } = new ObservableCollection<object>();
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
-        private ReactiveCommand<Unit, Unit> LoadStokAwal { get; }
+        private ReactiveCommand<Unit, Unit> LoadInOut { get; }
 
         public string? UrlPathSegment => "In Out";
         public IScreen HostScreen { get; }
-        public List<object> StokInOut => _stokInOut;
+        public IEnumerable<object> StokInOut => _stokInOut;
 
 
 
@@ -44,7 +45,9 @@ namespace Siapel.UI.ViewModels
             LoadItem = ReactiveCommand.CreateFromTask(LoadAllItem);
             LoadItem.Execute();
             SelectedTanggal = DateTimeOffset.Now;
-            this.WhenAnyValue(x => x.SelectedTanggal).Subscribe(_ => SummaLummaDumma());
+            LoadInOut = ReactiveCommand.Create(CreateInOut);
+            
+            this.WhenAnyValue(x => x.SelectedTanggal).Select(_ => Unit.Default).InvokeCommand(LoadInOut);
         }
 
         private DateTimeOffset _selectedTanggal;
@@ -120,10 +123,9 @@ namespace Siapel.UI.ViewModels
         private int? GetLastStok(string item, DateTimeOffset tanggal)
         {
             int? resultLastStok = 0;
-            if (_transaksiLog.Any())
+            if (_transaksiLog.Count > 0)
             {
                 int? tLogResult = _transaksiLog.Where(x => x.Tanggal == tanggal && x.Item == item).OrderByDescending(x => x.Created).Select(x => x.SisaStok).FirstOrDefault();
-                if (tLogResult != null)
                 {
                     resultLastStok = tLogResult;
                 }                
@@ -137,6 +139,23 @@ namespace Siapel.UI.ViewModels
             var klr = GetSumPenjualan("50 KG", SelectedTanggal.Date);
             var msk = GetSumPemasukan("50 KG", SelectedTanggal.Date);
             var sawal = GetStokAwalDefault(msk, klr, sakhir);
+        }
+
+        private void CreateInOut()
+        {
+            string[] items = { "50 KG", "12 KG", "5,5 KG" };
+            _stokInOut.Clear();
+            foreach (var i in items)
+            {
+                _stokInOut.Add(new 
+                {
+                    Item = i,
+                    StokAkhir = GetLastStok(i, SelectedTanggal.Date),
+                    Penjualan = GetSumPenjualan(i, SelectedTanggal.Date),
+                    Masuk = GetSumPemasukan(i, SelectedTanggal.Date),
+                    StokAwal = GetStokAwalDefault(GetSumPemasukan(i, SelectedTanggal.Date), GetSumPenjualan(i, SelectedTanggal.Date), GetLastStok(i, SelectedTanggal.Date))
+                });
+            }
         }
     }
 }
