@@ -149,7 +149,8 @@ namespace Siapel.UI.ViewModels
         private async void DeleteItemAsync()
         {
             await _dataService.Delete(SelectedTransaksi);
-            await _transaksiLogService.Create(new TransaksiLog { Item = SelectedTransaksi.Item, SisaStok = GetLastStock(SelectedTransaksi.Item) + SelectedTransaksi.Jumlah, Tanggal = DateTimeOffset.Now });
+            await UpdateTransaksiLog(SelectedTransaksi.Item, SelectedTransaksi.Jumlah, SelectedTransaksi.Tanggal, DateTime.UtcNow, 1);
+            //await _transaksiLogService.Create(new TransaksiLog { Item = SelectedTransaksi.Item, SisaStok = GetLastStock(SelectedTransaksi.Item, SelectedTransaksi.Tanggal) + SelectedTransaksi.Jumlah, Tanggal = SelectedTransaksi.Tanggal, Created = DateTime.UtcNow });
             await LoadItem.Execute();
             await FilterTransaksi.Execute();
         }
@@ -186,15 +187,19 @@ namespace Siapel.UI.ViewModels
             EndDate = null;
             SelectedPembayaranFilter = null;
         }
-        private int? GetLastStock(string item)
+        private int? GetLastStock(string item, DateTimeOffset? tanggal)
         {
             int? resultStock = 0;
             if (_transaksiLogList.Count > 0)
             {
-                var transaksiResult = _transaksiLogList.OrderByDescending(x => x.Tanggal).First(x => x.Item == item).SisaStok;
-                if (transaksiResult != null)
+                var transaksiResult = _transaksiLogList.Where(x => x.Tanggal == tanggal && x.Item == item).OrderByDescending(x => x.Created).Select(x => x.SisaStok).FirstOrDefault();
+                if (transaksiResult != null && transaksiResult > 0)
                 {
                     resultStock = transaksiResult;
+                }
+                else
+                {
+                    resultStock = resultStock = _transaksiLogList.Where(x => x.Tanggal == tanggal?.AddDays(-1) && x.Item == item).OrderByDescending(x => x.Created).Select(x => x.SisaStok).FirstOrDefault();
                 }
             }
             else
@@ -219,6 +224,48 @@ namespace Siapel.UI.ViewModels
                 _transaksiLogList.Add(item);
             }
         }
+        private async Task UpdateTransaksiLog(string item, int? sisastok, DateTimeOffset tanggal, DateTime createdat, int operationType)
+        {
+            int? calculatedStok = 0;
+            var transaksiLogBetween = _transaksiLogList.Where(x => x.Item == item && x.Tanggal >= tanggal).GroupBy(x => x.Tanggal).Select(t => new TransaksiLog()
+            {
+                Item = t.Select(x => x.Item).First(),
+                Tanggal = t.Select(x => x.Tanggal).First()
+            }).ToList();
+            if (transaksiLogBetween.Count > 0)
+            {
+                foreach (var tab in transaksiLogBetween)
+                {
+                    switch (operationType)
+                    {
+                        case 0:
+                            calculatedStok = GetLastStock(item, tab.Tanggal) - sisastok;
+                            break;
+                        case 1:
+                            calculatedStok = GetLastStock(item, tab.Tanggal) + sisastok;
+                            break;
+                        default:
+                            break;
+                    }
+                    await _transaksiLogService.Create(new TransaksiLog { Item = item, SisaStok = calculatedStok, Tanggal = tab.Tanggal, Created = createdat });
+                }
+            }
+            else
+            {
+                switch (operationType)
+                {
+                    case 0:
+                        calculatedStok = GetLastStock(item, tanggal) - sisastok;
+                        break;
+                    case 1:
+                        calculatedStok = GetLastStock(item, tanggal) + sisastok;
+                        break;
+                    default:
+                        break;
+                }
+                await _transaksiLogService.Create(new TransaksiLog { Item = item, SisaStok = calculatedStok, Tanggal = tanggal, Created = createdat });
+            }
+        }
         public async void AddCommand()
         {
             var hargas = await _hargaService.GetAll();
@@ -233,7 +280,8 @@ namespace Siapel.UI.ViewModels
                     if (model != null)
                     {
                         await _dataService.Create(model);
-                        await _transaksiLogService.Create(new TransaksiLog { Item = model.Item, SisaStok = GetLastStock(model.Item) - model.Jumlah, Tanggal = DateTimeOffset.Now });
+                        await UpdateTransaksiLog(model.Item, model.Jumlah, model.Tanggal, DateTime.UtcNow, 0);
+                        //await _transaksiLogService.Create(new TransaksiLog { Item = model.Item, SisaStok = GetLastStock(model.Item, model.Tanggal) - model.Jumlah, Tanggal = model.Tanggal, Created = DateTime.UtcNow });
                     }
 
                     await HostScreen.Router.NavigateAndReset.Execute(new TransaksiViewModel(this.HostScreen, _dataService, _pangkalanService, _hargaService, _transaksiLogService, _stokAwalService));
@@ -260,7 +308,8 @@ namespace Siapel.UI.ViewModels
                         {
                             await _dataService.Update(model);
                             var selisihJumlah = oldJumlah - model.Jumlah;
-                            await _transaksiLogService.Create(new TransaksiLog { Item = model.Item, SisaStok = GetLastStock(model.Item) + selisihJumlah, Tanggal = DateTimeOffset.Now });
+                            await UpdateTransaksiLog(model.Item, selisihJumlah, model.Tanggal, DateTime.UtcNow, 1);
+                            //await _transaksiLogService.Create(new TransaksiLog { Item = model.Item, SisaStok = GetLastStock(model.Item, model.Tanggal) + selisihJumlah, Tanggal = model.Tanggal, Created = DateTime.UtcNow });
                         }
 
                         await HostScreen.Router.NavigateAndReset.Execute(new TransaksiViewModel(this.HostScreen, _dataService, _pangkalanService, _hargaService, _transaksiLogService, _stokAwalService));

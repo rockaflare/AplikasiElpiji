@@ -17,10 +17,10 @@ namespace Siapel.UI.ViewModels
         private readonly IDataService<TransaksiLog> _transaksiLogService;
         private readonly IDataService<Pemasukan> _pemasukanService;
         private readonly ITransaksiDataService _transaksiDataService;
-        private IEnumerable<StokAwal> _stokAwal;
-        private IEnumerable<TransaksiLog> _transaksiLog;
-        private IEnumerable<Pemasukan> _pemasukan;
-        private IEnumerable<Transaksi> _transaksi;
+        private List<StokAwal> _stokAwal { get; } = new List<StokAwal>();
+        private List<TransaksiLog> _transaksiLog { get; } = new List<TransaksiLog>();
+        private List<Pemasukan> _pemasukan { get; } = new List<Pemasukan>();
+        private List<Transaksi> _transaksi { get; } = new List<Transaksi>();
 
         private int _stokAwalValue;
         private List<object> _stokInOut { get; } = new List<object>();
@@ -56,10 +56,32 @@ namespace Siapel.UI.ViewModels
 
         private async Task LoadAllItem()
         {
-            _stokAwal = await _stokAwalService.GetAll();
-            _transaksiLog = await _transaksiLogService.GetAll();
-            _pemasukan = await _pemasukanService.GetAll();
-            _transaksi = await _transaksiDataService.GetAll();
+            var stokAwals = await _stokAwalService.GetAll();
+            var transaksiLogs = await _transaksiLogService.GetAll();
+            var pemasukans = await _pemasukanService.GetAll();
+            var transaksis = await _transaksiDataService.GetAll();
+
+            _stokAwal.Clear();
+            _transaksiLog.Clear();
+            _pemasukan.Clear();
+            _transaksi.Clear();
+
+            foreach (var item in stokAwals)
+            {
+                _stokAwal.Add(item);
+            }
+            foreach (var item in transaksiLogs)
+            {
+                _transaksiLog.Add(item);
+            }
+            foreach (var item in pemasukans)
+            {
+                _pemasukan.Add(item);
+            }
+            foreach (var item in transaksis)
+            {
+                _transaksi.Add(item);
+            }
         }
 
         private int? GetStokAwalDefault(int? masuk, int? keluar, int? lastStok)
@@ -100,7 +122,7 @@ namespace Siapel.UI.ViewModels
             int? resultLastStok = 0;
             if (_transaksiLog.Any())
             {
-                var tLogResult = _transaksiLog.OrderByDescending(x => x.Tanggal).Where(x => x.Tanggal <= tanggal).FirstOrDefault().SisaStok;
+                int? tLogResult = _transaksiLog.Where(x => x.Tanggal == tanggal && x.Item == item).OrderByDescending(x => x.Created).Select(x => x.SisaStok).FirstOrDefault();
                 if (tLogResult != null)
                 {
                     resultLastStok = tLogResult;
