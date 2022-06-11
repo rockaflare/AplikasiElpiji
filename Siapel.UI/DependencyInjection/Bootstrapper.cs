@@ -36,6 +36,7 @@ namespace Siapel.UI.DependencyInjection
             builder.RegisterType<PemasukanView>().As<IViewFor<PemasukanViewModel>>();
             builder.RegisterType<LaporanView>().As<IViewFor<LaporanViewModel>>();
             builder.RegisterType<InOutView>().As<IViewFor<InOutViewModel>>();
+            builder.RegisterType<TabungBocorView>().As<IViewFor<TabungBocorViewModel>>();
 
             builder.RegisterType<MainWindowViewModel>().AsSelf();
 
@@ -46,12 +47,15 @@ namespace Siapel.UI.DependencyInjection
             builder.RegisterType<TransaksiFieldDialog>().As<IViewFor<TransaksiFieldViewModel>>();
             builder.RegisterType<PemasukanFieldDialog>().As<IViewFor<PemasukanFieldViewModel>>();
             builder.RegisterType<StokAwalFieldDialog>().As<IViewFor<StokAwalFieldViewModel>>();
+            builder.RegisterType<TabungBocorFieldDialog>().As<IViewFor<TabungBocorFieldViewModel>>();
+
 
             builder.Register((c, p) => new PangkalanDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IPangkalanDataService>();
             builder.Register((c, p) => new TransaksiDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<ITransaksiDataService>();
             builder.Register((c, p) => new HargaDataService(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Harga>>();
             builder.Register((c, p) => new GenericDataService<Pemasukan>(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<Pemasukan>>();
             builder.Register((c, p) => new GenericDataService<StokAwal>(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<StokAwal>>();
+            builder.Register((c, p) => new GenericDataService<TabungBocor>(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<TabungBocor>>();
             builder.Register((c, p) => new GenericDataService<TransaksiLog>(p.Named<SiapelDbContextFactory>("contextFactory"))).As<IDataService<TransaksiLog>>();
 
 

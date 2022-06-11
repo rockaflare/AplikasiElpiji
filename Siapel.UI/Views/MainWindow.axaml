@@ -12,6 +12,7 @@
         Icon="/Assets/avalonia-logo.ico"
 		Width="1100" Height="800"
 		WindowStartupLocation="CenterScreen"
+		WindowState="Maximized"
         Title="Siapel - Sistem Informasi Aplikasi Elpiji">
 
 	<Grid>
@@ -33,7 +34,6 @@
 				<ui:NavigationViewItem Content="Transaksi" Icon="Tag" Tag="Transaksi"/>				
 				<ui:NavigationViewItem Content="In / Out" Icon="ClipboardCode" Tag="InOut"/>
 				<ui:NavigationViewItem Content="Tabung Bocor" Icon="New" Tag="TabungBocor"/>
-				<ui:NavigationViewItem Content="Titip Tabung" Icon="Orientation" Tag="TitipTabung"/>
 				<ui:NavigationViewItem Content="Laporan" Icon="Calculator" Tag="Laporan"/>
 			</ui:NavigationView.MenuItems>
 			<ui:NavigationView.Content>

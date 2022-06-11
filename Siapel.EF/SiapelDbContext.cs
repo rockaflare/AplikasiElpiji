@@ -22,6 +22,7 @@ namespace Siapel.EF
         public DbSet<Pemasukan> Pemasukan { get; set; }
         public DbSet<StokAwal> StokAwal { get; set; }
         public DbSet<TransaksiLog> TransaksiLogs { get; set; }
+        public DbSet<TabungBocor> TabungBocor { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

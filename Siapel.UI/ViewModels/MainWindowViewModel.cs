@@ -17,15 +17,17 @@ namespace Siapel.UI.ViewModels
         private readonly IDataService<Pemasukan> _pemasukanService;
         private readonly IDataService<StokAwal> _stokAwalService;
         private readonly IDataService<TransaksiLog> _transaksiLogService;
+        private readonly IDataService<TabungBocor> _tabungBocorService;
         private readonly IPangkalanDataService _pangkalanService;
         private readonly ITransaksiDataService _transaksiService;
-        public MainWindowViewModel(IDataService<Harga> hargaService, IDataService<StokAwal> stokAwalDataService, IDataService<Pemasukan> pemasukanService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService, IDataService<TransaksiLog> transaksiLogService)
+        public MainWindowViewModel(IDataService<Harga> hargaService, IDataService<StokAwal> stokAwalDataService, IDataService<TabungBocor> tabungBocorService, IDataService<Pemasukan> pemasukanService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService, IDataService<TransaksiLog> transaksiLogService)
         {
             _hargaService = hargaService;
             _pemasukanService = pemasukanService;
             _pangkalanService = pangkalanDataService;
             _transaksiService = transaksiDataService;
             _stokAwalService = stokAwalDataService;
+            _tabungBocorService = tabungBocorService;
             _transaksiLogService = transaksiLogService;
         }
 
@@ -64,6 +66,9 @@ namespace Siapel.UI.ViewModels
                         break;
                     case "Transaksi":
                         ShowTransaksi();
+                        break;
+                    case "TabungBocor":
+                        ShowTabungBocor();
                         break;
                     case "InOut":
                         ShowInOut();
@@ -105,6 +110,10 @@ namespace Siapel.UI.ViewModels
         private void ShowPemasukan()
         {
             Router.Navigate.Execute(new PemasukanViewModel(this, _pemasukanService, _transaksiLogService, _stokAwalService));
+        }
+        private void ShowTabungBocor()
+        {
+            Router.Navigate.Execute(new TabungBocorViewModel(this, _tabungBocorService, _transaksiLogService, _stokAwalService));
         }
         private void ShowInOut()
         {
