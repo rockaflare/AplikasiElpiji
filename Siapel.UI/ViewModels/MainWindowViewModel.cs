@@ -117,7 +117,7 @@ namespace Siapel.UI.ViewModels
         }
         private void ShowInOut()
         {
-            Router.Navigate.Execute(new InOutViewModel(this, _stokAwalService, _pemasukanService, _transaksiService, _transaksiLogService));
+            Router.Navigate.Execute(new InOutViewModel(this, _stokAwalService, _pemasukanService, _transaksiService, _transaksiLogService, _tabungBocorService));
         }
         private void ShowLaporan()
         {

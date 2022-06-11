@@ -65,8 +65,7 @@ namespace Siapel.UI.ViewModels
         private async void DeleteItemAsync()
         {
             await _dataService.Delete(SelectedPemasukan);
-            await UpdateTransaksiLog(SelectedPemasukan.Item, SelectedPemasukan.Jumlah, SelectedPemasukan.Tanggal, DateTime.UtcNow, 0);
-            //await _transaksiLogService.Create(new TransaksiLog { Item = SelectedPemasukan.Item, SisaStok = GetLastStock(SelectedPemasukan.Item, SelectedPemasukan.Tanggal) - SelectedPemasukan.Jumlah, Tanggal = SelectedPemasukan.Tanggal, Created = DateTime.UtcNow });
+            await UpdateTransaksiLog(SelectedPemasukan.Item, SelectedPemasukan.Jumlah, SelectedPemasukan.Tanggal, DateTime.UtcNow, 0);            
             await LoadItem.Execute();
         }
 
@@ -194,8 +193,7 @@ namespace Siapel.UI.ViewModels
                     if (model != null)
                     {
                         await _dataService.Create(model);
-                        await UpdateTransaksiLog(model.Item, model.Jumlah, model.Tanggal, DateTime.UtcNow, 1);
-                        //await _transaksiLogService.Create(new TransaksiLog { Item = model.Item, SisaStok = GetLastStock(model.Item, model.Tanggal) + model.Jumlah, Tanggal = model.Tanggal, Created = DateTime.UtcNow});
+                        await UpdateTransaksiLog(model.Item, model.Jumlah, model.Tanggal, DateTime.UtcNow, 1);                        
                     }
 
                     await HostScreen.Router.NavigateAndReset.Execute(new PemasukanViewModel(this.HostScreen, _dataService, _transaksiLogService, _stokAwalService));

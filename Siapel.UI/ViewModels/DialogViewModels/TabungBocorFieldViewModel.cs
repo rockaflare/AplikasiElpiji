@@ -41,18 +41,18 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             get => _item;
             set => this.RaiseAndSetIfChanged(ref _item, value);
         }
-        private int? _titipan;
-        public int? Titipan
+        private int _titipan;
+        public int Titipan
         {
             get => _titipan;
             set => this.RaiseAndSetIfChanged(ref _titipan, value);
         }
-        private int? _ambil;
-        public int? Ambil
+        private int _ambil;
+        public int Ambil
         {
-            get => _titipan;
+            get => _ambil;
             set => this.RaiseAndSetIfChanged(ref _ambil, value);
-        }
+            }
         private string _keterangan;
         public string Keterangan
         {

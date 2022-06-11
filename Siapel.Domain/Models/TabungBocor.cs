@@ -7,8 +7,8 @@ namespace Siapel.Domain.Models
         public int Id { get; set; }
         public DateTimeOffset? Tanggal { get; set; }
         public string Item { get; set; }
-        public int? Titipan { get; set; }
-        public int? Ambil { get; set; }
-        public string Keterangan { get; set; }
+        public int Titipan { get; set; }
+        public int Ambil { get; set; }
+        public string? Keterangan { get; set; }
     }
 }

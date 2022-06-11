@@ -13,8 +13,8 @@
 				<DataGridTextColumn Header="Stok Awal" Binding="{Binding StokAwal}"/>
 				<DataGridTextColumn Header="Masuk" Binding="{Binding Masuk}"/>
 				<DataGridTextColumn Header="Penjualan" Binding="{Binding Penjualan}"/>
-				<DataGridTextColumn Header="Titip Bocor"/>
-				<DataGridTextColumn Header="Ambil Bocor"/>
+				<DataGridTextColumn Header="Titip Bocor" Binding="{Binding TitipanBocor}"/>
+				<DataGridTextColumn Header="Ambil Bocor" Binding="{Binding AmbilBocor}"/>
 				<DataGridTextColumn Header="Sisa" Binding="{Binding StokAkhir}"/>
 			</DataGrid.Columns>
 		</DataGrid>

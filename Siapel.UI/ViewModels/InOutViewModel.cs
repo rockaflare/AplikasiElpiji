@@ -17,11 +17,13 @@ namespace Siapel.UI.ViewModels
         private readonly IDataService<StokAwal> _stokAwalService;
         private readonly IDataService<TransaksiLog> _transaksiLogService;
         private readonly IDataService<Pemasukan> _pemasukanService;
+        private readonly IDataService<TabungBocor> _tabungBocorService;
         private readonly ITransaksiDataService _transaksiDataService;
         private List<StokAwal> _stokAwal { get; } = new List<StokAwal>();
         private List<TransaksiLog> _transaksiLog { get; } = new List<TransaksiLog>();
         private List<Pemasukan> _pemasukan { get; } = new List<Pemasukan>();
         private List<Transaksi> _transaksi { get; } = new List<Transaksi>();
+        private List<TabungBocor> _tabungBocor { get; } = new List<TabungBocor>();
 
         private int _stokAwalValue;
         private ObservableCollection<object> _stokInOut { get; } = new ObservableCollection<object>();
@@ -34,13 +36,14 @@ namespace Siapel.UI.ViewModels
 
 
 
-        public InOutViewModel(IScreen screen, IDataService<StokAwal> stokAwalService, IDataService<Pemasukan> pemasukanService, ITransaksiDataService transaksiDataService, IDataService<TransaksiLog> transaksiLogService)
+        public InOutViewModel(IScreen screen, IDataService<StokAwal> stokAwalService, IDataService<Pemasukan> pemasukanService, ITransaksiDataService transaksiDataService, IDataService<TransaksiLog> transaksiLogService, IDataService<TabungBocor> tabungBocorSerevice)
         {
             HostScreen = screen;
             _stokAwalService = stokAwalService;
             _pemasukanService = pemasukanService;
             _transaksiDataService = transaksiDataService;
             _transaksiLogService = transaksiLogService;
+            _tabungBocorService = tabungBocorSerevice;
             _selectedTanggal = DateTimeOffset.Now;
             LoadItem = ReactiveCommand.CreateFromTask(LoadAllItem);
             LoadItem.Execute();
@@ -63,11 +66,13 @@ namespace Siapel.UI.ViewModels
             var transaksiLogs = await _transaksiLogService.GetAll();
             var pemasukans = await _pemasukanService.GetAll();
             var transaksis = await _transaksiDataService.GetAll();
+            var tabungbocors = await _tabungBocorService.GetAll();
 
             _stokAwal.Clear();
             _transaksiLog.Clear();
             _pemasukan.Clear();
             _transaksi.Clear();
+            _tabungBocor.Clear();
 
             foreach (var item in stokAwals)
             {
@@ -85,12 +90,42 @@ namespace Siapel.UI.ViewModels
             {
                 _transaksi.Add(item);
             }
+            foreach (var item in tabungbocors)
+            {
+                _tabungBocor.Add(item);
+            }
         }
 
-        private int? GetStokAwalDefault(int? masuk, int? keluar, int? lastStok)
+        private int? GetStokAwalDefault(int? masuk, int? keluar, int? lastStok, int? titipan, int? ambil)
         {
-            int? resultStokAwal = lastStok + keluar - masuk;
+            int? resultStokAwal = lastStok + ambil + keluar - masuk - titipan;
             return resultStokAwal;
+        }
+        private int? GetSumTitipanBocor(string item, DateTimeOffset tanggal)
+        {
+            int? resultTitipan = 0;
+            if (_tabungBocor.Any())
+            {
+                var titipanSum = _tabungBocor.Where(x => x.Item == item && x.Tanggal == tanggal).Sum(x => x.Titipan);
+                if (titipanSum > 0)
+                {
+                    resultTitipan = titipanSum;
+                }
+            }
+            return resultTitipan;
+        }
+        private int? GetSumAmbilBocor(string item, DateTimeOffset tanggal)
+        {
+            int? resultTitipan = 0;
+            if (_tabungBocor.Any())
+            {
+                var titipanSum = _tabungBocor.Where(x => x.Item == item && x.Tanggal == tanggal).Sum(x => x.Ambil);
+                if (titipanSum > 0)
+                {
+                    resultTitipan = titipanSum;
+                }
+            }
+            return resultTitipan;
         }
 
         private int? GetSumPemasukan(string item, DateTimeOffset tanggal)
@@ -126,19 +161,16 @@ namespace Siapel.UI.ViewModels
             if (_transaksiLog.Count > 0)
             {
                 int? tLogResult = _transaksiLog.Where(x => x.Tanggal == tanggal && x.Item == item).OrderByDescending(x => x.Created).Select(x => x.SisaStok).FirstOrDefault();
+                if (tLogResult != null && tLogResult > 0)
                 {
                     resultLastStok = tLogResult;
-                }                
+                }
+                else
+                {
+                    resultLastStok = _stokAwal.FirstOrDefault(x => x.Item == item).Jumlah;
+                }
             }
             return resultLastStok;
-        }
-
-        private void SummaLummaDumma()
-        {
-            var sakhir = GetLastStok("50 KG", SelectedTanggal.Date);
-            var klr = GetSumPenjualan("50 KG", SelectedTanggal.Date);
-            var msk = GetSumPemasukan("50 KG", SelectedTanggal.Date);
-            var sawal = GetStokAwalDefault(msk, klr, sakhir);
         }
 
         private void CreateInOut()
@@ -151,9 +183,11 @@ namespace Siapel.UI.ViewModels
                 {
                     Item = i,
                     StokAkhir = GetLastStok(i, SelectedTanggal.Date),
+                    TitipanBocor = GetSumTitipanBocor(i, SelectedTanggal.Date),
+                    AmbilBocor = GetSumAmbilBocor(i, SelectedTanggal.Date),
                     Penjualan = GetSumPenjualan(i, SelectedTanggal.Date),
                     Masuk = GetSumPemasukan(i, SelectedTanggal.Date),
-                    StokAwal = GetStokAwalDefault(GetSumPemasukan(i, SelectedTanggal.Date), GetSumPenjualan(i, SelectedTanggal.Date), GetLastStok(i, SelectedTanggal.Date))
+                    StokAwal = GetStokAwalDefault(GetSumPemasukan(i, SelectedTanggal.Date), GetSumPenjualan(i, SelectedTanggal.Date), GetLastStok(i, SelectedTanggal.Date), GetSumTitipanBocor(i, SelectedTanggal.Date), GetSumAmbilBocor(i, SelectedTanggal.Date))
                 });
             }
         }
