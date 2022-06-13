@@ -79,6 +79,9 @@ namespace Siapel.UI.Documents
 
                 column.Item().Text("");
                 column.Item().Element(ComposeTableTotalPenjualan);
+
+                column.Item().Text("");
+                column.Item().Element(ComposeTableInOutStok);
             });
         }
 
@@ -447,6 +450,51 @@ namespace Siapel.UI.Documents
 
                         
                     }                
+
+
+                    IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten2);
+                });
+            });
+        }
+        void ComposeTableInOutStok(IContainer container)
+        {
+            var textStyle = TextStyle.Default.FontSize(11).NormalWeight();
+            container.Table(table =>
+            {
+                IContainer DefaultCellStyle(IContainer container, string backgroundColor)
+                {
+                    return container
+                        .Border(1)
+                        .BorderColor(Colors.Grey.Lighten1)
+                        .Background(backgroundColor)
+                        .PaddingVertical(2)
+                        .PaddingHorizontal(4)
+                        .AlignCenter()
+                        .AlignMiddle()
+                        .ShowOnce()
+                        ;
+                }
+
+                table.ColumnsDefinition(columns =>
+                {                    
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                });
+
+                table.Header(header =>
+                {                    
+                    header.Cell().Element(CellStyle).Text("Tabung");
+                    header.Cell().Element(CellStyle).Text("Stok Awal");
+                    header.Cell().Element(CellStyle).Text("Masuk");
+                    header.Cell().Element(CellStyle).Text("Penjualan");
+                    header.Cell().Element(CellStyle).Text("Titipan Bocor");
+                    header.Cell().Element(CellStyle).Text("Ambil Bocor");
+                    header.Cell().Element(CellStyle).Text("Sisa Stok");
 
 
                     IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten2);
