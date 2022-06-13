@@ -16,15 +16,17 @@ namespace Siapel.UI.Documents
         private List<object>? _lapLimaPuluhList;
         private List<object>? _lapDuaBelasList;
         private List<object>? _lapLimaSetengah;
+        private List<object>? _lapInOutStok;
         private List<LaporanHarian>? _listOfTotals;
         private string? _tanggal;
 
-        public NewLaporanHarianDocument(List<object>? lapLimaPuluhList = null, List<object>? lapDuaBelasList = null, List<object>? lapLimaSetengah = null, string? tanggal = null, List<LaporanHarian>? listOfTotals = null)
+        public NewLaporanHarianDocument(List<object>? lapLimaPuluhList = null, List<object>? lapDuaBelasList = null, List<object>? lapLimaSetengah = null, string? tanggal = null, List<LaporanHarian>? listOfTotals = null, List<object>? lapInOutStok = null)
         {
             _lapLimaPuluhList = lapLimaPuluhList;
             _lapDuaBelasList = lapDuaBelasList;
             _lapLimaSetengah = lapLimaSetengah;
             _listOfTotals = listOfTotals;
+            _lapInOutStok = lapInOutStok;
             _tanggal = tanggal;
         }
 
@@ -34,7 +36,7 @@ namespace Siapel.UI.Documents
                 .Page(page =>
                 {
                     page.Margin(50);
-                    page.Size(PageSizes.A4.Landscape());
+                    page.Size(PageSizes.A4);
 
                     page.Header().Element(ComposeHeader);
                     page.Content().Element(ComposeContent);
@@ -44,7 +46,7 @@ namespace Siapel.UI.Documents
 
         void ComposeHeader(IContainer container)
         {
-            var titleStyle = TextStyle.Default.FontSize(26).SemiBold();
+            var titleStyle = TextStyle.Default.FontSize(16).SemiBold();
 
             container
                 .Row(row =>
@@ -55,8 +57,8 @@ namespace Siapel.UI.Documents
 
                         column.Item().Text(text =>
                         {
-                            text.Span("Tanggal : ").SemiBold();
-                            text.Span(_tanggal);
+                            text.Span("Tanggal : ").FontSize(9).SemiBold();
+                            text.Span(_tanggal).FontSize(9);
                         });
                     });
                 });
@@ -87,7 +89,7 @@ namespace Siapel.UI.Documents
 
         void ComposeTableLimaPuluh(IContainer container)
         {
-            var textStyle = TextStyle.Default.FontSize(11).NormalWeight();
+            var textStyle = TextStyle.Default.FontSize(8).NormalWeight();
             container.Table(table =>
             {
                 IContainer DefaultCellStyle(IContainer container, string backgroundColor)
@@ -118,14 +120,14 @@ namespace Siapel.UI.Documents
 
                 table.Header(header =>
                 {
-                    header.Cell().ExtendHorizontal().Element(CellStyle).Text("No.");
-                    header.Cell().Element(CellStyle).Text("Tuan/ Toko");
-                    header.Cell().Element(CellStyle).Text("Harga");
-                    header.Cell().Element(CellStyle).Text("Jumlah");
-                    header.Cell().Element(CellStyle).Text("Tunai");
-                    header.Cell().Element(CellStyle).Text("Transfer");
-                    header.Cell().Element(CellStyle).Text("Invoice");
-                    header.Cell().Element(CellStyle).Text("Total");
+                    header.Cell().ExtendHorizontal().Element(CellStyle).Text("No.").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Tuan/ Toko").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Harga").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Jumlah").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Tunai").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Transfer").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Invoice").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Total").FontSize(9);
 
 
                     IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten2);
@@ -159,20 +161,20 @@ namespace Siapel.UI.Documents
 
                 table.Footer(footer =>
                 {
-                    footer.Cell().ColumnSpan(3).Element(CellStyle).Text("Total penjualan : ");
+                    footer.Cell().ColumnSpan(3).Element(CellStyle).Text("Total penjualan : ").FontSize(9);
                     if (_listOfTotals != null && _listOfTotals.Count > 0)
                     {
-                        var jumlah = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Jumlah).First();
-                        var tunai = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Tunai).First();
-                        var transfer = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Transfer).First();
-                        var invoice = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Invoice).First();
-                        var total = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Total).First();
+                        var jumlah = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Jumlah).FirstOrDefault();
+                        var tunai = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Tunai).FirstOrDefault();
+                        var transfer = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Transfer).FirstOrDefault();
+                        var invoice = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Invoice).FirstOrDefault();
+                        var total = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Total).FirstOrDefault();
 
-                        footer.Cell().Element(CellStyle).Text(jumlah);
-                        footer.Cell().Element(CellStyle).Text(tunai);
-                        footer.Cell().Element(CellStyle).Text(transfer);
-                        footer.Cell().Element(CellStyle).Text(invoice);
-                        footer.Cell().Element(CellStyle).Text(total);
+                        footer.Cell().Element(CellStyle).Text(jumlah).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(tunai).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(transfer).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(invoice).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(total).FontSize(9);
                     }
                     else
                     {
@@ -191,7 +193,7 @@ namespace Siapel.UI.Documents
 
         void ComposeTableDuaBelas(IContainer container)
         {
-            var textStyle = TextStyle.Default.FontSize(11).NormalWeight();
+            var textStyle = TextStyle.Default.FontSize(9).NormalWeight();
             container.Table(table =>
             {
                 IContainer DefaultCellStyle(IContainer container, string backgroundColor)
@@ -222,14 +224,14 @@ namespace Siapel.UI.Documents
 
                 table.Header(header =>
                 {
-                    header.Cell().ExtendHorizontal().Element(CellStyle).Text("No.");
-                    header.Cell().Element(CellStyle).Text("Tuan/ Toko");
-                    header.Cell().Element(CellStyle).Text("Harga");
-                    header.Cell().Element(CellStyle).Text("Jumlah");
-                    header.Cell().Element(CellStyle).Text("Tunai");
-                    header.Cell().Element(CellStyle).Text("Transfer");
-                    header.Cell().Element(CellStyle).Text("Invoice");
-                    header.Cell().Element(CellStyle).Text("Total");
+                    header.Cell().ExtendHorizontal().Element(CellStyle).Text("No.").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Tuan/ Toko").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Harga").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Jumlah").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Tunai").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Transfer").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Invoice").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Total").FontSize(9);
 
 
                     IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten2);
@@ -239,7 +241,7 @@ namespace Siapel.UI.Documents
                 {
                     foreach (var item in _lapDuaBelasList)
                     {
-                        var nomor = _lapLimaPuluhList.IndexOf(item) + 1;
+                        var nomor = _lapDuaBelasList.IndexOf(item) + 1;
                         var pangkalan = item.GetType().GetProperty("Pangkalan").GetValue(item);
                         var jumlah = item.GetType().GetProperty("Jumlah").GetValue(item);
                         var harga = item.GetType().GetProperty("Harga").GetValue(item);
@@ -263,20 +265,20 @@ namespace Siapel.UI.Documents
 
                 table.Footer(footer =>
                 {
-                    footer.Cell().ColumnSpan(3).Element(CellStyle).Text("Total penjualan : ");
+                    footer.Cell().ColumnSpan(3).Element(CellStyle).Text("Total penjualan : ").FontSize(9);
                     if (_listOfTotals != null && _listOfTotals.Count > 0)
                     {
-                        var jumlah = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Jumlah).First();
-                        var tunai = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Tunai).First();
-                        var transfer = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Transfer).First();
-                        var invoice = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Invoice).First();
-                        var total = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Total).First();
+                        var jumlah = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Jumlah).FirstOrDefault();
+                        var tunai = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Tunai).FirstOrDefault();
+                        var transfer = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Transfer).FirstOrDefault();
+                        var invoice = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Invoice).FirstOrDefault();
+                        var total = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Total).FirstOrDefault();
 
-                        footer.Cell().Element(CellStyle).Text(jumlah);
-                        footer.Cell().Element(CellStyle).Text(tunai);
-                        footer.Cell().Element(CellStyle).Text(transfer);
-                        footer.Cell().Element(CellStyle).Text(invoice);
-                        footer.Cell().Element(CellStyle).Text(total);
+                        footer.Cell().Element(CellStyle).Text(jumlah).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(tunai).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(transfer).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(invoice).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(total).FontSize(9);
                     }
                     else
                     {
@@ -295,7 +297,7 @@ namespace Siapel.UI.Documents
 
         void ComposeTableLimaSetengah(IContainer container)
         {
-            var textStyle = TextStyle.Default.FontSize(11).NormalWeight();
+            var textStyle = TextStyle.Default.FontSize(9).NormalWeight();
             container.Table(table =>
             {
                 IContainer DefaultCellStyle(IContainer container, string backgroundColor)
@@ -326,14 +328,14 @@ namespace Siapel.UI.Documents
 
                 table.Header(header =>
                 {
-                    header.Cell().ExtendHorizontal().Element(CellStyle).Text("No.");
-                    header.Cell().Element(CellStyle).Text("Tuan/ Toko");
-                    header.Cell().Element(CellStyle).Text("Harga");
-                    header.Cell().Element(CellStyle).Text("Jumlah");
-                    header.Cell().Element(CellStyle).Text("Tunai");
-                    header.Cell().Element(CellStyle).Text("Transfer");
-                    header.Cell().Element(CellStyle).Text("Invoice");
-                    header.Cell().Element(CellStyle).Text("Total");
+                    header.Cell().ExtendHorizontal().Element(CellStyle).Text("No.").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Tuan/ Toko").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Harga").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Jumlah").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Tunai").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Transfer").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Invoice").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Total").FontSize(9);
 
 
                     IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten2);
@@ -343,7 +345,7 @@ namespace Siapel.UI.Documents
                 {
                     foreach (var item in _lapLimaSetengah)
                     {
-                        var nomor = _lapLimaPuluhList.IndexOf(item) + 1;
+                        var nomor = _lapLimaSetengah.IndexOf(item) + 1;
                         var pangkalan = item.GetType().GetProperty("Pangkalan").GetValue(item);
                         var jumlah = item.GetType().GetProperty("Jumlah").GetValue(item);
                         var harga = item.GetType().GetProperty("Harga").GetValue(item);
@@ -367,20 +369,20 @@ namespace Siapel.UI.Documents
 
                 table.Footer(footer =>
                 {
-                    footer.Cell().ColumnSpan(3).Element(CellStyle).Text("Total penjualan : ");
+                    footer.Cell().ColumnSpan(3).Element(CellStyle).Text("Total penjualan : ").FontSize(9);
                     if (_listOfTotals != null && _listOfTotals.Count > 0)
                     {
-                        var jumlah = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Jumlah).First();
-                        var tunai = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Tunai).First();
-                        var transfer = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Transfer).First();
-                        var invoice = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Invoice).First();
-                        var total = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Total).First();
+                        var jumlah = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Jumlah).FirstOrDefault();
+                        var tunai = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Tunai).FirstOrDefault();
+                        var transfer = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Transfer).FirstOrDefault();
+                        var invoice = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Invoice).FirstOrDefault();
+                        var total = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Total).FirstOrDefault();
 
-                        footer.Cell().Element(CellStyle).Text(jumlah);
-                        footer.Cell().Element(CellStyle).Text(tunai);
-                        footer.Cell().Element(CellStyle).Text(transfer);
-                        footer.Cell().Element(CellStyle).Text(invoice);
-                        footer.Cell().Element(CellStyle).Text(total);
+                        footer.Cell().Element(CellStyle).Text(jumlah).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(tunai).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(transfer).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(invoice).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(total).FontSize(9);
                     }
                     else
                     {
@@ -399,7 +401,7 @@ namespace Siapel.UI.Documents
 
         void ComposeTableTotalPenjualan(IContainer container)
         {
-            var textStyle = TextStyle.Default.FontSize(11).NormalWeight();
+            var textStyle = TextStyle.Default.FontSize(9).NormalWeight();
             container.Table(table =>
             {
                 IContainer DefaultCellStyle(IContainer container, string backgroundColor)
@@ -436,17 +438,17 @@ namespace Siapel.UI.Documents
                         var invoice = _listOfTotals.Sum(x => x.InvoiceInt).ToString("Rp #,#");
                         var total = _listOfTotals.Sum(x => x.TotalInt).ToString("Rp #,#");
 
-                        header.Cell().RowSpan(2).Element(CellStyle).Text("Total Penjualan Keseluruhan");
+                        header.Cell().RowSpan(2).Element(CellStyle).Text("Total Penjualan Keseluruhan").FontSize(9);
 
-                        header.Cell().Element(CellStyle).Text("Tunai");
-                        header.Cell().Element(CellStyle).Text("Transfer");
-                        header.Cell().Element(CellStyle).Text("Invoice");
+                        header.Cell().Element(CellStyle).Text("Tunai").FontSize(9);
+                        header.Cell().Element(CellStyle).Text("Transfer").FontSize(9);
+                        header.Cell().Element(CellStyle).Text("Invoice").FontSize(9);
 
-                        header.Cell().RowSpan(2).Element(CellStyle).Text(total);
+                        header.Cell().RowSpan(2).Element(CellStyle).Text(total).FontSize(9);
 
-                        header.Cell().Element(CellStyle).Text(tunai);
-                        header.Cell().Element(CellStyle).Text(transfer);
-                        header.Cell().Element(CellStyle).Text(invoice);
+                        header.Cell().Element(CellStyle).Text(tunai).FontSize(9);
+                        header.Cell().Element(CellStyle).Text(transfer).FontSize(9);
+                        header.Cell().Element(CellStyle).Text(invoice).FontSize(9);
 
                         
                     }                
@@ -458,7 +460,7 @@ namespace Siapel.UI.Documents
         }
         void ComposeTableInOutStok(IContainer container)
         {
-            var textStyle = TextStyle.Default.FontSize(11).NormalWeight();
+            var textStyle = TextStyle.Default.FontSize(9).NormalWeight();
             container.Table(table =>
             {
                 IContainer DefaultCellStyle(IContainer container, string backgroundColor)
@@ -488,13 +490,13 @@ namespace Siapel.UI.Documents
 
                 table.Header(header =>
                 {                    
-                    header.Cell().Element(CellStyle).Text("Tabung");
-                    header.Cell().Element(CellStyle).Text("Stok Awal");
-                    header.Cell().Element(CellStyle).Text("Masuk");
-                    header.Cell().Element(CellStyle).Text("Penjualan");
-                    header.Cell().Element(CellStyle).Text("Titipan Bocor");
-                    header.Cell().Element(CellStyle).Text("Ambil Bocor");
-                    header.Cell().Element(CellStyle).Text("Sisa Stok");
+                    header.Cell().Element(CellStyle).Text("Tabung").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Stok Awal").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Masuk").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Penjualan").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Titipan Bocor").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Ambil Bocor").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Sisa Stok").FontSize(9);
 
 
                     IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten2);
