@@ -46,7 +46,7 @@ namespace Siapel.UI.Documents
         }
         void ComposeHeader(IContainer container)
         {
-            var titleStyle = TextStyle.Default.FontSize(36).SemiBold();
+            var titleStyle = TextStyle.Default.FontSize(16).SemiBold();
 
             container
                 .Row(row =>
@@ -57,8 +57,8 @@ namespace Siapel.UI.Documents
 
                         column.Item().Text(text =>
                         {
-                            text.Span("Tanggal : ").SemiBold();
-                            text.Span(_tanggal);
+                            text.Span("Tanggal : ").FontSize(9).SemiBold();
+                            text.Span(_tanggal).FontSize(9);
                         });
                     });
                 });
@@ -69,16 +69,16 @@ namespace Siapel.UI.Documents
             {
                 column.Spacing(5);
 
-                column.Item().Text("Invoice Detail");
+                column.Item().Text("Invoice Detail").FontSize(9);
                 column.Item().Element(ComposeInvoiceDetailTable);
                 column.Item().Text("");
-                column.Item().Text("Invoice Rekap");
+                column.Item().Text("Invoice Rekap").FontSize(9);
                 column.Item().Element(ComposeInvoiceTotalTable);
             });
         }
         void ComposeInvoiceDetailTable(IContainer container)
         {
-            var textStyle = TextStyle.Default.FontFamily("Calibri").FontSize(11).Light();
+            var textStyle = TextStyle.Default.FontFamily("Calibri").FontSize(9).Light();
             container.Table(table =>
             {
                 IContainer DefaultCellStyle(IContainer container, string backgroundColor)
@@ -112,23 +112,23 @@ namespace Siapel.UI.Documents
 
                 table.Header(header =>
                 {
-                    header.Cell().RowSpan(2).ExtendHorizontal().Element(CellStyle).Text("Tanggal");
-                    header.Cell().RowSpan(2).Element(CellStyle).Text("Tuan/ Toko");
+                    header.Cell().RowSpan(2).ExtendHorizontal().Element(CellStyle).Text("Tanggal").FontSize(9);
+                    header.Cell().RowSpan(2).Element(CellStyle).Text("Tuan/ Toko").FontSize(9);
 
-                    header.Cell().ColumnSpan(2).Element(CellStyle).Text("50 KG");
-                    header.Cell().ColumnSpan(2).Element(CellStyle).Text("12 KG");
-                    header.Cell().ColumnSpan(2).Element(CellStyle).Text("5,5 KG");
+                    header.Cell().ColumnSpan(2).Element(CellStyle).Text("50 KG").FontSize(9);
+                    header.Cell().ColumnSpan(2).Element(CellStyle).Text("12 KG").FontSize(9);
+                    header.Cell().ColumnSpan(2).Element(CellStyle).Text("5,5 KG").FontSize(9);
 
-                    header.Cell().RowSpan(2).Element(CellStyle).Text("Total");
+                    header.Cell().RowSpan(2).Element(CellStyle).Text("Total").FontSize(9);
 
-                    header.Cell().Element(CellStyle).Text("Qty");
-                    header.Cell().Element(CellStyle).Text("Total");
+                    header.Cell().Element(CellStyle).Text("Qty").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Total").FontSize(9);
                     
-                    header.Cell().Element(CellStyle).Text("Qty");
-                    header.Cell().Element(CellStyle).Text("Total");
+                    header.Cell().Element(CellStyle).Text("Qty").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Total").FontSize(9);
                     
-                    header.Cell().Element(CellStyle).Text("Qty");
-                    header.Cell().Element(CellStyle).Text("Total");
+                    header.Cell().Element(CellStyle).Text("Qty").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Total").FontSize(9);
 
                     IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten3);
                 });
@@ -171,7 +171,7 @@ namespace Siapel.UI.Documents
         }
         void ComposeInvoiceTotalTable(IContainer container)
         {
-            var textStyle = TextStyle.Default.FontFamily("Calibri").FontSize(11).Light();
+            var textStyle = TextStyle.Default.FontFamily("Calibri").FontSize(9).Light();
             container.Table(table =>
             {
                 IContainer DefaultCellStyle(IContainer container, string backgroundColor)
@@ -201,13 +201,13 @@ namespace Siapel.UI.Documents
 
                 table.Header(header =>
                 {
-                    header.Cell().Element(CellStyle).Text("Tuan/ Toko");
+                    header.Cell().Element(CellStyle).Text("Tuan/ Toko").FontSize(9);
 
-                    header.Cell().Element(CellStyle).Text("50 KG");
-                    header.Cell().Element(CellStyle).Text("12 KG");
-                    header.Cell().Element(CellStyle).Text("5,5 KG");
+                    header.Cell().Element(CellStyle).Text("50 KG").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("12 KG").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("5,5 KG").FontSize(9);
 
-                    header.Cell().Element(CellStyle).Text("Total");
+                    header.Cell().Element(CellStyle).Text("Total").FontSize(9);
 
                     IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten3);
                 });
@@ -239,11 +239,11 @@ namespace Siapel.UI.Documents
 
                 table.Footer(footer =>
                 {
-                    footer.Cell().Element(CellStyle).Text("Grand Total : ");
-                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotalLP);
-                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotalDB);
-                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotalLS);
-                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotal);
+                    footer.Cell().Element(CellStyle).Text("Grand Total : ").FontSize(9);
+                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotalLP).FontSize(9);
+                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotalDB).FontSize(9);
+                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotalLS).FontSize(9);
+                    footer.Cell().Element(CellStyle).Text(_invoiceGrandTotal).FontSize(9);
 
                     IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten3);
                 });
