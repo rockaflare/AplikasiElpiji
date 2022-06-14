@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Siapel.EF;
 
@@ -10,9 +11,10 @@ using Siapel.EF;
 namespace Siapel.EF.Migrations
 {
     [DbContext(typeof(SiapelDbContext))]
-    partial class SiapelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220614065554_remove-transaksi-log")]
+    partial class removetransaksilog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
@@ -49,7 +51,7 @@ namespace Siapel.EF.Migrations
                         {
                             Id = 1,
                             PangkalanId = 1,
-                            TanggalUbah = new DateTime(2022, 6, 14, 15, 3, 34, 583, DateTimeKind.Local).AddTicks(2773),
+                            TanggalUbah = new DateTime(2022, 6, 14, 14, 55, 54, 645, DateTimeKind.Local).AddTicks(5533),
                             TbDuaBelas = 195000,
                             TbLimaPuluh = 1012000,
                             TbLimaSetengah = 93000
@@ -170,33 +172,6 @@ namespace Siapel.EF.Migrations
                             Jumlah = 355,
                             Tanggal = new DateTimeOffset(new DateTime(2022, 6, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 8, 0, 0, 0))
                         });
-                });
-
-            modelBuilder.Entity("Siapel.Domain.Models.TabungBocor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Ambil")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Item")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Keterangan")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTimeOffset?>("Tanggal")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Titipan")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TabungBocor");
                 });
 
             modelBuilder.Entity("Siapel.Domain.Models.Transaksi", b =>

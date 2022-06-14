@@ -17,11 +17,7 @@ namespace Siapel.UI.ViewModels
     public class PemasukanViewModel : ReactiveObject, IRoutableViewModel
     {//TODO
         private IDataService<Pemasukan> _dataService;
-        private IDataService<TransaksiLog> _transaksiLogService;
-        private IDataService<StokAwal> _stokAwalService;
         private ObservableCollection<Pemasukan> _pemasukan { get; } = new ObservableCollection<Pemasukan>();
-        private List<StokAwal> _stokAwalList { get; } = new List<StokAwal>();
-        private List<TransaksiLog> _transaksiLogList { get; } = new List<TransaksiLog>();
         public string? UrlPathSegment => "Pemasukan";
 
         public IScreen HostScreen { get; }
@@ -30,12 +26,10 @@ namespace Siapel.UI.ViewModels
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
         private ReactiveCommand<Unit, Unit> DeleteItem { get; }
 
-        public PemasukanViewModel(IScreen screen, IDataService<Pemasukan> dataService, IDataService<TransaksiLog> transaksiLogService, IDataService<StokAwal> stokAwalService)
+        public PemasukanViewModel(IScreen screen, IDataService<Pemasukan> dataService)
         {
             HostScreen = screen;
             _dataService = dataService;
-            _stokAwalService = stokAwalService;
-            _transaksiLogService = transaksiLogService;
             LoadItem = ReactiveCommand.CreateFromTask(PemasukanUpdater);
             LoadItem.Execute();
             DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
@@ -52,7 +46,6 @@ namespace Siapel.UI.ViewModels
                     _pemasukan.Add(item);
                 }
             }
-            PopulateStockSources();
         }
 
         private Pemasukan _selectedPemasukan;
@@ -64,8 +57,7 @@ namespace Siapel.UI.ViewModels
 
         private async void DeleteItemAsync()
         {
-            await _dataService.Delete(SelectedPemasukan);
-            await UpdateTransaksiLog(SelectedPemasukan.Item, SelectedPemasukan.Jumlah, SelectedPemasukan.Tanggal, DateTime.UtcNow, 0);            
+            await _dataService.Delete(SelectedPemasukan);         
             await LoadItem.Execute();
         }
 
@@ -93,93 +85,6 @@ namespace Siapel.UI.ViewModels
                 await dialog.ShowAsync();
             }
         }
-        private int? GetLastStock(string item, DateTimeOffset? tanggal)
-        {
-            int? resultStock = 0;
-            if (_transaksiLogList.Count > 0)
-            {
-                var transaksiResult = _transaksiLogList.Where(x => x.Tanggal == tanggal && x.Item == item).OrderByDescending(x => x.Created).Select(x => x.SisaStok).FirstOrDefault();
-                if (transaksiResult != null && transaksiResult > 0)
-                {
-                    resultStock = transaksiResult;
-                }
-                else
-                {
-                    transaksiResult = _transaksiLogList.Where(x => x.Tanggal == tanggal?.AddDays(-1) && x.Item == item).OrderByDescending(x => x.Created).Select(x => x.SisaStok).FirstOrDefault();
-                    if (transaksiResult != null && transaksiResult > 0)
-                    {
-                        resultStock = transaksiResult;
-                    }
-                    else
-                    {
-                        resultStock = _stokAwalList.First(x => x.Item == item).Jumlah;
-                    }
-                }
-            }
-            else
-            {
-                resultStock = _stokAwalList.First(x => x.Item == item).Jumlah;
-            }
-            return resultStock;
-        }
-        private async void PopulateStockSources()
-        {
-            _stokAwalList.Clear();
-            _transaksiLogList.Clear();
-            var stoklist = await _stokAwalService.GetAll();
-            foreach (var item in stoklist)
-            {
-                _stokAwalList.Add(item);
-            }
-
-            var transloglist = await _transaksiLogService.GetAll();
-            foreach (var item in transloglist)
-            {
-                _transaksiLogList.Add(item);
-            }
-        }
-        private async Task UpdateTransaksiLog(string item, int? sisastok, DateTimeOffset? tanggal, DateTime createdat, int operationType)
-        {
-            int? calculatedStok = 0;
-            var transaksiLogBetween = _transaksiLogList.Where(x => x.Item == item && x.Tanggal >= tanggal).GroupBy(x => x.Tanggal).Select(t => new TransaksiLog()
-            {
-                Item = t.Select(x => x.Item).First(),
-                Tanggal = t.Select(x => x.Tanggal).First()
-            }).ToList();
-            if (transaksiLogBetween.Count > 0)
-            {
-                foreach (var tab in transaksiLogBetween)
-                {
-                    switch (operationType)
-                    {
-                        case 0:
-                            calculatedStok = GetLastStock(item, tab.Tanggal) - sisastok;
-                            break;
-                        case 1:
-                            calculatedStok = GetLastStock(item, tab.Tanggal) + sisastok;
-                            break;
-                        default:
-                            break;
-                    }
-                    await _transaksiLogService.Create(new TransaksiLog { Item = item, SisaStok = calculatedStok, Tanggal = tab.Tanggal, Created = createdat });
-                }
-            }
-            else
-            {
-                switch (operationType)
-                {
-                    case 0:
-                        calculatedStok = GetLastStock(item, tanggal) - sisastok;
-                        break;
-                    case 1:
-                        calculatedStok = GetLastStock(item, tanggal) + sisastok;
-                        break;
-                    default:
-                        break;
-                }
-                await _transaksiLogService.Create(new TransaksiLog { Item = item, SisaStok = calculatedStok, Tanggal = tanggal, Created = createdat });
-            }
-        }
         public async void AddCommand()
         {
             var vm = new PemasukanFieldViewModel(this.HostScreen, "Tambah Pemasukan");
@@ -192,11 +97,10 @@ namespace Siapel.UI.ViewModels
                 {
                     if (model != null)
                     {
-                        await _dataService.Create(model);
-                        await UpdateTransaksiLog(model.Item, model.Jumlah, model.Tanggal, DateTime.UtcNow, 1);                        
+                        await _dataService.Create(model);                
                     }
 
-                    await HostScreen.Router.NavigateAndReset.Execute(new PemasukanViewModel(this.HostScreen, _dataService, _transaksiLogService, _stokAwalService));
+                    await HostScreen.Router.NavigateAndReset.Execute(new PemasukanViewModel(this.HostScreen, _dataService));
                 });
 
             await HostScreen.Router.Navigate.Execute(vm);

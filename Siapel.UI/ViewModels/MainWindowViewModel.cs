@@ -16,11 +16,10 @@ namespace Siapel.UI.ViewModels
         private readonly IDataService<Harga> _hargaService;
         private readonly IDataService<Pemasukan> _pemasukanService;
         private readonly IDataService<StokAwal> _stokAwalService;
-        private readonly IDataService<TransaksiLog> _transaksiLogService;
         private readonly IDataService<TabungBocor> _tabungBocorService;
         private readonly IPangkalanDataService _pangkalanService;
         private readonly ITransaksiDataService _transaksiService;
-        public MainWindowViewModel(IDataService<Harga> hargaService, IDataService<StokAwal> stokAwalDataService, IDataService<TabungBocor> tabungBocorService, IDataService<Pemasukan> pemasukanService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService, IDataService<TransaksiLog> transaksiLogService)
+        public MainWindowViewModel(IDataService<Harga> hargaService, IDataService<StokAwal> stokAwalDataService, IDataService<TabungBocor> tabungBocorService, IDataService<Pemasukan> pemasukanService, IPangkalanDataService pangkalanDataService, ITransaksiDataService transaksiDataService)
         {
             _hargaService = hargaService;
             _pemasukanService = pemasukanService;
@@ -28,7 +27,6 @@ namespace Siapel.UI.ViewModels
             _transaksiService = transaksiDataService;
             _stokAwalService = stokAwalDataService;
             _tabungBocorService = tabungBocorService;
-            _transaksiLogService = transaksiLogService;
         }
 
 
@@ -101,23 +99,23 @@ namespace Siapel.UI.ViewModels
         }
         private void ShowStokAwal()
         {
-            Router.Navigate.Execute(new StokAwalViewModel(this, _stokAwalService, _transaksiLogService));
+            Router.Navigate.Execute(new StokAwalViewModel(this, _stokAwalService));
         }
         private void ShowTransaksi()
         {
-            Router.Navigate.Execute(new TransaksiViewModel(this, _transaksiService, _pangkalanService, _hargaService, _transaksiLogService, _stokAwalService));
+            Router.Navigate.Execute(new TransaksiViewModel(this, _transaksiService, _pangkalanService, _hargaService));
         }
         private void ShowPemasukan()
         {
-            Router.Navigate.Execute(new PemasukanViewModel(this, _pemasukanService, _transaksiLogService, _stokAwalService));
+            Router.Navigate.Execute(new PemasukanViewModel(this, _pemasukanService));
         }
         private void ShowTabungBocor()
         {
-            Router.Navigate.Execute(new TabungBocorViewModel(this, _tabungBocorService, _transaksiLogService, _stokAwalService));
+            Router.Navigate.Execute(new TabungBocorViewModel(this, _tabungBocorService, _stokAwalService));
         }
         private void ShowInOut()
         {
-            Router.Navigate.Execute(new InOutViewModel(this, _stokAwalService, _pemasukanService, _transaksiService, _transaksiLogService, _tabungBocorService));
+            Router.Navigate.Execute(new InOutViewModel(this, _stokAwalService, _pemasukanService, _transaksiService, _tabungBocorService));
         }
         private void ShowLaporan()
         {

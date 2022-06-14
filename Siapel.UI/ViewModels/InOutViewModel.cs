@@ -15,12 +15,10 @@ namespace Siapel.UI.ViewModels
     public class InOutViewModel : ReactiveObject, IRoutableViewModel
     {
         private readonly IDataService<StokAwal> _stokAwalService;
-        private readonly IDataService<TransaksiLog> _transaksiLogService;
         private readonly IDataService<Pemasukan> _pemasukanService;
         private readonly IDataService<TabungBocor> _tabungBocorService;
         private readonly ITransaksiDataService _transaksiDataService;
         private List<StokAwal> _stokAwal { get; } = new List<StokAwal>();
-        private List<TransaksiLog> _transaksiLog { get; } = new List<TransaksiLog>();
         private List<Pemasukan> _pemasukan { get; } = new List<Pemasukan>();
         private List<Transaksi> _transaksi { get; } = new List<Transaksi>();
         private List<TabungBocor> _tabungBocor { get; } = new List<TabungBocor>();
@@ -36,13 +34,12 @@ namespace Siapel.UI.ViewModels
 
 
 
-        public InOutViewModel(IScreen screen, IDataService<StokAwal> stokAwalService, IDataService<Pemasukan> pemasukanService, ITransaksiDataService transaksiDataService, IDataService<TransaksiLog> transaksiLogService, IDataService<TabungBocor> tabungBocorSerevice)
+        public InOutViewModel(IScreen screen, IDataService<StokAwal> stokAwalService, IDataService<Pemasukan> pemasukanService, ITransaksiDataService transaksiDataService, IDataService<TabungBocor> tabungBocorSerevice)
         {
             HostScreen = screen;
             _stokAwalService = stokAwalService;
             _pemasukanService = pemasukanService;
             _transaksiDataService = transaksiDataService;
-            _transaksiLogService = transaksiLogService;
             _tabungBocorService = tabungBocorSerevice;
             _selectedTanggal = DateTimeOffset.Now;
             LoadItem = ReactiveCommand.CreateFromTask(LoadAllItem);
@@ -63,13 +60,11 @@ namespace Siapel.UI.ViewModels
         private async Task LoadAllItem()
         {
             var stokAwals = await _stokAwalService.GetAll();
-            var transaksiLogs = await _transaksiLogService.GetAll();
             var pemasukans = await _pemasukanService.GetAll();
             var transaksis = await _transaksiDataService.GetAll();
             var tabungbocors = await _tabungBocorService.GetAll();
 
             _stokAwal.Clear();
-            _transaksiLog.Clear();
             _pemasukan.Clear();
             _transaksi.Clear();
             _tabungBocor.Clear();
@@ -77,10 +72,6 @@ namespace Siapel.UI.ViewModels
             foreach (var item in stokAwals)
             {
                 _stokAwal.Add(item);
-            }
-            foreach (var item in transaksiLogs)
-            {
-                _transaksiLog.Add(item);
             }
             foreach (var item in pemasukans)
             {
@@ -153,26 +144,6 @@ namespace Siapel.UI.ViewModels
             }
             return resultPenjualan;
         }
-
-        private int? GetLastStok(string item, DateTimeOffset tanggal)
-        {
-            int? resultLastStok = 0;
-            if (_transaksiLog.Count > 0)
-            {
-                int? tLogResult = _transaksiLog.Where(x => x.Tanggal == tanggal && x.Item == item).OrderByDescending(x => x.Created).Select(x => x.SisaStok).FirstOrDefault();
-                if (tLogResult != null && tLogResult > 0)
-                {
-                    resultLastStok = tLogResult;
-                }
-                else
-                {
-                    resultLastStok = _stokAwal.FirstOrDefault(x => x.Item == item).Jumlah;
-                }
-            }
-            return resultLastStok;
-        }
-
-
 
         //RECALCULATE STOK AKHIR
         private int? GetLastStokFromTotal(string item, DateTimeOffset tanggal)

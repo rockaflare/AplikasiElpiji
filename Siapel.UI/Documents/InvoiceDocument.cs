@@ -78,7 +78,7 @@ namespace Siapel.UI.Documents
         }
         void ComposeInvoiceDetailTable(IContainer container)
         {
-            var textStyle = TextStyle.Default.FontFamily("Calibri").FontSize(9).Light();
+            var textStyle = TextStyle.Default.FontSize(9).NormalWeight();
             container.Table(table =>
             {
                 IContainer DefaultCellStyle(IContainer container, string backgroundColor)
@@ -171,7 +171,7 @@ namespace Siapel.UI.Documents
         }
         void ComposeInvoiceTotalTable(IContainer container)
         {
-            var textStyle = TextStyle.Default.FontFamily("Calibri").FontSize(9).Light();
+            var textStyle = TextStyle.Default.FontSize(9).NormalWeight();
             container.Table(table =>
             {
                 IContainer DefaultCellStyle(IContainer container, string backgroundColor)

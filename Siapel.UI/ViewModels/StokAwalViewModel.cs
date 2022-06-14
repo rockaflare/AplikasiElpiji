@@ -17,20 +17,17 @@ namespace Siapel.UI.ViewModels
     public class StokAwalViewModel : ReactiveObject, IRoutableViewModel
     {
         private ObservableCollection<StokAwal> _stokAwal { get; } = new ObservableCollection<StokAwal>();
-        private ObservableCollection<TransaksiLog> _transaksiLog { get; } = new ObservableCollection<TransaksiLog>();
         private readonly IDataService<StokAwal> _dataService;
-        private readonly IDataService<TransaksiLog> _transaksiLogService;
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
         public string? UrlPathSegment => "Stok Awal";
 
         public IScreen HostScreen { get; }
         public IEnumerable<StokAwal> StokAwal => _stokAwal;
 
-        public StokAwalViewModel(IScreen screen, IDataService<StokAwal> dataService, IDataService<TransaksiLog> transaksiLogService)
+        public StokAwalViewModel(IScreen screen, IDataService<StokAwal> dataService)
         {
             HostScreen = screen;
             _dataService = dataService;
-            _transaksiLogService = transaksiLogService;
             LoadItem = ReactiveCommand.CreateFromTask(StokAwalUpdater);
             LoadItem.Execute();
         }
@@ -53,28 +50,6 @@ namespace Siapel.UI.ViewModels
                     _stokAwal.Add(item);
                 }
             }
-            PopulateTransaksiLog();
-        }
-        private void UpdateAllTransaksiLog(string item, int ?newJumlah)
-        {
-            var getTransaksiLog = _transaksiLog.Where(x => x.Item == item).ToList();
-            if (getTransaksiLog.Count > 0)
-            {
-                foreach (var x in getTransaksiLog)
-                {
-                    x.SisaStok -= newJumlah;
-                    _transaksiLogService.Update(x);
-                }
-            }            
-        }
-        private async void PopulateTransaksiLog()
-        {
-            _transaksiLog.Clear();
-            var transaksiLogList = await _transaksiLogService.GetAll();
-            foreach (var item in transaksiLogList)
-            {
-                _transaksiLog.Add(item);
-            }
         }
         public async void UpdateCommand()
         {
@@ -91,11 +66,9 @@ namespace Siapel.UI.ViewModels
                     {
                         if (model != null)
                         {
-                            var selisihStok = oldJumlah - model.Jumlah;
-                            await _dataService.Update(model);                            
-                            UpdateAllTransaksiLog(model.Item, selisihStok);
+                            await _dataService.Update(model);
                         }
-                        await HostScreen.Router.NavigateAndReset.Execute(new StokAwalViewModel(this.HostScreen, _dataService, _transaksiLogService));
+                        await HostScreen.Router.NavigateAndReset.Execute(new StokAwalViewModel(this.HostScreen, _dataService));
                     });
 
                 await HostScreen.Router.Navigate.Execute(vm);
