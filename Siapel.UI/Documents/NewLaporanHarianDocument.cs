@@ -501,6 +501,30 @@ namespace Siapel.UI.Documents
 
                     IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten2);
                 });
+
+                if (_lapInOutStok != null)
+                {
+                    foreach (var item in _lapInOutStok)
+                    {
+                        var tabung = item.GetType().GetProperty("Item").GetValue(item);
+                        var titipan = item.GetType().GetProperty("TitipanBocor").GetValue(item);
+                        var ambil = item.GetType().GetProperty("AmbilBocor").GetValue(item);
+                        var penjualan = item.GetType().GetProperty("Penjualan").GetValue(item);
+                        var masuk = item.GetType().GetProperty("Masuk").GetValue(item);
+                        var stokawal = item.GetType().GetProperty("StokAwal").GetValue(item);
+                        var stokakhir = item.GetType().GetProperty("StokAkhir").GetValue(item);
+
+                        table.Cell().Element(CellStyle).Text(tabung).Style(textStyle);
+                        table.Cell().Element(CellStyle).Text(stokawal).Style(textStyle);
+                        table.Cell().Element(CellStyle).Text(masuk).Style(textStyle);
+                        table.Cell().Element(CellStyle).Text(penjualan).Style(textStyle);
+                        table.Cell().Element(CellStyle).Text(titipan).Style(textStyle);
+                        table.Cell().Element(CellStyle).Text(ambil).Style(textStyle);
+                        table.Cell().Element(CellStyle).Text(stokakhir).Style(textStyle);
+
+                        IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.White);
+                    }
+                }
             });
         }
 

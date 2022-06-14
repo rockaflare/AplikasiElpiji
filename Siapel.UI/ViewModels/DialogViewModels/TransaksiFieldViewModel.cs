@@ -43,6 +43,7 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             ExecuteHargaItem = ReactiveCommand.Create(GetHargaPangkalan);
             CalculateCommand = ReactiveCommand.Create(CalculateTotal);
             SetPaymentStatus = ReactiveCommand.Create(PaymentStatusSetter);
+            
 
             this.WhenAnyValue(x => x.Pangkalan, x => x.Item).Select(_ => Unit.Default).InvokeCommand(ExecuteHargaItem);
             this.WhenAnyValue(x => x.JumlahItem, x => x.Pangkalan, x => x.Item).Select(_ => Unit.Default).InvokeCommand(CalculateCommand);
@@ -84,10 +85,10 @@ namespace Siapel.UI.ViewModels.DialogViewModels
         private void GetHargaPangkalan()
         {
             int? hargaResult = null;
-            if (Pangkalan !=null)
+            if (Pangkalan != null)
             {
                 var defHarga = HargaList.First();
-                var getHarga = HargaList.FirstOrDefault(p => p.Pangkalan.Id == _pangkalan.Id, defHarga);                
+                var getHarga = HargaList.FirstOrDefault(p => p.Pangkalan.Id == _pangkalan.Id, defHarga);
                 if (getHarga != null)
                 {
                     switch (_item)
@@ -105,7 +106,7 @@ namespace Siapel.UI.ViewModels.DialogViewModels
                             break;
                     }
                 }
-            }            
+            }
             Harga = hargaResult;
         }
         private int? _jumlahItem;

@@ -121,7 +121,7 @@ namespace Siapel.UI.ViewModels
         }
         private void ShowLaporan()
         {
-            Router.Navigate.Execute(new LaporanViewModel(this, _transaksiService));
+            Router.Navigate.Execute(new LaporanViewModel(this, _transaksiService, _stokAwalService, _pemasukanService, _tabungBocorService));
         }
 
 

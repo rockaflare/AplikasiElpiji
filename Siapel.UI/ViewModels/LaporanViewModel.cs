@@ -4,6 +4,7 @@ using ReactiveUI;
 using Siapel.Domain.Models;
 using Siapel.Domain.Services;
 using Siapel.UI.Documents;
+using Siapel.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,14 +18,22 @@ namespace Siapel.UI.ViewModels
 {
     public class LaporanViewModel : ReactiveObject, IRoutableViewModel
     {
+        //TODO : Tambah laporan IN OUT
         private List<string> _jenisLaporan;
         private ITransaksiDataService _transaksiDataService;
+        private IDataService<StokAwal> _stokAwalDataService;
+        private IDataService<Pemasukan> _pemasukanDataService;
+        private IDataService<TabungBocor> _tabungBocorDataService;
         private ObservableCollection<Transaksi> _transaksi { get; } = new ObservableCollection<Transaksi>();
+        private ObservableCollection<StokAwal> _stokawal { get; } = new ObservableCollection<StokAwal>();
+        private ObservableCollection<Pemasukan> _pemasukan { get; } = new ObservableCollection<Pemasukan>();
+        private ObservableCollection<TabungBocor> _tabungbocor { get; } = new ObservableCollection<TabungBocor>();
         private List<object> _invoiceList { get; } = new List<object>();
         private List<object> _invoiceGrandTotalList { get; } = new List<object>();
         private List<object> _laporanHarianLimaPuluh { get; } = new List<object>();
         private List<object> _laporanHarianDuaBelas { get; } = new List<object>();
         private List<object> _laporanHarianLimaSetengah { get; } = new List<object>();
+        private List<object> _laporanInOutStok { get; } = new List<object>();
         private List<LaporanHarian> _totalOfTransaksiList { get; } = new List<LaporanHarian>();
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
         private ReactiveCommand<Unit, Unit> SaveItem { get; }
@@ -37,19 +46,26 @@ namespace Siapel.UI.ViewModels
         public string? UrlPathSegment => Title;
         public IScreen HostScreen { get; }
         public IEnumerable<Transaksi> Transaksi => _transaksi;
+        public IEnumerable<StokAwal> StokAwal => _stokawal;
+        public IEnumerable<Pemasukan> Pemasukan => _pemasukan;
+        public IEnumerable<TabungBocor> TabungBocor => _tabungbocor;
         public List<string> JenisLaporan => _jenisLaporan;
         public List<object> InvoiceList => _invoiceList;
         public List<object> InvoiceGrandTotalList => _invoiceGrandTotalList;
         public List<object> LaporanHarianLimaPuluh => _laporanHarianLimaPuluh;
         public List<object> LaporanHarianDuaBelas => _laporanHarianDuaBelas;
         public List<object> LaporanHarianLimaSetengah => _laporanHarianLimaSetengah;
+        public List<object> LaporanInOutStok => _laporanInOutStok;
         public List<LaporanHarian> TotalOfTransaksiList => _totalOfTransaksiList;
         
 
-        public LaporanViewModel(IScreen screen, ITransaksiDataService transaksiDataService = null)
+        public LaporanViewModel(IScreen screen, ITransaksiDataService transaksiDataService = null, IDataService<StokAwal> stokAwalDataService = null, IDataService<Pemasukan> pemasukanDataService = null, IDataService<TabungBocor> tabungBocorDataService = null)
         {
             HostScreen = screen;
             _transaksiDataService = transaksiDataService;
+            _stokAwalDataService = stokAwalDataService;
+            _pemasukanDataService = pemasukanDataService;
+            _tabungBocorDataService = tabungBocorDataService;
             _jenisLaporan = new List<string>() { "Invoice", "Harian"};
             SelectedTanggalLaporan = DateTimeOffset.Now.AddDays(-1);
             LoadItem = ReactiveCommand.CreateFromTask(LaporanUpdater);
@@ -72,6 +88,33 @@ namespace Siapel.UI.ViewModels
                 {
                     _transaksi.Add(item);
                 }                
+            }
+            _stokawal.Clear();
+            if (_stokAwalDataService != null)
+            {
+                var dataList = await _stokAwalDataService.GetAll();
+                foreach (var item in dataList)
+                {
+                    _stokawal.Add(item);
+                }
+            }
+            _pemasukan.Clear();
+            if (_pemasukanDataService != null)
+            {
+                var dataList = await _pemasukanDataService.GetAll();
+                foreach (var item in dataList)
+                {
+                    _pemasukan.Add(item);
+                }
+            }
+            _tabungbocor.Clear();
+            if (_tabungBocorDataService != null)
+            {
+                var dataList = await _tabungBocorDataService.GetAll();
+                foreach (var item in dataList)
+                {
+                    _tabungbocor.Add(item);
+                }
             }
         }
         private bool _isInvoice;
@@ -151,7 +194,7 @@ namespace Siapel.UI.ViewModels
         }
         private void LapHarianCreator()
         {
-            if (_transaksi != null)
+            if (_transaksi != null && _pemasukan != null && _stokawal != null && _tabungbocor != null)
             {
                 var limaPuluhList = _transaksi
                     .Where(x => x.Item == "50 KG" && x.Tanggal == SelectedTanggalLaporan.Date)
@@ -237,6 +280,17 @@ namespace Siapel.UI.ViewModels
                 {
                     _totalOfTransaksiList.Add(item);
                 }
+                List<StokAwal> stokAwals = new List<StokAwal>(StokAwal);
+                List<Pemasukan> pemasukans = new List<Pemasukan>(Pemasukan);
+                List<Transaksi> transaksis = new List<Transaksi>(Transaksi);
+                List<TabungBocor> tabungBocors = new List<TabungBocor>(TabungBocor);
+                InOutService inOutService = new InOutService(stokAwals, pemasukans, transaksis, tabungBocors, SelectedTanggalLaporan.Date);
+                var inoutlist = inOutService.GetInOutStokList();
+                _laporanInOutStok.Clear();
+                foreach (var item in inoutlist)
+                {
+                    _laporanInOutStok.Add(item);
+                }
             }
         }
         private string _selectedLaporan;
@@ -279,7 +333,7 @@ namespace Siapel.UI.ViewModels
             if (SelectedLaporan != null && !string.IsNullOrWhiteSpace(SaveDestinationPath))
             {
                 var invoiceDocument = new InvoiceDocument(InvoiceList, InvoiceGrandTotalList, SelectedTanggalLaporan.Date.ToLongDateString(), _invoiceGrandTotal, _invoiceGrandTotalLp, _invoiceGrandTotalDb, _invoiceGrandTotalLs);
-                var harianDocument = new NewLaporanHarianDocument(LaporanHarianLimaPuluh, LaporanHarianDuaBelas, LaporanHarianLimaSetengah, SelectedTanggalLaporan.Date.ToLongDateString(), TotalOfTransaksiList );
+                var harianDocument = new NewLaporanHarianDocument(LaporanHarianLimaPuluh, LaporanHarianDuaBelas, LaporanHarianLimaSetengah, SelectedTanggalLaporan.Date.ToLongDateString(), TotalOfTransaksiList, LaporanInOutStok);
 
                 switch (SelectedLaporan)
                 {
