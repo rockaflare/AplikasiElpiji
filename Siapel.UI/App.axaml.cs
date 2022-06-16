@@ -54,10 +54,9 @@ namespace Siapel.UI
                     var pemasukanService = scope.Resolve<IDataService<Pemasukan>>(new NamedParameter("contextFactory", new SiapelDbContextFactory()));
                     var stokawalService = scope.Resolve<IDataService<StokAwal>>(new NamedParameter("contextFactory", new SiapelDbContextFactory()));
                     var tabungBocorService = scope.Resolve<IDataService<TabungBocor>>(new NamedParameter("contextFactory", new SiapelDbContextFactory()));
-                    var transaksiLogService = scope.Resolve<IDataService<TransaksiLog>>(new NamedParameter("contextFactory", new SiapelDbContextFactory()));
                     desktop.MainWindow = new MainWindow
                     {
-                        DataContext = new MainWindowViewModel(hargaservice, stokawalService, tabungBocorService, pemasukanService, pangkalanservice, transaksiservice, transaksiLogService)
+                        DataContext = new MainWindowViewModel(hargaservice, stokawalService, tabungBocorService, pemasukanService, pangkalanservice, transaksiservice)
                     };
                     SiapelDbContextFactory contextFactory = scope.Resolve<SiapelDbContextFactory>();
                     using (SiapelDbContext context = contextFactory.CreateDbContext())

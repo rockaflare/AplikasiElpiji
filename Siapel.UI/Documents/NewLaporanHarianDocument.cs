@@ -70,19 +70,19 @@ namespace Siapel.UI.Documents
             {
                 column.Spacing(5);
 
-                column.Item().Text("50 KG");
+                column.Item().Text("50 KG").FontSize(9);
                 column.Item().Element(ComposeTableLimaPuluh);
 
-                column.Item().Text("12 KG");
+                column.Item().Text("12 KG").FontSize(9);
                 column.Item().Element(ComposeTableDuaBelas);
 
-                column.Item().Text("5,5 KG");
+                column.Item().Text("5,5 KG").FontSize(9);
                 column.Item().Element(ComposeTableLimaSetengah);
 
-                column.Item().Text("");
+                column.Item().Text("").FontSize(9);
                 column.Item().Element(ComposeTableTotalPenjualan);
 
-                column.Item().Text("");
+                column.Item().Text("").FontSize(9);
                 column.Item().Element(ComposeTableInOutStok);
             });
         }
