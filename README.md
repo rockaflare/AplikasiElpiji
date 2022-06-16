@@ -29,3 +29,6 @@ Aplikasi untuk mengolah penjualan LPG NPSO.
 - AvaloniaUI
 - ReactiveUI
 - Autofac
+- QuestPDF
+- Entity Framework Core
+- SQLite
