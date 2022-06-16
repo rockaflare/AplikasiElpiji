@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Siapel.EF", "Siapel.EF\Siap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Siapel.UI", "Siapel.UI\Siapel.UI.csproj", "{49FBBAFC-8BCC-4C10-808D-EFFA2CB85538}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SiapelApp", "SiapelApp\SiapelApp.vdproj", "{321F01DB-1186-4317-BBF0-70767C9E1815}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,8 @@ Global
 		{49FBBAFC-8BCC-4C10-808D-EFFA2CB85538}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49FBBAFC-8BCC-4C10-808D-EFFA2CB85538}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49FBBAFC-8BCC-4C10-808D-EFFA2CB85538}.Release|Any CPU.Build.0 = Release|Any CPU
+		{321F01DB-1186-4317-BBF0-70767C9E1815}.Debug|Any CPU.ActiveCfg = Debug
+		{321F01DB-1186-4317-BBF0-70767C9E1815}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
