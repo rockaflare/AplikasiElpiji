@@ -98,5 +98,14 @@ namespace Siapel.UI.ViewModels
                 _stokInOut.Add(item);
             }
         }
+
+        public void BackDateCommand()
+        {
+            SelectedTanggal = SelectedTanggal.AddDays(-1);
+        }
+        public void ForwardDateCommand()
+        {
+            SelectedTanggal = SelectedTanggal.AddDays(1);
+        }
     }
 }
