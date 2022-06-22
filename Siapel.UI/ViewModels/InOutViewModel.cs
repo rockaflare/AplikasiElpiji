@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using Siapel.Domain.Models;
 using Siapel.Domain.Services;
+using Siapel.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -87,146 +88,14 @@ namespace Siapel.UI.ViewModels
             }
         }
 
-        private int? GetStokAwalDefault(int? masuk, int? keluar, int? lastStok, int? titipan, int? ambil)
-        {
-            int? resultStokAwal = lastStok + ambil + keluar - masuk - titipan;
-            return resultStokAwal;
-        }
-        private int? GetSumTitipanBocor(string item, DateTimeOffset tanggal)
-        {
-            int? resultTitipan = 0;
-            if (_tabungBocor.Any())
-            {
-                var titipanSum = _tabungBocor.Where(x => x.Item == item && x.Tanggal == tanggal).Sum(x => x.Titipan);
-                if (titipanSum > 0)
-                {
-                    resultTitipan = titipanSum;
-                }
-            }
-            return resultTitipan;
-        }
-        private int? GetSumAmbilBocor(string item, DateTimeOffset tanggal)
-        {
-            int? resultTitipan = 0;
-            if (_tabungBocor.Any())
-            {
-                var titipanSum = _tabungBocor.Where(x => x.Item == item && x.Tanggal == tanggal).Sum(x => x.Ambil);
-                if (titipanSum > 0)
-                {
-                    resultTitipan = titipanSum;
-                }
-            }
-            return resultTitipan;
-        }
-        private int? GetSumPemasukan(string item, DateTimeOffset tanggal)
-        {
-            int? resultPemasukan = 0;
-            if (_pemasukan.Any())
-            {
-                var pemasukanSum = _pemasukan.Where(x => x.Item == item && x.Tanggal == tanggal).Sum(x => x.Jumlah);
-                if (pemasukanSum > 0)
-                {
-                    resultPemasukan = pemasukanSum;
-                }                
-            }
-            return resultPemasukan;
-        }
-        private int? GetSumPenjualan(string item, DateTimeOffset tanggal)
-        {
-            int? resultPenjualan = 0;
-            if (_transaksi.Any())
-            {
-                var penjualanSum = _transaksi.Where(x => x.Item == item && x.Tanggal == tanggal).Sum(x => x.Jumlah);
-                if (penjualanSum > 0)
-                {
-                    resultPenjualan = penjualanSum;
-                }               
-            }
-            return resultPenjualan;
-        }
-
-        //RECALCULATE STOK AKHIR
-        private int? GetLastStokFromTotal(string item, DateTimeOffset tanggal)
-        {
-            int? result = 0;
-            if (item != null)
-            {
-                var stokAwal = _stokAwal.FirstOrDefault(x => x.Item == item).Jumlah;
-                result = stokAwal + GetTotalSumPemasukan(item, tanggal) - GetTotalSumPenjualan(item, tanggal) + GetTotalSumTitipanBocor(item, tanggal) - GetTotalSumAmbilBocor(item, tanggal);
-            }
-            return result;
-        }
-        private int? GetTotalSumPemasukan(string item, DateTimeOffset tanggal)
-        {
-            int? resultPemasukan = 0;
-            if (_pemasukan.Any())
-            {
-                var pemasukanSum = _pemasukan.Where(x => x.Item == item && x.Tanggal <= tanggal).Sum(x => x.Jumlah);
-                if (pemasukanSum > 0)
-                {
-                    resultPemasukan = pemasukanSum;
-                }
-            }
-            return resultPemasukan;
-        }
-        private int? GetTotalSumPenjualan(string item, DateTimeOffset tanggal)
-        {
-            int? resultPenjualan = 0;
-            if (_transaksi.Any())
-            {
-                var penjualanSum = _transaksi.Where(x => x.Item == item && x.Tanggal <= tanggal).Sum(x => x.Jumlah);
-                if (penjualanSum > 0)
-                {
-                    resultPenjualan = penjualanSum;
-                }
-            }
-            return resultPenjualan;
-        }
-        private int? GetTotalSumTitipanBocor(string item, DateTimeOffset tanggal)
-        {
-            int? resultTitipan = 0;
-            if (_tabungBocor.Any())
-            {
-                var titipanSum = _tabungBocor.Where(x => x.Item == item && x.Tanggal <= tanggal).Sum(x => x.Titipan);
-                if (titipanSum > 0)
-                {
-                    resultTitipan = titipanSum;
-                }
-            }
-            return resultTitipan;
-        }
-        private int? GetTotalSumAmbilBocor(string item, DateTimeOffset tanggal)
-        {
-            int? resultTitipan = 0;
-            if (_tabungBocor.Any())
-            {
-                var titipanSum = _tabungBocor.Where(x => x.Item == item && x.Tanggal <= tanggal).Sum(x => x.Ambil);
-                if (titipanSum > 0)
-                {
-                    resultTitipan = titipanSum;
-                }
-            }
-            return resultTitipan;
-        }
-
-        //RECALCULATE END
-
         private void CreateInOut()
         {
-            string[] items = { "50 KG", "12 KG", "5,5 KG" };
+            InOutService inOutService = new InOutService(_stokAwal, _pemasukan, _transaksi, _tabungBocor, SelectedTanggal.Date);
+            var inOutList = inOutService.GetInOutStokList();
             _stokInOut.Clear();
-            foreach (var i in items)
+            foreach (var item in inOutList)
             {
-                _stokInOut.Add(new 
-                {
-                    Item = i,
-                    StokAkhir = GetLastStokFromTotal(i, SelectedTanggal.Date),
-                    TitipanBocor = GetSumTitipanBocor(i, SelectedTanggal.Date),
-                    AmbilBocor = GetSumAmbilBocor(i, SelectedTanggal.Date),
-                    Penjualan = GetSumPenjualan(i, SelectedTanggal.Date),
-                    Masuk = GetSumPemasukan(i, SelectedTanggal.Date),
-                    StokAwal = GetStokAwalDefault(GetSumPemasukan(i, SelectedTanggal.Date), GetSumPenjualan(i, SelectedTanggal.Date), GetLastStokFromTotal(i, SelectedTanggal.Date), GetSumTitipanBocor(i, SelectedTanggal.Date), GetSumAmbilBocor(i, SelectedTanggal.Date))
-                });
+                _stokInOut.Add(item);
             }
         }
     }
