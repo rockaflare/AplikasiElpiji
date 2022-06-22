@@ -32,13 +32,13 @@ namespace Siapel.UI.ViewModels
             HostScreen = screen;
             _dataService = dataService;
             _stokAwalService = stokAwalService;
-            LoadItem = ReactiveCommand.CreateFromTask(TabungBocorUpdater);
+            LoadItem = ReactiveCommand.CreateFromTask(TabungBocorItemLoad);
             LoadItem.Execute();
 
             DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
         }
 
-        private async Task TabungBocorUpdater()
+        private async Task TabungBocorItemLoad()
         {
             _tabungBocor.Clear();
             if (_dataService != null)

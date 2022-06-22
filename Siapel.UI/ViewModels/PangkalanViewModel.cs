@@ -21,10 +21,10 @@ namespace Siapel.UI.ViewModels
 {
     public class PangkalanViewModel : ReactiveObject, IRoutableViewModel
     {
-        string Lah = "Pangkalan";
+        string Title = "Pangkalan";
         private ObservableCollection<Pangkalan> _pangkalan { get; } = new ObservableCollection<Pangkalan>();
         private readonly IPangkalanDataService _dataService;
-        public string? UrlPathSegment => Lah;
+        public string? UrlPathSegment => Title;
         public IScreen HostScreen { get; }
 
         public IEnumerable<Pangkalan> Pangkalans => _pangkalan;
@@ -35,7 +35,7 @@ namespace Siapel.UI.ViewModels
         {
             HostScreen = screen;
             _dataService = dataService;
-            LoadItem = ReactiveCommand.CreateFromTask(JalaninAjaDulu);
+            LoadItem = ReactiveCommand.CreateFromTask(PangkalanItemLoad);
             LoadItem.Execute();
             DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
 
@@ -52,7 +52,7 @@ namespace Siapel.UI.ViewModels
             _hasilPencarian.ThrownExceptions.Subscribe(error => { });
         }
 
-        private async Task JalaninAjaDulu()
+        private async Task PangkalanItemLoad()
         {
             _pangkalan.Clear();
             if (_dataService!=null)

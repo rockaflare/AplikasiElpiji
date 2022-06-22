@@ -30,12 +30,12 @@ namespace Siapel.UI.ViewModels
         {
             HostScreen = screen;
             _dataService = dataService;
-            LoadItem = ReactiveCommand.CreateFromTask(PemasukanUpdater);
+            LoadItem = ReactiveCommand.CreateFromTask(PemasukanItemLoad);
             LoadItem.Execute();
             DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
         }
 
-        private async Task PemasukanUpdater()
+        private async Task PemasukanItemLoad()
         {
             _pemasukan.Clear();
             if (_dataService != null)

@@ -47,15 +47,15 @@ namespace Siapel.UI.ViewModels
             _jenisTabung = new List<string>() { "50 KG", "12 KG", "5,5 KG" };
             PangkalanCbx = ReactiveCommand.CreateFromTask(GetPangkalan);
             PangkalanCbx.Execute();
-            LoadItem = ReactiveCommand.CreateFromTask(TransaksiUpdater);
+            LoadItem = ReactiveCommand.CreateFromTask(TransaksiItemLoad);
             LoadItem.Execute();
             DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
-            FilterTransaksi = ReactiveCommand.Create(TransaksiFilterUpdater);
+            FilterTransaksi = ReactiveCommand.Create(TransaksiFilteredItemLoad);
 
             this.WhenAnyValue(x => x.SelectedPangkalanFilter, x => x.SelectedItemFilter, x => x.StartDate, x => x.EndDate, x => x.SelectedPembayaranFilter).Select(_ => Unit.Default).InvokeCommand(FilterTransaksi);
         }
 
-        private async Task TransaksiUpdater()
+        private async Task TransaksiItemLoad()
         {
             _transaksi.Clear();
             if (_dataService != null)
@@ -68,7 +68,7 @@ namespace Siapel.UI.ViewModels
             }
         }
 
-        private void TransaksiFilterUpdater()
+        private void TransaksiFilteredItemLoad()
         {
             var filtered = Transaksi.Where(
                 x => (SelectedPangkalanFilter == null ? true : x.Pangkalan.Id == SelectedPangkalanFilter.Id)

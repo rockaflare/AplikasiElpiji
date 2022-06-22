@@ -28,7 +28,7 @@ namespace Siapel.UI.ViewModels
         {
             HostScreen = screen;
             _dataService = dataService;
-            LoadItem = ReactiveCommand.CreateFromTask(StokAwalUpdater);
+            LoadItem = ReactiveCommand.CreateFromTask(StokAwalItemLoad);
             LoadItem.Execute();
         }
 
@@ -39,7 +39,7 @@ namespace Siapel.UI.ViewModels
             set => this.RaiseAndSetIfChanged(ref _selectedStokAwal, value);
         }
 
-        private async Task StokAwalUpdater()
+        private async Task StokAwalItemLoad()
         {
             _stokAwal.Clear();
             if (_dataService != null)
