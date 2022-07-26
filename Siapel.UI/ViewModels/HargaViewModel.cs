@@ -33,12 +33,12 @@ namespace Siapel.UI.ViewModels
             HostScreen = screen;
             _dataService = dataService;
             _pangkalanService = pangkalanService;
-            LoadItem = ReactiveCommand.CreateFromTask(HargaUpdater);
+            LoadItem = ReactiveCommand.CreateFromTask(HargaItemLoad);
             LoadItem.Execute();
             DeleteItem = ReactiveCommand.CreateFromTask(DeleteConfirmation);
         }
 
-        private async Task HargaUpdater()
+        private async Task HargaItemLoad()
         {
             _harga.Clear();
             if (_dataService != null)
