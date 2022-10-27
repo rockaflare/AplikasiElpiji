@@ -34,6 +34,9 @@ namespace Siapel.UI.ViewModels
         private List<object> _laporanHarianDuaBelas { get; } = new List<object>();
         private List<object> _laporanHarianLimaSetengah { get; } = new List<object>();
         private List<object> _laporanInOutStok { get; } = new List<object>();
+        private List<object> _laporanBulananLimaPuluh { get; } = new List<object>();
+        private List<object> _laporanBulananDuaBelas { get; } = new List<object>();
+        private List<object> _laporanBulananLimaSetengah { get; } = new List<object>();
         private List<LaporanHarian> _totalOfTransaksiList { get; } = new List<LaporanHarian>();
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
         private ReactiveCommand<Unit, Unit> SaveItem { get; }
@@ -56,6 +59,9 @@ namespace Siapel.UI.ViewModels
         public List<object> LaporanHarianDuaBelas => _laporanHarianDuaBelas;
         public List<object> LaporanHarianLimaSetengah => _laporanHarianLimaSetengah;
         public List<object> LaporanInOutStok => _laporanInOutStok;
+        public List<object> LaporanBulananLimaPuluh => _laporanBulananLimaPuluh;
+        public List<object> LaporanBulananDuaBelas => _laporanBulananDuaBelas;
+        public List<object> LaporanBulananLimaSetengah => _laporanBulananLimaSetengah;
         public List<LaporanHarian> TotalOfTransaksiList => _totalOfTransaksiList;
         
 
@@ -66,7 +72,7 @@ namespace Siapel.UI.ViewModels
             _stokAwalDataService = stokAwalDataService;
             _pemasukanDataService = pemasukanDataService;
             _tabungBocorDataService = tabungBocorDataService;
-            _jenisLaporan = new List<string>() { "Invoice", "Harian"};
+            _jenisLaporan = new List<string>() { "Invoice", "Harian", "Bulanan"};
             SelectedTanggalLaporan = DateTimeOffset.Now.AddDays(-1);
             LoadItem = ReactiveCommand.CreateFromTask(LaporanUpdater);
             LoadItem.Execute();
@@ -293,6 +299,66 @@ namespace Siapel.UI.ViewModels
                 }
             }
         }
+        private void LapBulananCreator()
+        {
+            if (_transaksi != null)
+            {
+                var bulan = SelectedTanggalLaporan.Month;
+                var limaPuluhList = _transaksi
+                    .Where(x => x.Item == "50 KG" && x.Tanggal.Month == bulan && x.Status == "Lunas" && x.TanggalLunas.Value.Month == bulan)
+                    .GroupBy(t => t.Pangkalan)
+                    .Select(n => new
+                    {
+                        Pangkalan = n.Select(x => x.Pangkalan.Nama).First(),
+                        Jumlah = n.Sum(x => x.Jumlah),
+                        Tanggal = n.Select(x => x.Tanggal.ToString("dd MMMM yyyy")).First(),
+                        Harga = n.Select(x => x.Harga).First().ToString("Rp #,#"),
+                        TotalSemua = n.Sum(c => c.Total).ToString("Rp #,#")
+                    })
+                    .ToList();
+                _laporanBulananLimaPuluh.Clear();
+                foreach (var item in limaPuluhList)
+                {
+                    _laporanBulananLimaPuluh.Add(item);
+                }
+
+                var duaBelasList = _transaksi
+                    .Where(x => x.Item == "12 KG" && x.Tanggal.Month == bulan && x.Status == "Lunas" && x.TanggalLunas.Value.Month == bulan)
+                    .GroupBy(t => t.Pangkalan)
+                    .Select(n => new
+                    {
+                        Pangkalan = n.Select(x => x.Pangkalan.Nama).First(),
+                        Jumlah = n.Sum(x => x.Jumlah),
+                        Tanggal = n.Select(x => x.Tanggal.ToString("dd MMMM yyyy")).First(),
+                        Harga = n.Select(x => x.Harga).First().ToString("Rp #,#"),
+                        TotalSemua = n.Sum(c => c.Total).ToString("Rp #,#")
+                    })
+                    .ToList();
+                _laporanBulananDuaBelas.Clear();
+                foreach (var item in duaBelasList)
+                {
+                    _laporanBulananDuaBelas.Add(item);
+                }
+
+                var limaSetengahList = _transaksi
+                    .Where(x => x.Item == "5,5 KG" && x.Tanggal.Month == bulan && x.Status == "Lunas" && x.TanggalLunas.Value.Month == bulan)
+                    .GroupBy(t => t.Pangkalan)
+                    .Select(n => new
+                    {
+                        Pangkalan = n.Select(x => x.Pangkalan.Nama).First(),
+                        Jumlah = n.Sum(x => x.Jumlah),
+                        Tanggal = n.Select(x => x.Tanggal.ToString("dd MMMM yyyy")).First(),
+                        Harga = n.Select(x => x.Harga).First().ToString("Rp #,#"),
+                        TotalSemua = n.Sum(c => c.Total).ToString("Rp #,#")
+                    })
+                    .ToList();
+                _laporanBulananLimaSetengah.Clear();
+                foreach (var item in limaSetengahList)
+                {
+                    _laporanBulananLimaSetengah.Add(item);
+                }
+            }
+        }
         private string _selectedLaporan;
         public string SelectedLaporan
         {
@@ -325,6 +391,10 @@ namespace Siapel.UI.ViewModels
                 {
                     LapHarianCreator();
                 }
+                else if (SelectedLaporan == "Bulanan")
+                {
+                    LapBulananCreator();
+                }
             }
         }
 
@@ -334,6 +404,7 @@ namespace Siapel.UI.ViewModels
             {
                 var invoiceDocument = new InvoiceDocument(InvoiceList, InvoiceGrandTotalList, SelectedTanggalLaporan.Date.ToLongDateString(), _invoiceGrandTotal, _invoiceGrandTotalLp, _invoiceGrandTotalDb, _invoiceGrandTotalLs);
                 var harianDocument = new NewLaporanHarianDocument(LaporanHarianLimaPuluh, LaporanHarianDuaBelas, LaporanHarianLimaSetengah, SelectedTanggalLaporan.Date.ToLongDateString(), TotalOfTransaksiList, LaporanInOutStok);
+                var bulananDocument = new LaporanBulananDocument(LaporanBulananLimaPuluh, LaporanBulananDuaBelas, LaporanBulananLimaSetengah, SelectedTanggalLaporan.ToString("MMMM yyyy"));
 
                 switch (SelectedLaporan)
                 {
@@ -342,6 +413,9 @@ namespace Siapel.UI.ViewModels
                         break;
                     case "Harian":
                         harianDocument.GeneratePdf(SaveDestinationPath);
+                        break;
+                    case "Bulanan":
+                        bulananDocument.GeneratePdf(SaveDestinationPath);
                         break;
                     default:
                         break;
