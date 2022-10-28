@@ -38,6 +38,7 @@ namespace Siapel.UI.ViewModels
         private List<object> _laporanBulananDuaBelas { get; } = new List<object>();
         private List<object> _laporanBulananLimaSetengah { get; } = new List<object>();
         private List<LaporanHarian> _totalOfTransaksiList { get; } = new List<LaporanHarian>();
+        private List<LaporanBulanan> _totalOfBulananList { get; } = new List<LaporanBulanan>();
         private ReactiveCommand<Unit, Unit> LoadItem { get; }
         private ReactiveCommand<Unit, Unit> SaveItem { get; }
         private ReactiveCommand<Unit, Unit> LaporanSelector { get; }
@@ -63,6 +64,7 @@ namespace Siapel.UI.ViewModels
         public List<object> LaporanBulananDuaBelas => _laporanBulananDuaBelas;
         public List<object> LaporanBulananLimaSetengah => _laporanBulananLimaSetengah;
         public List<LaporanHarian> TotalOfTransaksiList => _totalOfTransaksiList;
+        public List<LaporanBulanan> TotalOfBulananList => _totalOfBulananList;
         
 
         public LaporanViewModel(IScreen screen, ITransaksiDataService transaksiDataService = null, IDataService<StokAwal> stokAwalDataService = null, IDataService<Pemasukan> pemasukanDataService = null, IDataService<TabungBocor> tabungBocorDataService = null)
@@ -306,6 +308,7 @@ namespace Siapel.UI.ViewModels
                 var bulan = SelectedTanggalLaporan.Month;
                 var limaPuluhList = _transaksi
                     .Where(x => x.Item == "50 KG" && x.Tanggal.Month == bulan && x.Status == "Lunas" && x.TanggalLunas.Value.Month == bulan)
+                    .OrderBy(t => t.Tanggal)
                     .GroupBy(t => t.Pangkalan)
                     .Select(n => new
                     {
@@ -324,6 +327,7 @@ namespace Siapel.UI.ViewModels
 
                 var duaBelasList = _transaksi
                     .Where(x => x.Item == "12 KG" && x.Tanggal.Month == bulan && x.Status == "Lunas" && x.TanggalLunas.Value.Month == bulan)
+                    .OrderBy(t => t.Tanggal)
                     .GroupBy(t => t.Pangkalan)
                     .Select(n => new
                     {
@@ -342,6 +346,7 @@ namespace Siapel.UI.ViewModels
 
                 var limaSetengahList = _transaksi
                     .Where(x => x.Item == "5,5 KG" && x.Tanggal.Month == bulan && x.Status == "Lunas" && x.TanggalLunas.Value.Month == bulan)
+                    .OrderBy(t => t.Tanggal)
                     .GroupBy(t => t.Pangkalan)
                     .Select(n => new
                     {
@@ -356,6 +361,21 @@ namespace Siapel.UI.ViewModels
                 foreach (var item in limaSetengahList)
                 {
                     _laporanBulananLimaSetengah.Add(item);
+                }
+                var totalOfBulananList = _transaksi
+                    .Where(x => x.Tanggal.Month == bulan && x.Status == "Lunas" && x.TanggalLunas.Value.Month == bulan)
+                    .GroupBy(t => t.Item)
+                    .Select(n => new LaporanBulanan()
+                    {
+                        Item = n.Select(x => x.Item).First(),
+                        Jumlah = n.Sum(x => x.Jumlah),
+                        Total = n.Sum(x => x.Total).ToString("Rp #,#")
+                    })
+                    .ToList();
+                _totalOfBulananList.Clear();
+                foreach (var item in totalOfBulananList)
+                {
+                    _totalOfBulananList.Add(item);
                 }
             }
         }
@@ -404,7 +424,7 @@ namespace Siapel.UI.ViewModels
             {
                 var invoiceDocument = new InvoiceDocument(InvoiceList, InvoiceGrandTotalList, SelectedTanggalLaporan.Date.ToLongDateString(), _invoiceGrandTotal, _invoiceGrandTotalLp, _invoiceGrandTotalDb, _invoiceGrandTotalLs);
                 var harianDocument = new NewLaporanHarianDocument(LaporanHarianLimaPuluh, LaporanHarianDuaBelas, LaporanHarianLimaSetengah, SelectedTanggalLaporan.Date.ToLongDateString(), TotalOfTransaksiList, LaporanInOutStok);
-                var bulananDocument = new LaporanBulananDocument(LaporanBulananLimaPuluh, LaporanBulananDuaBelas, LaporanBulananLimaSetengah, SelectedTanggalLaporan.ToString("MMMM yyyy"));
+                var bulananDocument = new LaporanBulananDocument(LaporanBulananLimaPuluh, LaporanBulananDuaBelas, LaporanBulananLimaSetengah, SelectedTanggalLaporan.ToString("MMMM yyyy"), TotalOfBulananList);
 
                 switch (SelectedLaporan)
                 {

@@ -16,14 +16,16 @@ namespace Siapel.UI.Documents
         private List<object>? _lapLimaPuluhList;
         private List<object>? _lapDuaBelasList;
         private List<object>? _lapLimaSetengahList;
+        private List<LaporanBulanan>? _listOfTotals;
         private string? _bulan;
 
-        public LaporanBulananDocument(List<object>? lapLimaPuluhList = null, List<object>? lapDuaBelasList = null, List<object>? lapLimaSetengahList = null, string bulan = null)
+        public LaporanBulananDocument(List<object>? lapLimaPuluhList = null, List<object>? lapDuaBelasList = null, List<object>? lapLimaSetengahList = null, string bulan = null, List<LaporanBulanan>? listOfTotals = null)
         {
             _lapLimaPuluhList = lapLimaPuluhList;
             _lapDuaBelasList = lapDuaBelasList;
             _lapLimaSetengahList = lapLimaSetengahList;
             _bulan = bulan;
+            _listOfTotals = listOfTotals;
         }
 
         public void Compose(IDocumentContainer container)
@@ -144,6 +146,25 @@ namespace Siapel.UI.Documents
                         IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.White);
                     }
                 }
+
+                table.Footer(footer =>
+                {
+                    footer.Cell().ColumnSpan(4).Element(CellStyle).Text("Total penjualan : ").FontSize(9);
+
+                    if (_listOfTotals != null && _listOfTotals.Count > 0)
+                    {
+                        var jumlah = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Jumlah).FirstOrDefault();
+                        var total = _listOfTotals.Where(x => x.Item == "50 KG").Select(x => x.Total).FirstOrDefault();
+                        footer.Cell().Element(CellStyle).Text(jumlah).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(total).FontSize(9);
+                    }
+                    else
+                    {
+                        footer.Cell().Element(CellStyle).Text("");
+                        footer.Cell().Element(CellStyle).Text("");
+                    }
+                    IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten4);
+                });
             });
         }
         void ComposeTableDuaBelas(IContainer container)
@@ -192,7 +213,7 @@ namespace Siapel.UI.Documents
                 {
                     foreach (var item in _lapDuaBelasList)
                     {
-                        var nomor = _lapLimaSetengahList.IndexOf(item) + 1;
+                        var nomor = _lapDuaBelasList.IndexOf(item) + 1;
                         var pangkalan = item.GetType().GetProperty("Pangkalan").GetValue(item);
                         var tanggal = item.GetType().GetProperty("Tanggal").GetValue(item);
                         var harga = item.GetType().GetProperty("Harga").GetValue(item);
@@ -209,6 +230,25 @@ namespace Siapel.UI.Documents
                         IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.White);
                     }
                 }
+
+                table.Footer(footer =>
+                {
+                    footer.Cell().ColumnSpan(4).Element(CellStyle).Text("Total penjualan : ").FontSize(9);
+
+                    if (_listOfTotals != null && _listOfTotals.Count > 0)
+                    {
+                        var jumlah = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Jumlah).FirstOrDefault();
+                        var total = _listOfTotals.Where(x => x.Item == "12 KG").Select(x => x.Total).FirstOrDefault();
+                        footer.Cell().Element(CellStyle).Text(jumlah).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(total).FontSize(9);
+                    }
+                    else
+                    {
+                        footer.Cell().Element(CellStyle).Text("");
+                        footer.Cell().Element(CellStyle).Text("");
+                    }
+                    IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten4);
+                });
             });
         }
         void ComposeTableLimaSetengah(IContainer container)
@@ -274,6 +314,25 @@ namespace Siapel.UI.Documents
                         IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.White);
                     }
                 }
+
+                table.Footer(footer =>
+                {
+                    footer.Cell().ColumnSpan(4).Element(CellStyle).Text("Total penjualan : ").FontSize(9);
+
+                    if (_listOfTotals != null && _listOfTotals.Count > 0)
+                    {
+                        var jumlah = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Jumlah).FirstOrDefault();
+                        var total = _listOfTotals.Where(x => x.Item == "5,5 KG").Select(x => x.Total).FirstOrDefault();
+                        footer.Cell().Element(CellStyle).Text(jumlah).FontSize(9);
+                        footer.Cell().Element(CellStyle).Text(total).FontSize(9);
+                    }
+                    else
+                    {
+                        footer.Cell().Element(CellStyle).Text("");
+                        footer.Cell().Element(CellStyle).Text("");
+                    }
+                    IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten4);
+                });
             });
         }
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
