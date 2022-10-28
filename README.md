@@ -18,7 +18,7 @@ Aplikasi untuk mengolah penjualan LPG NPSO.
 - [ ] Membuat laporan bulanan (On Progress)
 - [ ] \(Optional) Membuat invoice mingguan atau bulanan
 - [ ] \(Optional) Fitur print transaksi berdasarkan filter
-- [ ] Refactoring View Model (It's total mess lol)
+- [ ] Refactoring View Model (It's a total mess lol)
 - [ ] Refactoring Dependency injection (Also a mess)
 
 ## Screenshots
