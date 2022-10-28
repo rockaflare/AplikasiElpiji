@@ -26,7 +26,7 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             SetField();
             var okEnabled = this.WhenAnyValue(x => x.NamaPangkalan, x => !string.IsNullOrWhiteSpace(x));
             Save = ReactiveCommand.Create(
-                () => _pangkalan != null ? EditPangkalan() : new Pangkalan { Nama = NamaPangkalan, Status = Status, Perma = true }, okEnabled);
+                () => _pangkalan != null ? EditPangkalan() : new Pangkalan { Nama = NamaPangkalan, Status = String.IsNullOrWhiteSpace(Status) ? "Aktif" : Status, Perma = true }, okEnabled);
             Cancel = ReactiveCommand.Create(() => { });
         }
 
