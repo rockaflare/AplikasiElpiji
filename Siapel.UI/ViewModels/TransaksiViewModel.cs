@@ -1,11 +1,14 @@
 ﻿using FluentAvalonia.UI.Controls;
+using QuestPDF.Fluent;
 using ReactiveUI;
 using Siapel.Domain.Models;
 using Siapel.Domain.Services;
+using Siapel.UI.Documents;
 using Siapel.UI.ViewModels.DialogViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -177,6 +180,15 @@ namespace Siapel.UI.ViewModels
             StartDate = null;
             EndDate = null;
             SelectedPembayaranFilter = null;
+        }
+        public void SaveToPdf()
+        {
+            var DocPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var DocName = $"LaporanTransaksi-{DateTime.Now.ToString("dd-MM-yyyy")}.pdf";
+            var SavePath = Path.Combine(DocPath, DocName);
+            List<Transaksi> filtered = TransaksiFilter.ToList();
+            var transaksiDocument = new LaporanTransaksiDocument(filtered, DateTime.Now.ToString("dd MMMM yyyy"));
+            transaksiDocument.GeneratePdf(SavePath);
         }
         public async void AddCommand()
         {

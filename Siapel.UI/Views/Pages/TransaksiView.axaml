@@ -24,12 +24,20 @@
 					<DatePicker Margin="5 0 0 0" SelectedDate="{Binding EndDate}" Header="Tanggal akhir" MinYear="{Binding StartDate}"/>
 					<ComboBox Margin="5 0 0 0" Width="200" PlaceholderText="Jenis Pembayaran" Items="{Binding JenisPembayaranList}" SelectedItem="{Binding SelectedPembayaranFilter}"/>
 
-					<Button Command="{Binding ResetFilter}">
-						<StackPanel Orientation="Horizontal">
-							<ui:SymbolIcon Symbol="Filter"/>
-							<TextBlock Text="Hapus Filter" Margin="5 0 0 0"/>
-						</StackPanel>
-					</Button>
+					<StackPanel Spacing="5" Orientation="Horizontal">
+						<Button Command="{Binding ResetFilter}">
+							<StackPanel Orientation="Horizontal">
+								<ui:SymbolIcon Symbol="Filter"/>
+								<TextBlock Text="Hapus Filter" Margin="5 0 0 0"/>
+							</StackPanel>
+						</Button>
+						<Button Command="{Binding SaveToPdf}">
+							<StackPanel Orientation="Horizontal">
+								<ui:SymbolIcon Symbol="Page"/>
+								<TextBlock Text="Simpan PDF" Margin="5 0 0 0"/>
+							</StackPanel>
+						</Button>
+					</StackPanel>
 				</StackPanel>
 			</Expander>
 			<StackPanel Orientation="Horizontal">
