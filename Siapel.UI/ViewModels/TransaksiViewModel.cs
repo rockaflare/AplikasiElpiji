@@ -47,7 +47,7 @@ namespace Siapel.UI.ViewModels
             _pangkalanService = pangkalanDataService;
             _hargaService = hargaDataService;
             _jenisPembayaran = new List<string>() { "Tunai", "Transfer", "Invoice" };
-            _jenisTabung = new List<string>() { "50 KG", "12 KG", "5,5 KG" };
+            _jenisTabung = new List<string>() { "50 KG", "12 KG", "5,5 KG", "Lainnya" };
             PangkalanCbx = ReactiveCommand.CreateFromTask(GetPangkalan);
             PangkalanCbx.Execute();
             LoadItem = ReactiveCommand.CreateFromTask(TransaksiItemLoad);

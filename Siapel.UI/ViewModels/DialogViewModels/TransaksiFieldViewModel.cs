@@ -32,7 +32,7 @@ namespace Siapel.UI.ViewModels.DialogViewModels
             _pangkalanList = pangkalan;
             _transaksi = transaksi;
             _hargaList = harga;
-            _itemList = new List<string>() { "50 KG", "12 KG", "5,5 KG" };
+            _itemList = new List<string>() { "50 KG", "12 KG", "5,5 KG", "Lainnya" };
             _jenisBayar = new List<string>() { "Tunai", "Transfer", "Invoice" };
             SetField();
             var okEnabled = this.WhenAnyValue(x => x.Item, x => x.TipeBayar, (i, t) => !string.IsNullOrWhiteSpace(i) && !string.IsNullOrWhiteSpace(t));

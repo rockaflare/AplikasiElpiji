@@ -19,8 +19,9 @@ namespace Siapel.UI.Documents
         private List<object>? _lapInOutStok;
         private List<LaporanHarian>? _listOfTotals;
         private string? _tanggal;
+        private List<object>? _lapTransaksiLain;
 
-        public NewLaporanHarianDocument(List<object>? lapLimaPuluhList = null, List<object>? lapDuaBelasList = null, List<object>? lapLimaSetengah = null, string? tanggal = null, List<LaporanHarian>? listOfTotals = null, List<object>? lapInOutStok = null)
+        public NewLaporanHarianDocument(List<object>? lapLimaPuluhList = null, List<object>? lapDuaBelasList = null, List<object>? lapLimaSetengah = null, string? tanggal = null, List<LaporanHarian>? listOfTotals = null, List<object>? lapInOutStok = null, List<object>? lapTransaksiLain = null)
         {
             _lapLimaPuluhList = lapLimaPuluhList;
             _lapDuaBelasList = lapDuaBelasList;
@@ -28,6 +29,7 @@ namespace Siapel.UI.Documents
             _listOfTotals = listOfTotals;
             _lapInOutStok = lapInOutStok;
             _tanggal = tanggal;
+            _lapTransaksiLain = lapTransaksiLain;
         }
 
         public void Compose(IDocumentContainer container)
@@ -78,6 +80,9 @@ namespace Siapel.UI.Documents
 
                 column.Item().Text("5,5 KG").FontSize(9);
                 column.Item().Element(ComposeTableLimaSetengah);
+
+                column.Item().Text("Transaksi Lain").FontSize(9);
+                column.Item().Element(ComposeTableTransaksiLain);
 
                 column.Item().Text("").FontSize(9);
                 column.Item().Element(ComposeTableTotalPenjualan);
@@ -458,6 +463,61 @@ namespace Siapel.UI.Documents
                 });
             });
         }
+        
+        void ComposeTableTransaksiLain(IContainer container)
+        {
+            var textStyle = TextStyle.Default.FontSize(9).NormalWeight();
+            container.Table(table =>
+            {
+                IContainer DefaultCellStyle(IContainer container, string backgroundColor)
+                {
+                    return container
+                        .Border(1)
+                        .BorderColor(Colors.Grey.Lighten1)
+                        .Background(backgroundColor)
+                        .PaddingVertical(2)
+                        .PaddingHorizontal(4)
+                        .AlignCenter()
+                        .AlignMiddle()
+                        .ShowOnce()
+                        ;
+                }
+
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.ConstantColumn(30);
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                });
+
+                table.Header(header =>
+                {
+                    header.Cell().ExtendHorizontal().Element(CellStyle).Text("No.").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Jenis").FontSize(9);
+                    header.Cell().Element(CellStyle).Text("Total").FontSize(9);
+
+
+                    IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten2);
+                });
+
+                if (_lapTransaksiLain != null)
+                {
+                    foreach (var item in _lapTransaksiLain)
+                    {
+                        var nomor = _lapTransaksiLain.IndexOf(item) + 1;
+                        var pangkalan = item.GetType().GetProperty("Pangkalan").GetValue(item);
+                        var total = item.GetType().GetProperty("Jumlah").GetValue(item);
+
+                        table.Cell().Element(CellStyle).Text(nomor).Style(textStyle);
+                        table.Cell().Element(CellStyle).Text(pangkalan).Style(textStyle);
+                        table.Cell().Element(CellStyle).Text(total).Style(textStyle);
+
+                        IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.White);
+                    }
+                }
+            });
+        }
+        
         void ComposeTableInOutStok(IContainer container)
         {
             var textStyle = TextStyle.Default.FontSize(9).NormalWeight();

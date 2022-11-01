@@ -34,6 +34,7 @@ namespace Siapel.UI.ViewModels
         private List<object> _laporanHarianDuaBelas { get; } = new List<object>();
         private List<object> _laporanHarianLimaSetengah { get; } = new List<object>();
         private List<object> _laporanInOutStok { get; } = new List<object>();
+        private List<object> _laporanTransaksiLain { get; } = new List<object>();
         private List<object> _laporanBulananLimaPuluh { get; } = new List<object>();
         private List<object> _laporanBulananDuaBelas { get; } = new List<object>();
         private List<object> _laporanBulananLimaSetengah { get; } = new List<object>();
@@ -60,6 +61,7 @@ namespace Siapel.UI.ViewModels
         public List<object> LaporanHarianDuaBelas => _laporanHarianDuaBelas;
         public List<object> LaporanHarianLimaSetengah => _laporanHarianLimaSetengah;
         public List<object> LaporanInOutStok => _laporanInOutStok;
+        public List<object> LaporanTransaksiLain => _laporanTransaksiLain;
         public List<object> LaporanBulananLimaPuluh => _laporanBulananLimaPuluh;
         public List<object> LaporanBulananDuaBelas => _laporanBulananDuaBelas;
         public List<object> LaporanBulananLimaSetengah => _laporanBulananLimaSetengah;
@@ -299,6 +301,21 @@ namespace Siapel.UI.ViewModels
                 {
                     _laporanInOutStok.Add(item);
                 }
+                var transaksiLainList = _transaksi
+                    .Where(x => x.Item == "Lainnya" && x.Tanggal == SelectedTanggalLaporan.Date)
+                    .GroupBy(t => t.Pangkalan)
+                    .Select(n => new
+                    {
+                        Pangkalan = n.Select(x => x.Pangkalan.Nama).First(),
+                        Jumlah = n.Sum(c => c.Total).ToString("Rp #,#")
+                    })
+                    .OrderBy(t => t.Pangkalan)
+                    .ToList();
+                _laporanTransaksiLain.Clear();
+                foreach (var item in transaksiLainList)
+                {
+                    _laporanTransaksiLain.Add(item);
+                }
             }
         }
         private void LapBulananCreator()
@@ -423,7 +440,7 @@ namespace Siapel.UI.ViewModels
             if (SelectedLaporan != null && !string.IsNullOrWhiteSpace(SaveDestinationPath))
             {
                 var invoiceDocument = new InvoiceDocument(InvoiceList, InvoiceGrandTotalList, SelectedTanggalLaporan.Date.ToLongDateString(), _invoiceGrandTotal, _invoiceGrandTotalLp, _invoiceGrandTotalDb, _invoiceGrandTotalLs);
-                var harianDocument = new NewLaporanHarianDocument(LaporanHarianLimaPuluh, LaporanHarianDuaBelas, LaporanHarianLimaSetengah, SelectedTanggalLaporan.Date.ToLongDateString(), TotalOfTransaksiList, LaporanInOutStok);
+                var harianDocument = new NewLaporanHarianDocument(LaporanHarianLimaPuluh, LaporanHarianDuaBelas, LaporanHarianLimaSetengah, SelectedTanggalLaporan.Date.ToLongDateString(), TotalOfTransaksiList, LaporanInOutStok, LaporanTransaksiLain);
                 var bulananDocument = new LaporanBulananDocument(LaporanBulananLimaPuluh, LaporanBulananDuaBelas, LaporanBulananLimaSetengah, SelectedTanggalLaporan.ToString("MMMM yyyy"), TotalOfBulananList);
 
                 switch (SelectedLaporan)
